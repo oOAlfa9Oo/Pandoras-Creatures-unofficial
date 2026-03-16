@@ -1,0 +1,12 @@
+{
+  "name": "pandoras_creatures:end_prison_ship",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    }
+  ]
+}

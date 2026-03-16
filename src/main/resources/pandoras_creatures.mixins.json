@@ -1,0 +1,10 @@
+{
+  "config": "pandoras_creatures.mixins.json",
+  "package": "andrews.pandoras_creatures.mixin",
+  "refmap": "pandoras_creatures.refmap.json",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [],
+  "server": []
+}

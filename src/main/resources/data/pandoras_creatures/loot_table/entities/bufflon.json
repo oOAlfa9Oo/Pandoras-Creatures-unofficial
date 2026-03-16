@@ -1,0 +1,77 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+   	 "name": "pool_bufflon_1",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 3.0,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:enchanted_count_increase",
+              "enchantment": "minecraft:looting",
+              "count": {
+                "min": 0.0,
+                "max": 1.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "name": "pandoras_creatures:bufflon_hide"
+        }
+      ]
+    },
+    {
+      "name": "pool_arachnon_2",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 4.0,
+                "type": "minecraft:uniform"
+              }
+            },
+            {
+              "function": "minecraft:furnace_smelt",
+              "conditions": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:enchanted_count_increase",
+              "enchantment": "minecraft:looting",
+              "count": {
+                "min": 0.0,
+                "max": 1.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "name": "pandoras_creatures:bufflon_beef"
+        }
+      ]
+    }
+  ]
+}

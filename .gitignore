@@ -1,0 +1,16 @@
+.gradle/
+build/
+run/
+backup/
+net/
+.vscode/
+.claude/
+build_error.txt
+build_output.txt
+*.log
+
+# Local analysis notes not intended for publication
+ANIMATION_SYSTEM_PORT.md
+AUDITORIA_ESTADISTICAS_ENTIDADES.md
+BUFFLON_MIGRACION_LEVANTAMIENTO.md
+LEVANTAMIENTO_*.md

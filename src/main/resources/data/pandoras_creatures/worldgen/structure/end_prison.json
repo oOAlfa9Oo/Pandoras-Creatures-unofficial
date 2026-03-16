@@ -1,0 +1,8 @@
+{
+  "type": "pandoras_creatures:end_prison",
+  "start_pool": "pandoras_creatures:end_prison",
+  "biomes": "#pandoras_creatures:has_structure/end_prison",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

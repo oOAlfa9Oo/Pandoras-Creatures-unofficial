@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:beach",
+    "minecraft:warm_ocean"
+  ],
+  "spawners": [
+    {
+      "type": "pandoras_creatures:crab",
+      "weight": 400,
+      "minCount": 2,
+      "maxCount": 5
+    }
+  ]
+}

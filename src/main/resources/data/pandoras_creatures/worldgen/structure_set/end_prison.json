@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "pandoras_creatures:end_prison",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 26,
+    "salt": 43650246,
+    "exclusion_zone": {
+      "other_set": "minecraft:end_cities",
+      "chunk_count": 6
+    }
+  }
+}
