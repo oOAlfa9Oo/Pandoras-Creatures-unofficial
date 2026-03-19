@@ -1,36 +1,93 @@
-# Pandoras Creatures Unofficial
+# Pandoras Creatures Unofficial (NeoForge Port)
 
-This repository contains an unofficial preliminary port of **Pandoras Creatures** to **NeoForge 1.21.1**.
+This repository contains an **unofficial port** of *Pandoras Creatures* to NeoForge 1.21.1.
+
+---
+
+## Disclaimer
+
+This project is not affiliated with, endorsed by, or maintained by the original author.
 
 The original mod was created by **andrew0030**.
 
-Official upstream:
+---
 
-- Repository: [andrew0030/Pandoras-Creatures](https://github.com/andrew0030/Pandoras-Creatures)
-- Issue tracker: [Official Issues](https://github.com/andrew0030/Pandoras-Creatures/issues)
+## Original Project
+
+* Repository: https://github.com/andrew0030/Pandoras-Creatures
+* Issue Tracker: Refer to the original repository
+
+If you encounter issues related to original functionality, please verify them against the upstream project before reporting them here.
+
+---
 
 ## Status
 
-This is a **preliminary** and **unofficial** port.
+* Type: Unofficial port
+* Target loader: NeoForge 1.21.1
+* Port line: 3.0
+* Goal: Preserve original mod behavior while updating it to modern NeoForge APIs
 
-- Target loader: `NeoForge 1.21.1`
-- Port line: `3.0`
-- Compatibility goal: preserve the original mod behavior while adapting it to modern NeoForge APIs
+---
 
 ## About The Mod
 
-Pandoras Creatures is a Minecraft mod that adds new challenging creatures to the game.
-These creatures are designed to make survival more exciting and difficult.
+*Pandoras Creatures* is a Minecraft mod that introduces new hostile and neutral creatures designed to increase gameplay challenge.
 
-Main content included in this port:
+### Main features included in this port:
 
-- 7 custom creatures with unique behaviors
-- custom items and blocks
-- tameable Bufflon mount content
-- End dimension content
+* Seven custom creatures with unique behaviors
+* Custom items and blocks
+* Tameable Bufflon mount
+* End-dimension-related content
 
-## Important Notes
+---
 
-- This repository is not the official upstream project.
-- Issues from the original mod should be checked against the official tracker first.
-- This port keeps the original mod id for compatibility, but the repository and build branding are marked as unofficial.
+## Modifications
+
+This repository represents a port of the original mod to newer Minecraft versions.
+
+Changes include:
+
+* Migration to NeoForge 1.21.1
+* Adaptation to updated modding APIs
+* Compatibility fixes for modern Minecraft versions
+* Internal refactoring where required
+
+---
+
+## Technical Notes
+
+* This port retains the original mod ID for compatibility purposes
+* Distribution and branding are clearly marked as unofficial
+
+---
+
+## License
+
+This project is licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0), in accordance with the original work by **andrew0030**.
+
+You may use, modify, and redistribute this project under the terms of this license.
+
+Requirements include:
+
+* Preservation of original copyright notices
+* Distribution of source code when providing binaries
+* Licensing of modifications under LGPL-3.0
+
+A copy of the license is included in the `LICENSE` file.
+
+---
+
+## Credits
+
+* Original author: **andrew0030**
+* Port and updates: *oOAlfa9Oo*
+
+---
+
+## Final Notes
+
+This repository exists to maintain compatibility of the mod with modern Minecraft versions.
+
+If the original author resumes development, the official version should take precedence over this port.
