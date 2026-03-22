@@ -1,5 +1,8 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineAttackState;
+import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineDataKeys;
+import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvinePlacementRules;
 import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.goals.acidic_archvine.TargetUnderneathGoal;
 import andrews.pandoras_creatures.registry.PCEntities;
@@ -22,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -34,7 +38,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     private static final EntityDataAccessor<Integer> ARCHVINE_TYPE = SynchedEntityData.defineId(AcidicArchvineEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> TARGET_ENTITY = SynchedEntityData.defineId(AcidicArchvineEntity.class, EntityDataSerializers.INT);
     private LivingEntity targetedEntity;
-    private int attackState;
+    private AcidicArchvineAttackState attackState = AcidicArchvineAttackState.IDLE;
 
     public AcidicArchvineEntity(EntityType<? extends AcidicArchvineEntity> type, Level level) {
         super(type, level);
@@ -54,7 +58,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(TARGET_ENTITY, 0);
-        builder.define(ARCHVINE_TYPE, 0);
+        builder.define(ARCHVINE_TYPE, AcidicArchvinePlacementRules.DEFAULT_ARCHVINE_TYPE);
     }
 
     @Override
@@ -70,17 +74,21 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putInt("ArchvineType", this.getArchvineType());
+        compound.putInt(AcidicArchvineDataKeys.ARCHVINE_TYPE, this.getArchvineType());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setArchvineType(compound.getInt("ArchvineType"));
+        this.setArchvineType(compound.getInt(AcidicArchvineDataKeys.ARCHVINE_TYPE));
     }
 
     public void setTargetedEntity(int entityId) {
         this.entityData.set(TARGET_ENTITY, entityId);
+    }
+
+    public void clearTargetedEntity() {
+        this.setTargetedEntity(0);
     }
 
     public boolean hasTargetedEntity() {
@@ -111,8 +119,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     @Override
     public boolean doHurtTarget(Entity target) {
         float damage = (float) (4 + this.random.nextInt(3));
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), damage);
-        return flag;
+        return target.hurt(this.damageSources().mobAttack(this), damage);
     }
 
     @Override
@@ -127,44 +134,36 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
-        int type = this.getTypeForBiome(level);
-        this.setArchvineType(type);
+        this.setArchvineType(resolveArchvineType(level));
 
         BlockPos pos = this.blockPosition();
-        // Moves the plant up or down by half a Block, depending on the position it got placed at
-        if (!level.getBlockState(pos.above(2)).is(Blocks.JUNGLE_LEAVES) && !level.getBlockState(pos.above(2)).is(Blocks.NETHERRACK) &&
-            !level.getBlockState(pos.above()).is(Blocks.JUNGLE_LEAVES) && !level.getBlockState(pos.above()).is(Blocks.NETHERRACK)) {
+        boolean immediateCeiling = isSupportedCeiling(level.getBlockState(pos.above()));
+        boolean upperCeiling = isSupportedCeiling(level.getBlockState(pos.above(2)));
+        double yOffset = AcidicArchvinePlacementRules.resolveSpawnYOffset(immediateCeiling, upperCeiling);
+        if (Double.isNaN(yOffset)) {
             this.hurt(this.damageSources().cramming(), Float.MAX_VALUE);
-        } else if (level.getBlockState(pos.above()).is(Blocks.JUNGLE_LEAVES) || level.getBlockState(pos.above()).is(Blocks.NETHERRACK)) {
-            this.setPos(this.getX(), this.getY() - 0.5, this.getZ());
-        } else if (level.getBlockState(pos.above()).isAir() &&
-                  (level.getBlockState(pos.above(2)).is(Blocks.JUNGLE_LEAVES) || level.getBlockState(pos.above(2)).is(Blocks.NETHERRACK))) {
-            this.setPos(this.getX(), this.getY() + 0.5, this.getZ());
+        } else if (yOffset != 0.0D) {
+            this.setPos(this.getX(), this.getY() + yOffset, this.getZ());
         }
 
         return spawnData;
     }
 
-    private int getTypeForBiome(ServerLevelAccessor level) {
-        // Check biome for nether types
+    private int resolveArchvineType(ServerLevelAccessor level) {
         var biome = level.getBiome(this.blockPosition());
         String biomeName = biome.unwrapKey().map(key -> key.location().toString()).orElse("");
+        return AcidicArchvinePlacementRules.resolveBiomeType(biomeName);
+    }
 
-        if (biomeName.contains("nether_wastes") || biomeName.contains("soul_sand_valley") ||
-            biomeName.contains("warped_forest") || biomeName.contains("basalt_deltas")) {
-            return 2;
-        } else if (biomeName.contains("crimson_forest")) {
-            return 3;
-        }
-        return 1;
+    private boolean isSupportedCeiling(BlockState blockState) {
+        return blockState.is(Blocks.JUNGLE_LEAVES) || blockState.is(Blocks.NETHERRACK);
     }
 
     @Override
     public void tick() {
         super.tick();
         BlockPos pos = this.blockPosition();
-        if (this.level().getBlockState(pos.above(2)).is(Blocks.JUNGLE_LEAVES) ||
-            this.level().getBlockState(pos.above(2)).is(Blocks.NETHERRACK)) {
+        if (AcidicArchvinePlacementRules.shouldLockVerticalMotion(isSupportedCeiling(this.level().getBlockState(pos.above(2))))) {
             this.setDeltaMovement(Vec3.ZERO);
         }
     }
@@ -202,36 +201,29 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 4) {
-            this.attackState = 0;
-        } else if (id == 5) {
-            this.attackState = 1;
-        } else if (id == 6) {
-            this.attackState = 2;
-        } else {
+        AcidicArchvineAttackState updatedState = AcidicArchvineAttackState.fromEventId(id);
+        if (updatedState == null) {
             super.handleEntityEvent(id);
+            return;
         }
+
+        this.attackState = updatedState;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int getAttackState() {
+    public AcidicArchvineAttackState getAttackState() {
         return this.attackState;
     }
 
     public int getArchvineType() {
-        if (this.entityData.get(ARCHVINE_TYPE) == 0) {
-            this.entityData.set(ARCHVINE_TYPE, 1);
-            return this.entityData.get(ARCHVINE_TYPE);
-        } else {
-            return this.entityData.get(ARCHVINE_TYPE);
-        }
+        return this.entityData.get(ARCHVINE_TYPE);
     }
 
     public void setArchvineType(int typeId) {
         this.entityData.set(ARCHVINE_TYPE, typeId);
     }
 
-    public void setAttackState(int value) {
-        this.attackState = value;
+    public void setAttackState(AcidicArchvineAttackState state) {
+        this.attackState = state;
     }
 }

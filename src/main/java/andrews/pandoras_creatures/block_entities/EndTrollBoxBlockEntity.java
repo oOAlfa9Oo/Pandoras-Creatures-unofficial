@@ -189,7 +189,7 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
     public boolean canPlaceItemThroughFace(int index, ItemStack itemStack, Direction direction) {
         // Prevent placing shulker boxes or end troll boxes inside
         Block block = Block.byItem(itemStack.getItem());
-        if (block instanceof ShulkerBoxBlock || block instanceof andrews.pandoras_creatures.objects.blocks.EndTrollBoxBlock) {
+        if (block instanceof ShulkerBoxBlock || block instanceof andrews.pandoras_creatures.content.block.EndTrollBoxBlock) {
             return false;
         }
         return true;
@@ -211,7 +211,7 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
             this.needsColorFromWorld = false;
             if (this.level != null) {
                 Block block = this.level.getBlockState(this.worldPosition).getBlock();
-                if (block instanceof andrews.pandoras_creatures.objects.blocks.EndTrollBoxBlock endTrollBoxBlock) {
+        if (block instanceof andrews.pandoras_creatures.content.block.EndTrollBoxBlock endTrollBoxBlock) {
                     this.color = endTrollBoxBlock.getColor();
                 }
             }

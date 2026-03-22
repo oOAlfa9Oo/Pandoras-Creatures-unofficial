@@ -1,0 +1,61 @@
+package andrews.pandoras_creatures.entities.seahorse;
+
+public final class SeahorseVariantCatalog {
+    public static final int MIN_TYPE = 1;
+    public static final int MAX_TYPE = 10;
+    public static final int DEFAULT_TYPE = 1;
+    public static final int MIN_SIZE = 1;
+    public static final int MAX_SIZE = 5;
+    public static final int DEFAULT_SIZE = 3;
+
+    private SeahorseVariantCatalog() {
+    }
+
+    public static int normalizeType(int typeId) {
+        return normalize(typeId, MIN_TYPE, MAX_TYPE, DEFAULT_TYPE);
+    }
+
+    public static int normalizeSize(int sizeId) {
+        return normalize(sizeId, MIN_SIZE, MAX_SIZE, DEFAULT_SIZE);
+    }
+
+    public static int randomTypeId(int roll) {
+        return MIN_TYPE + Math.floorMod(roll, MAX_TYPE - MIN_TYPE + 1);
+    }
+
+    public static int randomSizeId(int roll) {
+        return MIN_SIZE + Math.floorMod(roll, MAX_SIZE - MIN_SIZE + 1);
+    }
+
+    public static String variantTooltipKey(int typeId) {
+        return switch (normalizeType(typeId)) {
+            case 1 -> "chat.pandoras_creatures.seahorseBucketTooltip.orange";
+            case 2 -> "chat.pandoras_creatures.seahorseBucketTooltip.green";
+            case 3 -> "chat.pandoras_creatures.seahorseBucketTooltip.red";
+            case 4 -> "chat.pandoras_creatures.seahorseBucketTooltip.yellow";
+            case 5 -> "chat.pandoras_creatures.seahorseBucketTooltip.chromatic";
+            case 6 -> "chat.pandoras_creatures.seahorseBucketTooltip.cyan";
+            case 7 -> "chat.pandoras_creatures.seahorseBucketTooltip.purple";
+            case 8 -> "chat.pandoras_creatures.seahorseBucketTooltip.pink";
+            case 9 -> "chat.pandoras_creatures.seahorseBucketTooltip.lime";
+            default -> "chat.pandoras_creatures.seahorseBucketTooltip.ghost";
+        };
+    }
+
+    public static String sizeTooltipKey(int sizeId) {
+        return switch (normalizeSize(sizeId)) {
+            case 1 -> "chat.pandoras_creatures.seahorseBucketTooltip.verySmall";
+            case 2 -> "chat.pandoras_creatures.seahorseBucketTooltip.small";
+            case 3 -> "chat.pandoras_creatures.seahorseBucketTooltip.normal";
+            case 4 -> "chat.pandoras_creatures.seahorseBucketTooltip.big";
+            default -> "chat.pandoras_creatures.seahorseBucketTooltip.veryBig";
+        };
+    }
+
+    private static int normalize(int value, int min, int max, int defaultValue) {
+        if (value < min || value > max) {
+            return defaultValue;
+        }
+        return value;
+    }
+}

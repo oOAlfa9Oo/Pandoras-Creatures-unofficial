@@ -1,7 +1,8 @@
 package andrews.pandoras_creatures.menu.slot;
 
 import andrews.pandoras_creatures.entities.BufflonEntity;
-import andrews.pandoras_creatures.registry.PCItems;
+import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentItems;
+import andrews.pandoras_creatures.entities.bufflon.BufflonInventoryLayout;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -24,9 +25,7 @@ public class BufflonBackAttachmentSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return stack.is(PCItems.BUFFLON_PLAYER_SEATS.get()) ||
-               stack.is(PCItems.BUFFLON_SMALL_STORAGE.get()) ||
-               stack.is(PCItems.BUFFLON_LARGE_STORAGE.get());
+        return BufflonBackAttachmentItems.isSupported(stack);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class BufflonBackAttachmentSlot extends Slot {
     }
 
     private boolean hasNoItemsInInventory() {
-        for (int i = 2; i < bufflonInventory.getContainerSize(); i++) {
+        for (int i = BufflonInventoryLayout.FIRST_STORAGE_SLOT; i < bufflonInventory.getContainerSize(); i++) {
             if (!bufflonInventory.getItem(i).isEmpty()) {
                 return false;
             }

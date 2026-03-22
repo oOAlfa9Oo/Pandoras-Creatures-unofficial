@@ -1,6 +1,16 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.bases.AnimatedCreatureEntity;
+import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentItems;
+import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentType;
+import andrews.pandoras_creatures.entities.bufflon.BufflonCombatRules;
+import andrews.pandoras_creatures.entities.bufflon.BufflonDataKeys;
+import andrews.pandoras_creatures.entities.bufflon.BufflonInteractionPolicy;
+import andrews.pandoras_creatures.entities.bufflon.BufflonInventoryLayout;
+import andrews.pandoras_creatures.entities.bufflon.BufflonOwnership;
+import andrews.pandoras_creatures.entities.bufflon.BufflonPassengerLayout;
+import andrews.pandoras_creatures.entities.bufflon.BufflonPassengerMotion;
+import andrews.pandoras_creatures.entities.bufflon.BufflonPassengerOffset;
 import andrews.pandoras_creatures.entities.goals.bufflon.*;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.registry.PCItems;
@@ -33,7 +43,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -44,16 +53,9 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Cat;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -64,11 +66,22 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
 public class BufflonEntity extends AnimatedCreatureEntity implements ContainerListener, Saddleable {
+    private static final int FEEDING_COOLDOWN_TICKS = 10;
+    private static final int TAMING_THINK_TIME_TICKS = 40;
+    private static final int NATURAL_REGEN_CHANCE = 900;
+    private static final int TAMING_SUCCESS_CHANCE = 4;
+    private static final int HERB_TAMING_CHANCE = 3;
+    private static final int BUFFLON_VARIANT_COUNT = 7;
+    private static final byte FAILED_TAME_EVENT = 6;
+    private static final byte SUCCESSFUL_TAME_EVENT = 7;
+    private static final double TARGET_KNOCKBACK_STRENGTH = 0.15D;
+    private static final double PASSENGER_THROW_HORIZONTAL_SPEED = 0.3D;
+    private static final double PASSENGER_THROW_VERTICAL_SPEED = 1.2D;
+
     // Stores the Bufflon type
     private static final EntityDataAccessor<Integer> BUFFLON_TYPE = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.INT);
     // Stores whether or not the Bufflon is tamed and the UUID of the owner
@@ -84,9 +97,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     // Stores whether or not the Bufflon is in combat mode
     private static final EntityDataAccessor<Boolean> COMBAT_MODE = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.BOOLEAN);
 
-    // The Items that can be used in given slots
+    // The item that can be used in the saddle slot
     public static final Item SADDLE_ITEM = PCItems.BUFFLON_SADDLE.get();
-    public static final Item[] VALID_BACK_ATTACHMENTS = {PCItems.BUFFLON_PLAYER_SEATS.get(), PCItems.BUFFLON_SMALL_STORAGE.get(), PCItems.BUFFLON_LARGE_STORAGE.get()};
 
     private int thinkTime;
     private int feedingCooldown;
@@ -146,84 +158,15 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        // The Bufflon Variant
-        compound.putInt("BufflonType", this.getBufflonType());
-        // If this entity is saddled
-        compound.putBoolean("IsSaddled", this.isSaddled());
-        // If this entity is sitting
-        compound.putBoolean("IsSitting", this.isSitting());
-        // If this entity is following
-        compound.putBoolean("IsFollowing", this.isFollowingOwner());
-        // If this entity is in combat mode
-        compound.putBoolean("IsInCombatMode", this.isInCombatMode());
-        // The back attachment type this Entity has
-        compound.putInt("BackAttachmentType", this.getBackAttachmentType());
-        // The Owner of the Bufflon
-        if (this.getOwnerId() != null) {
-            compound.putUUID("OwnerUUID", this.getOwnerId());
-        }
-
-        // Storing the Items inside the Bufflons Inventory
-        if (this.isTamed()) {
-            ListTag listtag = new ListTag();
-            for (int i = 0; i < this.bufflonStorage.getContainerSize(); ++i) {
-                ItemStack itemstack = this.bufflonStorage.getItem(i);
-                if (!itemstack.isEmpty()) {
-                    CompoundTag compoundtag = new CompoundTag();
-                    compoundtag.putByte("Slot", (byte) i);
-                    listtag.add(itemstack.save(this.registryAccess(), compoundtag));
-                }
-            }
-            compound.put("Items", listtag);
-        }
+        savePersistentState(compound);
+        saveInventory(compound);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        // The Bufflon Variant
-        this.setBufflonType(compound.getInt("BufflonType"));
-        // If this entity is saddled
-        this.setSaddled(compound.getBoolean("IsSaddled"));
-        // If this entity is sitting
-        if (this.bufflonSitGoal != null) {
-            this.bufflonSitGoal.setSitting(compound.getBoolean("IsSitting"));
-        }
-        this.setSitting(compound.getBoolean("IsSitting"));
-        // If this entity is following
-        this.setFollowingOwner(compound.getBoolean("IsFollowing"));
-        // If this entity is in combat mode
-        this.setIsInCombatMode(compound.getBoolean("IsInCombatMode"));
-        // The back attachment type this Entity has
-        this.setBackAttachment(compound.getInt("BackAttachmentType"));
-        // The Owner of the Bufflon
-        UUID uuid = null;
-        if (compound.hasUUID("OwnerUUID")) {
-            uuid = compound.getUUID("OwnerUUID");
-        }
-        // Attempts to set the Bufflon as tamed
-        if (uuid != null) {
-            try {
-                this.setOwnerId(uuid);
-                this.setTamed(true);
-            } catch (Throwable throwable) {
-                this.setTamed(false);
-            }
-        }
-
-        // Loading the stored Items inside the Bufflons Inventory
-        if (this.isTamed()) {
-            ListTag listtag = compound.getList("Items", Tag.TAG_COMPOUND);
-            this.initBufflonStorage();
-            for (int i = 0; i < listtag.size(); ++i) {
-                CompoundTag compoundtag = listtag.getCompound(i);
-                int j = compoundtag.getByte("Slot") & 255;
-                if (j >= 0 && j < this.bufflonStorage.getContainerSize()) {
-                    this.bufflonStorage.setItem(j, ItemStack.parse(this.registryAccess(), compoundtag).orElse(ItemStack.EMPTY));
-                }
-            }
-        }
-
+        loadPersistentState(compound);
+        loadInventory(compound);
         this.updateBufflonSlots();
     }
 
@@ -232,7 +175,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
-        int type = rand.nextInt(7) + 1;
+        int type = rand.nextInt(BUFFLON_VARIANT_COUNT) + 1;
         this.setBufflonType(type);
         return spawnData;
     }
@@ -250,57 +193,35 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (itemstack.is(PCItems.HERB_BUNDLE.get())) {
-            // Is Not Tamed
-            if (!this.level().isClientSide() && !this.isTamed()) {
-                if (feedingCooldown <= 0) {
-                    feedingCooldown = 10;
-                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HORSE_EAT, this.getSoundSource(), 1.0F, 1.0F);
-                    if (!player.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                    }
+        BufflonInteractionPolicy.MobInteractAction action = BufflonInteractionPolicy.resolveMobInteractAction(
+                this.isTamed(),
+                itemstack.is(PCItems.HERB_BUNDLE.get()),
+                itemstack.isEmpty(),
+                this.isSaddled(),
+                this.hasBackAttachment(),
+                itemstack.is(SADDLE_ITEM),
+                BufflonBackAttachmentItems.isSupported(itemstack)
+        );
 
-                    if (this.random.nextInt(3) == 0) {
-                        mountTo(player);
-                    } else {
-                        this.playTameEffect(false);
-                        this.level().broadcastEntityEvent(this, (byte) 6);
-                    }
-                }
+        switch (action) {
+            case HANDLE_HERB_BUNDLE -> {
+                handleHerbBundleInteraction(player, itemstack);
+                return InteractionResult.sidedSuccess(this.level().isClientSide());
             }
-            // Is Tamed
-            else if (!this.level().isClientSide() && this.isTamed()) {
-                if (this.getHealth() < this.getMaxHealth()) {
-                    this.heal(2.0F);
-                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HORSE_EAT, this.getSoundSource(), 1.0F, 1.0F);
-                    if (!player.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                    }
-                } else {
-                    if (player.isSecondaryUseActive()) {
-                        this.openGUI(player);
-                    } else {
-                        mountTo(player);
-                    }
-                }
-            }
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        } else if (this.isTamed() && !this.isSaddled() && itemstack.is(SADDLE_ITEM)) {
-            this.openGUI(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        } else if (this.isTamed() && !this.hasBackAttachment() && Arrays.asList(VALID_BACK_ATTACHMENTS).contains(itemstack.getItem())) {
-            this.openGUI(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        } else if (itemstack.isEmpty()) {
-            if (this.isTamed() && player.isSecondaryUseActive()) {
+            case OPEN_EQUIPMENT_MENU -> {
                 this.openGUI(player);
-            } else if (this.isTamed() && !player.isSecondaryUseActive()) {
-                mountTo(player);
+                return InteractionResult.sidedSuccess(this.level().isClientSide());
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
-        } else {
-            return super.mobInteract(player, hand);
+            case HANDLE_EMPTY_HAND -> {
+                handleEmptyHandInteraction(player);
+                return InteractionResult.sidedSuccess(this.level().isClientSide());
+            }
+            case PASS_TO_SUPER -> {
+                return super.mobInteract(player, hand);
+            }
         }
+
+        return super.mobInteract(player, hand);
     }
 
     @Override
@@ -314,7 +235,9 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         }
 
         if (flag) {
-            target.setDeltaMovement(target.getDeltaMovement().add(this.position().subtract(target.position()).multiply(-0.15D, 0.0D, -0.15D)));
+            target.setDeltaMovement(target.getDeltaMovement().add(
+                    BufflonCombatRules.getAttackKnockback(this.position(), target.position(), TARGET_KNOCKBACK_STRENGTH)
+            ));
             target.hurtMarked = true;
             // Enchantment damage effects are now applied automatically
         }
@@ -325,36 +248,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
      * Used in Goals to avoid fighting of tamed entities
      */
     public boolean shouldAttackEntity(LivingEntity target, LivingEntity owner) {
-        if (!(target instanceof Creeper) && !(target instanceof Ghast)) {
-            // Protects Tamed Dog Entities
-            if (target instanceof Wolf wolf) {
-                if (wolf.isTame() && wolf.getOwner() == owner) {
-                    return false;
-                }
-            }
-
-            // Protects Tamed Bufflon Entities
-            if (target instanceof BufflonEntity bufflon) {
-                if (bufflon.isTamed() && bufflon.getOwner() == owner) {
-                    return false;
-                }
-            }
-
-            // Protects none attackable Players
-            if (target instanceof Player && owner instanceof Player && !((Player) owner).canHarmPlayer((Player) target)) {
-                return false;
-            }
-            // Protects tamed Horses
-            else if (target instanceof AbstractHorse horse && horse.isTamed()) {
-                return false;
-            }
-            // Protects tamed Cats
-            else {
-                return !(target instanceof Cat cat) || !cat.isTame();
-            }
-        } else {
-            return false;
-        }
+        return BufflonCombatRules.shouldAttackTarget(BufflonCombatRules.describeTarget(target, owner));
     }
 
     /**
@@ -366,13 +260,11 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             return false;
         } else {
             Entity entity = source.getEntity();
-            if (this.bufflonSitGoal != null && this.isInCombatMode()) {
+            if (this.bufflonSitGoal != null && BufflonCombatRules.shouldInterruptSitOnDamage(this.isInCombatMode())) {
                 this.bufflonSitGoal.setSitting(false);
             }
 
-            if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-                amount = (amount + 1.0F) / 2.0F;
-            }
+            amount = BufflonCombatRules.getAdjustedIncomingDamage(entity, amount);
 
             return super.hurt(source, amount);
         }
@@ -384,7 +276,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
         // Makes it so the Bufflon gains health slowly "regeneration"
         if (!this.level().isClientSide() && this.isAlive()) {
-            if (this.random.nextInt(900) == 0 && this.deathTime == 0) {
+            if (this.random.nextInt(NATURAL_REGEN_CHANCE) == 0 && this.deathTime == 0) {
                 this.heal(1.0F);
             }
         }
@@ -397,24 +289,22 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             if (thinkTime > 0) {
                 thinkTime--;
             } else {
-                if (this.random.nextInt(4) == 0) {
+                if (this.random.nextInt(TAMING_SUCCESS_CHANCE) == 0) {
                     this.setTamedBy((Player) this.getPassengers().get(0));
                     this.navigation.stop();
                     this.setTarget(null);
-                    this.playTameEffect(true);
-                    this.level().broadcastEntityEvent(this, (byte) 7);
+                    this.broadcastTameResult(true);
                 } else {
                     this.level().playSound(null, this.getX(), this.getY(), this.getZ(), PCSounds.BUFFLON_ATTACK.get(), this.getSoundSource(), 0.6F, 0.8F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
                     // Removes the Passengers
                     for (int i = this.getPassengers().size() - 1; i >= 0; --i) {
                         Entity entity = this.getPassengers().get(i);
                         entity.stopRiding();
-                        entity.setDeltaMovement(entity.getDeltaMovement().add((random.nextInt(3) - 1) * 0.3D, 1.2D, (random.nextInt(3) - 1) * 0.3D));
+                        entity.setDeltaMovement(entity.getDeltaMovement().add((random.nextInt(3) - 1) * PASSENGER_THROW_HORIZONTAL_SPEED, PASSENGER_THROW_VERTICAL_SPEED, (random.nextInt(3) - 1) * PASSENGER_THROW_HORIZONTAL_SPEED));
                         entity.hurtMarked = true;
                         NetworkUtil.sendAnimationPacket(this, THROW_ANIMATION);
                     }
-                    this.playTameEffect(false);
-                    this.level().broadcastEntityEvent(this, (byte) 6);
+                    this.broadcastTameResult(false);
                 }
             }
         }
@@ -452,40 +342,19 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     protected void positionRider(Entity passenger, MoveFunction callback) {
         super.positionRider(passenger, callback);
         if (this.hasPassenger(passenger)) {
-            float offsetX = 0F;
-            float offsetY = 0F;
-            if (!this.getPassengers().isEmpty()) {
-                int i = this.getPassengers().indexOf(passenger);
-                if (i == 0) { // The first passenger
-                    if (!this.isSaddled()) {
-                        offsetY = -0.08F;
-                    }
-                    offsetX = 0.95F;
-                    offsetY += 2.3F - getPassengerMovement();
-                } else if (i == 1) { // The second passenger
-                    offsetX = -0.9F;
-                    if (this.isMoving()) {
-                        offsetY += 2.1F - (getPassengerMovement() * 1.4F);
-                    } else {
-                        offsetY += 2.1F - getPassengerMovement();
-                    }
-                    // Locks the player head rotation
-                    passenger.setYHeadRot(passenger.getYHeadRot());
-                    this.applyYawToEntity(passenger);
-                } else { // The third passenger
-                    offsetX = -1.59F;
-                    if (this.isMoving()) {
-                        offsetY += 2.0F - (getPassengerMovement() * 1.4F);
-                    } else {
-                        offsetY += 2.0F - getPassengerMovement();
-                    }
-                    passenger.setYHeadRot(passenger.getYHeadRot());
-                    this.applyYawToEntity(passenger);
-                }
+            BufflonPassengerOffset offset = BufflonPassengerLayout.getOffset(
+                    this.getPassengers().indexOf(passenger),
+                    this.isSaddled(),
+                    this.isMoving(),
+                    this.getPassengerMovement()
+            );
+            if (offset.lockYaw()) {
+                passenger.setYHeadRot(passenger.getYHeadRot());
+                this.applyYawToEntity(passenger);
             }
 
-            Vec3 vec3 = (new Vec3(offsetX, 0.0D, 0.0D)).yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            callback.accept(passenger, this.getX() + vec3.x, this.getY() + offsetY, this.getZ() + vec3.z);
+            Vec3 vec3 = (new Vec3(offset.x(), 0.0D, 0.0D)).yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            callback.accept(passenger, this.getX() + vec3.x, this.getY() + offset.y(), this.getZ() + vec3.z);
         }
     }
 
@@ -535,7 +404,21 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
      * @return - The size of the inventory this Entity has
      */
     public int getInventorySize() {
-        return 56;
+        return BufflonInventoryLayout.getTotalSlotCount();
+    }
+
+    public int getOccupiedStorageSlotCount() {
+        int occupiedSlots = 0;
+        if (this.bufflonStorage == null) {
+            return 0;
+        }
+
+        for (int i = BufflonInventoryLayout.FIRST_STORAGE_SLOT; i < this.bufflonStorage.getContainerSize(); ++i) {
+            if (!this.bufflonStorage.getItem(i).isEmpty()) {
+                occupiedSlots++;
+            }
+        }
+        return occupiedSlots;
     }
 
     /**
@@ -544,19 +427,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     protected void updateBufflonSlots() {
         if (!this.level().isClientSide()) {
             // Sets the Bufflon to being Saddled
-            this.setSaddled(!this.bufflonStorage.getItem(0).isEmpty());
-
-            // Sets the Bufflon back attachments
-            if (!this.bufflonStorage.getItem(1).isEmpty()) {
-                Item itemInSlot = this.bufflonStorage.getItem(1).getItem();
-                if (Arrays.asList(VALID_BACK_ATTACHMENTS).contains(itemInSlot)) {
-                    this.setBackAttachment(this.getItemBackAttachmentType(itemInSlot));
-                }
-            } else {
-                if (this.getBackAttachmentType() != 0) {
-                    this.setBackAttachment(0);
-                }
-            }
+            this.setSaddled(!this.bufflonStorage.getItem(BufflonInventoryLayout.SADDLE_SLOT).isEmpty());
+            updateBackAttachmentFromInventorySlot();
         }
     }
 
@@ -645,13 +517,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     @Override
     protected boolean canAddPassenger(Entity passenger) {
         if (!this.isEyeInFluid(FluidTags.WATER)) {
-            if (this.hasBackAttachment() && this.getBackAttachmentType() == 1) {
-                return this.getPassengers().size() < 3;
-            } else if (this.hasBackAttachment() && this.getBackAttachmentType() == 2) {
-                return this.getPassengers().size() < 2;
-            } else {
-                return this.getPassengers().size() < 1;
-            }
+            return this.getPassengers().size() < this.getBackAttachment().getMaxPassengers();
         } else {
             return false;
         }
@@ -660,19 +526,12 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     //======================================================================================================================================================
 
     public float getPassengerMovement() {
-        float height;
-        float bounce;
-        if (!isMoving()) {
-            height = 0.03F;
-            float speed = 0.24F;
-            bounce = (float) (Math.sin(this.tickCount * speed) * height - height);
-        } else {
-            height = 0.05F;
-            float speed = 0.45F;
-            bounce = (float) (Math.sin(this.walkAnimation.position() * speed - 0.04F) * this.walkAnimation.speed() * height - this.walkAnimation.speed() * height);
-        }
-
-        return bounce + 0.08F;
+        return BufflonPassengerMotion.getVerticalOffset(
+                this.isMoving(),
+                this.tickCount,
+                this.walkAnimation.position(),
+                this.walkAnimation.speed()
+        );
     }
 
     public boolean isMoving() {
@@ -706,9 +565,9 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     @OnlyIn(Dist.CLIENT)
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 7) {
+        if (id == SUCCESSFUL_TAME_EVENT) {
             this.playTameEffect(true);
-        } else if (id == 6) {
+        } else if (id == FAILED_TAME_EVENT) {
             this.playTameEffect(false);
         } else {
             super.handleEntityEvent(id);
@@ -723,7 +582,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             player.setYRot(this.getYRot());
             player.setXRot(this.getXRot());
             player.startRiding(this);
-            this.thinkTime = 40;
+            this.thinkTime = TAMING_THINK_TIME_TICKS;
         }
     }
 
@@ -733,6 +592,10 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     public void setIsInCombatMode(boolean value) {
         this.entityData.set(COMBAT_MODE, value);
+    }
+
+    public boolean canProtectOwner() {
+        return BufflonCombatRules.canProtectOwner(this.isTamed(), this.isSitting(), this.isInCombatMode());
     }
 
     public boolean isFollowingOwner() {
@@ -777,34 +640,26 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     @Override
     public void equipSaddle(ItemStack saddle, @Nullable net.minecraft.sounds.SoundSource source) {
-        this.bufflonStorage.setItem(0, saddle.copyWithCount(1));
+        this.bufflonStorage.setItem(BufflonInventoryLayout.SADDLE_SLOT, saddle.copyWithCount(1));
         if (source != null) {
             this.level().playSound(null, this, SoundEvents.HORSE_SADDLE, source, 0.5F, 1.0F);
         }
     }
 
     public boolean hasBackAttachment() {
-        return (this.entityData.get(BACK_ATTACHMENT_TYPE) != 0);
+        return this.getBackAttachment() != BufflonBackAttachmentType.NONE;
     }
 
     public int getItemBackAttachmentType(Item item) {
-        if (!Arrays.asList(VALID_BACK_ATTACHMENTS).contains(item)) {
-            return 0;
-        } else {
-            if (item == PCItems.BUFFLON_PLAYER_SEATS.get()) {
-                return 1;
-            } else if (item == PCItems.BUFFLON_SMALL_STORAGE.get()) {
-                return 2;
-            } else if (item == PCItems.BUFFLON_LARGE_STORAGE.get()) {
-                return 3;
-            } else {
-                return 0;
-            }
-        }
+        return BufflonBackAttachmentItems.getType(item).getId();
     }
 
     public int getBackAttachmentType() {
         return this.entityData.get(BACK_ATTACHMENT_TYPE);
+    }
+
+    public BufflonBackAttachmentType getBackAttachment() {
+        return BufflonBackAttachmentType.fromId(this.getBackAttachmentType());
     }
 
     public void setBackAttachment(int backAttachmentType) {
@@ -851,12 +706,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     @Nullable
     public LivingEntity getOwner() {
-        try {
-            UUID uuid = this.getOwnerId();
-            return uuid == null ? null : this.level().getPlayerByUUID(uuid);
-        } catch (IllegalArgumentException var2) {
-            return null;
-        }
+        return BufflonOwnership.resolveOwner(this.level(), this.getOwnerId());
     }
 
     @Override
@@ -865,44 +715,39 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     public boolean isOwner(LivingEntity entity) {
-        return entity == this.getOwner();
+        return BufflonOwnership.isOwner(entity, this.getOwner());
     }
 
     public boolean isOwnedBy(Player player) {
-        UUID ownerId = this.getOwnerId();
-        return player != null && ownerId != null && ownerId.equals(player.getUUID());
+        return BufflonOwnership.isOwnedBy(this.getOwnerId(), player);
     }
 
     @Override
     public PlayerTeam getTeam() {
-        if (this.isTamed()) {
-            LivingEntity livingentity = this.getOwner();
-            if (livingentity != null) {
-                return livingentity.getTeam();
-            }
+        PlayerTeam inheritedTeam = BufflonOwnership.getInheritedTeam(this.isTamed(), this.getOwner());
+        if (inheritedTeam != null) {
+            return inheritedTeam;
         }
         return super.getTeam();
     }
 
     @Override
     public boolean isAlliedTo(Entity entity) {
-        if (this.isTamed()) {
-            LivingEntity livingentity = this.getOwner();
-            if (entity == livingentity) {
-                return true;
-            }
-
-            if (livingentity != null) {
-                return livingentity.isAlliedTo(entity);
-            }
+        if (BufflonOwnership.isAlliedTo(this.isTamed(), this.getOwner(), entity)) {
+            return true;
         }
         return super.isAlliedTo(entity);
     }
 
     @Override
     public void die(DamageSource cause) {
-        if (!this.level().isClientSide() && this.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer) {
-            this.getOwner().sendSystemMessage(this.getCombatTracker().getDeathMessage());
+        ServerPlayer deathRecipient = BufflonOwnership.getDeathMessageRecipient(
+                !this.level().isClientSide(),
+                this.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES),
+                this.getOwner()
+        );
+        if (deathRecipient != null) {
+            deathRecipient.sendSystemMessage(this.getCombatTracker().getDeathMessage());
         }
         super.die(cause);
     }
@@ -910,7 +755,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     public int getBufflonType() {
         if (this.entityData.get(BUFFLON_TYPE) == 0) {
             RandomSource rand = this.random;
-            this.entityData.set(BUFFLON_TYPE, rand.nextInt(7) + 1);
+            this.entityData.set(BUFFLON_TYPE, rand.nextInt(BUFFLON_VARIANT_COUNT) + 1);
             return this.entityData.get(BUFFLON_TYPE);
         } else {
             return this.entityData.get(BUFFLON_TYPE);
@@ -924,5 +769,153 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     @Override
     public int getMaxSpawnClusterSize() {
         return 1;
+    }
+
+    private void handleHerbBundleInteraction(Player player, ItemStack itemstack) {
+        if (this.level().isClientSide()) {
+            return;
+        }
+
+        if (!this.isTamed()) {
+            handleUntamedHerbBundleInteraction(player, itemstack);
+        } else {
+            handleTamedHerbBundleInteraction(player, itemstack);
+        }
+    }
+
+    private void handleUntamedHerbBundleInteraction(Player player, ItemStack itemstack) {
+        if (feedingCooldown > 0) {
+            return;
+        }
+
+        feedingCooldown = FEEDING_COOLDOWN_TICKS;
+        consumeHerbBundle(player, itemstack);
+
+        if (this.random.nextInt(HERB_TAMING_CHANCE) == 0) {
+            mountTo(player);
+        } else {
+            broadcastTameResult(false);
+        }
+    }
+
+    private void handleTamedHerbBundleInteraction(Player player, ItemStack itemstack) {
+        if (this.getHealth() < this.getMaxHealth()) {
+            this.heal(2.0F);
+            consumeHerbBundle(player, itemstack);
+            return;
+        }
+
+        performOwnedInteraction(player);
+    }
+
+    private void handleEmptyHandInteraction(Player player) {
+        performOwnedInteraction(player);
+    }
+
+    private void consumeHerbBundle(Player player, ItemStack itemstack) {
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.HORSE_EAT, this.getSoundSource(), 1.0F, 1.0F);
+        if (!player.getAbilities().instabuild) {
+            itemstack.shrink(1);
+        }
+    }
+
+    private void broadcastTameResult(boolean success) {
+        this.playTameEffect(success);
+        this.level().broadcastEntityEvent(this, success ? SUCCESSFUL_TAME_EVENT : FAILED_TAME_EVENT);
+    }
+
+    private void updateBackAttachmentFromInventorySlot() {
+        ItemStack attachmentStack = this.bufflonStorage.getItem(BufflonInventoryLayout.BACK_ATTACHMENT_SLOT);
+        this.setBackAttachment(BufflonBackAttachmentItems.getType(attachmentStack).getId());
+    }
+
+    private void savePersistentState(CompoundTag compound) {
+        compound.putInt(BufflonDataKeys.BUFFLON_TYPE, this.getBufflonType());
+        compound.putBoolean(BufflonDataKeys.IS_SADDLED, this.isSaddled());
+        compound.putBoolean(BufflonDataKeys.IS_SITTING, this.isSitting());
+        compound.putBoolean(BufflonDataKeys.IS_FOLLOWING, this.isFollowingOwner());
+        compound.putBoolean(BufflonDataKeys.IS_IN_COMBAT_MODE, this.isInCombatMode());
+        compound.putInt(BufflonDataKeys.BACK_ATTACHMENT_TYPE, this.getBackAttachmentType());
+
+        if (this.getOwnerId() != null) {
+            compound.putUUID(BufflonDataKeys.OWNER_UUID, this.getOwnerId());
+        }
+    }
+
+    private void saveInventory(CompoundTag compound) {
+        if (!this.isTamed()) {
+            return;
+        }
+
+        ListTag items = new ListTag();
+        for (int slotIndex = 0; slotIndex < this.bufflonStorage.getContainerSize(); ++slotIndex) {
+            ItemStack itemStack = this.bufflonStorage.getItem(slotIndex);
+            if (!itemStack.isEmpty()) {
+                CompoundTag itemTag = new CompoundTag();
+                itemTag.putByte(BufflonDataKeys.SLOT, (byte) slotIndex);
+                items.add(itemStack.save(this.registryAccess(), itemTag));
+            }
+        }
+        compound.put(BufflonDataKeys.ITEMS, items);
+    }
+
+    private void loadPersistentState(CompoundTag compound) {
+        this.setBufflonType(compound.getInt(BufflonDataKeys.BUFFLON_TYPE));
+        this.setSaddled(compound.getBoolean(BufflonDataKeys.IS_SADDLED));
+        setOrderedToSitFromTag(compound.getBoolean(BufflonDataKeys.IS_SITTING));
+        this.setFollowingOwner(compound.getBoolean(BufflonDataKeys.IS_FOLLOWING));
+        this.setIsInCombatMode(compound.getBoolean(BufflonDataKeys.IS_IN_COMBAT_MODE));
+        this.setBackAttachment(compound.getInt(BufflonDataKeys.BACK_ATTACHMENT_TYPE));
+        restoreOwner(compound);
+    }
+
+    private void loadInventory(CompoundTag compound) {
+        if (!this.isTamed()) {
+            return;
+        }
+
+        ListTag listtag = compound.getList(BufflonDataKeys.ITEMS, Tag.TAG_COMPOUND);
+        this.initBufflonStorage();
+        for (int i = 0; i < listtag.size(); ++i) {
+            CompoundTag compoundtag = listtag.getCompound(i);
+            int slot = compoundtag.getByte(BufflonDataKeys.SLOT) & 255;
+            if (slot >= 0 && slot < this.bufflonStorage.getContainerSize()) {
+                this.bufflonStorage.setItem(slot, ItemStack.parse(this.registryAccess(), compoundtag).orElse(ItemStack.EMPTY));
+            }
+        }
+    }
+
+    private void setOrderedToSitFromTag(boolean shouldSit) {
+        if (this.bufflonSitGoal != null) {
+            this.bufflonSitGoal.setSitting(shouldSit);
+        }
+        this.setSitting(shouldSit);
+    }
+
+    private void restoreOwner(CompoundTag compound) {
+        if (!compound.hasUUID(BufflonDataKeys.OWNER_UUID)) {
+            return;
+        }
+
+        UUID uuid = compound.getUUID(BufflonDataKeys.OWNER_UUID);
+        try {
+            this.setOwnerId(uuid);
+            this.setTamed(true);
+        } catch (Throwable throwable) {
+            this.setTamed(false);
+        }
+    }
+
+    private void performOwnedInteraction(Player player) {
+        BufflonInteractionPolicy.OwnedInteractionAction action = BufflonInteractionPolicy.resolveOwnedInteractionAction(
+                this.isTamed(),
+                player.isSecondaryUseActive()
+        );
+
+        if (action == BufflonInteractionPolicy.OwnedInteractionAction.OPEN_MENU) {
+            this.openGUI(player);
+        } else if (action == BufflonInteractionPolicy.OwnedInteractionAction.MOUNT) {
+            mountTo(player);
+        }
     }
 }

@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.entities.goals.hellhound;
 
 import andrews.pandoras_creatures.entities.HellhoundEntity;
 import andrews.pandoras_creatures.entities.goals.bases.PCMeleeAttackGoal;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundChargeState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -24,14 +25,14 @@ public class HellHoundAttack extends PCMeleeAttackGoal {
     @Override
     public void start() {
         super.start();
-        attacker.level().broadcastEntityEvent(attacker, (byte) 4);
-        ((HellhoundEntity) this.attacker).setIsCharging(1);
+        attacker.level().broadcastEntityEvent(attacker, HellhoundChargeState.START_EVENT_ID);
+        ((HellhoundEntity) this.attacker).setIsCharging(HellhoundChargeState.CHARGING);
     }
 
     @Override
     public void stop() {
         super.stop();
-        ((HellhoundEntity) this.attacker).setIsCharging(0);
-        attacker.level().broadcastEntityEvent(attacker, (byte) 5);
+        ((HellhoundEntity) this.attacker).setIsCharging(HellhoundChargeState.IDLE);
+        attacker.level().broadcastEntityEvent(attacker, HellhoundChargeState.STOP_EVENT_ID);
     }
 }

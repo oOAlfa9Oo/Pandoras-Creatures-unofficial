@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class PCMenuTypes {
+public final class PCMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENU_TYPES =
             DeferredRegister.create(Registries.MENU, Reference.MODID);
 
@@ -20,4 +20,7 @@ public class PCMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<EndTrollBoxMenu>> END_TROLL_BOX =
             MENU_TYPES.register("end_troll_box_menu", () ->
                     IMenuTypeExtension.create((windowId, inv, data) -> new EndTrollBoxMenu(windowId, inv)));
+
+    private PCMenuTypes() {
+    }
 }

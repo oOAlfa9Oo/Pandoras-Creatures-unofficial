@@ -2,6 +2,11 @@ package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.goals.hellhound.HellHoundAttack;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundChargeState;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundCombatRules;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundDataKeys;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundVariantCatalog;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundVisualRules;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.PCSounds;
@@ -66,7 +71,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(HELLHOUND_TYPE, 0);
+        builder.define(HELLHOUND_TYPE, HellhoundVariantCatalog.DEFAULT_TYPE);
     }
 
     @Override
@@ -82,25 +87,20 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putInt("HellhoundType", this.getHellhoundType());
+        compound.putInt(HellhoundDataKeys.TYPE_TAG, this.getHellhoundType());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setHellhoundType(compound.getInt("HellhoundType"));
+        this.setHellhoundType(compound.getInt(HellhoundDataKeys.TYPE_TAG));
     }
 
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
-        RandomSource rand = level.getRandom();
-        int type = 1;
-        if ((rand.nextInt(12) + 1) == 12) {
-            type = 2;
-        }
-        this.setHellhoundType(type);
+        this.setHellhoundType(HellhoundVariantCatalog.randomTypeId(level.getRandom()));
         return spawnData;
     }
 
@@ -110,18 +110,19 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, source, recentlyHit);
-        if (this.getHellhoundType() == 2) {
-            this.spawnAtLocation(new ItemStack(Items.COAL, this.random.nextInt(4) + 1));
+        int coalDropCount = HellhoundCombatRules.coalDropCount(this.getHellhoundType(), this.random);
+        if (coalDropCount > 0) {
+            this.spawnAtLocation(new ItemStack(Items.COAL, coalDropCount));
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 4) {
-            this.isCharging = 1;
-        } else if (id == 5) {
-            this.isCharging = 0;
+        if (id == HellhoundChargeState.START_EVENT_ID) {
+            this.setIsCharging(HellhoundChargeState.CHARGING);
+        } else if (id == HellhoundChargeState.STOP_EVENT_ID) {
+            this.setIsCharging(HellhoundChargeState.IDLE);
         } else {
             super.handleEntityEvent(id);
         }
@@ -133,7 +134,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     public void setIsCharging(int value) {
-        this.isCharging = value;
+        this.isCharging = HellhoundChargeState.normalize(value);
     }
 
     @Override
@@ -143,13 +144,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
             RandomSource rand = this.random;
 
             if ((this.tickCount % 5) == 0) {
-                double particleY = this.getY() + 0.8D;
-                if (this.getHellhoundType() == 2) {
-                    particleY += 0.2D;
-                    this.level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX(), particleY, this.getZ(), (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10);
-                } else {
-                    this.level().addParticle(ParticleTypes.FLAME, this.getX(), particleY, this.getZ(), (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10);
-                }
+                int hellhoundType = this.getHellhoundType();
+                double particleY = HellhoundVisualRules.particleY(this.getY(), hellhoundType);
+                this.level().addParticle(HellhoundVisualRules.usesSoulFire(hellhoundType) ? ParticleTypes.SOUL_FIRE_FLAME : ParticleTypes.FLAME, this.getX(), particleY, this.getZ(), (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10);
                 this.level().addParticle(ParticleTypes.SMOKE, this.getX(), particleY, this.getZ(), (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10, (rand.nextDouble() - 0.5D) / 10);
             }
         }
@@ -157,14 +154,13 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
 
     @Override
     public boolean doHurtTarget(Entity target) {
-        boolean flag;
-        if (this.getHellhoundType() == 2) {
-            flag = target.hurt(this.damageSources().mobAttack(this), (float) (4 + this.random.nextInt(5)));
-            if (target instanceof LivingEntity living) {
-                living.addEffect(new MobEffectInstance(MobEffects.WITHER, 60));
+        int hellhoundType = this.getHellhoundType();
+        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) HellhoundCombatRules.attackDamage(hellhoundType, this.random));
+        if (flag && HellhoundCombatRules.appliesWither(hellhoundType) && target instanceof LivingEntity living) {
+            int witherDuration = HellhoundCombatRules.witherDurationTicks(hellhoundType);
+            if (witherDuration > 0) {
+                living.addEffect(new MobEffectInstance(MobEffects.WITHER, witherDuration));
             }
-        } else {
-            flag = target.hurt(this.damageSources().mobAttack(this), (float) (2 + this.random.nextInt(3)));
         }
         return flag;
     }
@@ -200,17 +196,11 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
      * @return - The Hellhound type Id
      */
     public int getHellhoundType() {
-        if (this.entityData.get(HELLHOUND_TYPE) == 0) {
-            RandomSource rand = this.random;
-            if ((rand.nextInt(12) + 1) == 12) {
-                this.entityData.set(HELLHOUND_TYPE, 2);
-            } else {
-                this.entityData.set(HELLHOUND_TYPE, 1);
-            }
-            return this.entityData.get(HELLHOUND_TYPE);
-        } else {
-            return this.entityData.get(HELLHOUND_TYPE);
+        int hellhoundType = HellhoundVariantCatalog.normalizeType(this.entityData.get(HELLHOUND_TYPE));
+        if (this.entityData.get(HELLHOUND_TYPE) != hellhoundType) {
+            this.entityData.set(HELLHOUND_TYPE, hellhoundType);
         }
+        return hellhoundType;
     }
 
     /**
@@ -218,6 +208,6 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
      * @param typeId - the Hellhound type the entity should become
      */
     public void setHellhoundType(int typeId) {
-        this.entityData.set(HELLHOUND_TYPE, typeId);
+        this.entityData.set(HELLHOUND_TYPE, HellhoundVariantCatalog.normalizeType(typeId));
     }
 }

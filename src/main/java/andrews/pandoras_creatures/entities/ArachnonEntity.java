@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.entities.arachnon.ArachnonAttackRules;
 import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.goals.arachnon.MeleeAttackGoalWithRange;
 import andrews.pandoras_creatures.registry.PCEntities;
@@ -70,30 +71,26 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (this.attackTimer > 0) {
-            --this.attackTimer;
-        }
+        this.attackTimer = ArachnonAttackRules.tickAttackTimer(this.attackTimer);
     }
 
     @Override
     public boolean doHurtTarget(Entity target) {
-        this.attackTimer = 10;
-        this.level().broadcastEntityEvent(this, (byte) 4);
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) (6 + this.random.nextInt(5)));
+        this.attackTimer = ArachnonAttackRules.ATTACK_TIMER_TICKS;
+        this.level().broadcastEntityEvent(this, ArachnonAttackRules.ATTACK_EVENT_ID);
+        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) ArachnonAttackRules.attackDamageFromRoll(this.random.nextInt(5)));
         return flag;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 4) {
-            this.attackTimer = 10;
+        if (id == ArachnonAttackRules.ATTACK_EVENT_ID) {
+            this.attackTimer = ArachnonAttackRules.ATTACK_TIMER_TICKS;
         } else {
             super.handleEntityEvent(id);
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public int getAttackTimer() {
         return this.attackTimer;
     }

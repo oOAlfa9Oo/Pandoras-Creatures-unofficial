@@ -1,0 +1,22 @@
+package andrews.pandoras_creatures.entities.crab;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class CrabVariantCatalogTest {
+    @Test
+    void normalizesAndMapsVariantValues() {
+        assertEquals(CrabVariantCatalog.DEFAULT_TYPE, CrabVariantCatalog.normalizeType(0));
+        assertEquals(2, CrabVariantCatalog.normalizeType(2));
+        assertEquals(1, CrabVariantCatalog.randomTypeId(0));
+        assertEquals(2, CrabVariantCatalog.randomTypeId(1));
+    }
+
+    @Test
+    void exposesTooltipAndTextureData() {
+        assertTrue(CrabVariantCatalog.tooltipKey(2).contains("tropical"));
+        assertTrue(CrabVariantCatalog.texturePath(2).contains("crab_2"));
+    }
+}

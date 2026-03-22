@@ -2,6 +2,8 @@ package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
 import andrews.pandoras_creatures.entities.BufflonEntity;
+import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentType;
+import andrews.pandoras_creatures.entities.bufflon.BufflonStorageVisuals;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -1101,22 +1103,18 @@ public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
         this.storage_box_5.visible = false;
         this.storage_box_6.visible = false;
 
-        if (entity.hasBackAttachment()) {
-            switch (entity.getBackAttachmentType()) {
-                case 1:
-                    this.seats_base.visible = true;
-                    break;
-                case 2:
-                    this.smallstorage_base.visible = true;
-                    processSmallStorageBoxVisibility(entity);
-                    break;
-                case 3:
-                    this.largestorage_base.visible = true;
-                    processLargeStorageBoxVisibility(entity);
-                    break;
-                default:
-                    // Nothing as all model parts are hidden
-                    break;
+        switch (entity.getBackAttachment()) {
+            case PLAYER_SEATS -> this.seats_base.visible = true;
+            case SMALL_STORAGE -> {
+                this.smallstorage_base.visible = true;
+                processSmallStorageBoxVisibility(entity);
+            }
+            case LARGE_STORAGE -> {
+                this.largestorage_base.visible = true;
+                processLargeStorageBoxVisibility(entity);
+            }
+            default -> {
+                // Nothing as all model parts are hidden
             }
         }
 
@@ -1130,48 +1128,20 @@ public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
     }
 
     private void processSmallStorageBoxVisibility(T entity) {
-        int itemsInInventory = 0;
-        for (int i = 2; i < entity.bufflonStorage.getContainerSize(); i++) {
-            if (!entity.bufflonStorage.getItem(i).isEmpty()) itemsInInventory++;
-        }
-        if (entity.getBackAttachmentType() == 2) {
-            if (itemsInInventory >= 5) {
-                this.smallstorage_box_1.visible = true;
-            }
-            if (itemsInInventory >= 14) {
-                this.smallstorage_box_2.visible = true;
-            }
-            if (itemsInInventory >= 23) {
-                this.smallstorage_box_3.visible = true;
-            }
-        }
+        int visibleBoxes = BufflonStorageVisuals.getVisibleBoxCount(entity.getBackAttachment(), entity.getOccupiedStorageSlotCount());
+        this.smallstorage_box_1.visible = visibleBoxes >= 1;
+        this.smallstorage_box_2.visible = visibleBoxes >= 2;
+        this.smallstorage_box_3.visible = visibleBoxes >= 3;
     }
 
     private void processLargeStorageBoxVisibility(T entity) {
-        int itemsInInventory = 0;
-        for (int i = 2; i < entity.bufflonStorage.getContainerSize(); i++) {
-            if (!entity.bufflonStorage.getItem(i).isEmpty()) itemsInInventory++;
-        }
-        if (entity.getBackAttachmentType() == 3) {
-            if (itemsInInventory >= 5) {
-                this.storage_box_1.visible = true;
-            }
-            if (itemsInInventory >= 14) {
-                this.storage_box_2.visible = true;
-            }
-            if (itemsInInventory >= 23) {
-                this.storage_box_3.visible = true;
-            }
-            if (itemsInInventory >= 32) {
-                this.storage_box_4.visible = true;
-            }
-            if (itemsInInventory >= 41) {
-                this.storage_box_5.visible = true;
-            }
-            if (itemsInInventory >= 50) {
-                this.storage_box_6.visible = true;
-            }
-        }
+        int visibleBoxes = BufflonStorageVisuals.getVisibleBoxCount(entity.getBackAttachment(), entity.getOccupiedStorageSlotCount());
+        this.storage_box_1.visible = visibleBoxes >= 1;
+        this.storage_box_2.visible = visibleBoxes >= 2;
+        this.storage_box_3.visible = visibleBoxes >= 3;
+        this.storage_box_4.visible = visibleBoxes >= 4;
+        this.storage_box_5.visible = visibleBoxes >= 5;
+        this.storage_box_6.visible = visibleBoxes >= 6;
     }
 
     private void animateSitting(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

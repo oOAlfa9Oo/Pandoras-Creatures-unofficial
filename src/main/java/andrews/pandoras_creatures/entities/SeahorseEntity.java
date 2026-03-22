@@ -1,6 +1,10 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.bases.BucketableMobEntity;
+import andrews.pandoras_creatures.entities.bucket.BucketEntityDataKeys;
+import andrews.pandoras_creatures.entities.seahorse.SeahorseDataKeys;
+import andrews.pandoras_creatures.entities.seahorse.SeahorseVariantCatalog;
+import andrews.pandoras_creatures.entities.seahorse.SeahorseVisualRules;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.util.animation.Animation;
@@ -61,8 +65,8 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(SEAHORSE_TYPE, 0);
-        builder.define(SEAHORSE_SIZE, 0);
+        builder.define(SEAHORSE_TYPE, SeahorseVariantCatalog.DEFAULT_TYPE);
+        builder.define(SEAHORSE_SIZE, SeahorseVariantCatalog.DEFAULT_SIZE);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     public void die(net.minecraft.world.damagesource.DamageSource cause) {
         super.die(cause);
-        if (this.getName().getString().equals("Mr.Sparkles")) {
+        if (SeahorseVisualRules.isSpecialNamed(this.getName().getString())) {
             if (this.level().isClientSide()) {
                 for (int i = 0; i < 40; i++) {
                     RandomSource rand = this.random;
@@ -117,11 +121,11 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.getName().getString().equals("Mr.Sparkles")) {
+        if (SeahorseVisualRules.isSpecialNamed(this.getName().getString())) {
             if (this.level().isClientSide()) {
                 if ((this.tickCount % 8) == 0) {
                     RandomSource rand = this.random;
-                    float unit = (this.getBbHeight() - 0.2F - (this.getSeahorseSize() - 3) * -0.1F) / 7F;
+                    float unit = SeahorseVisualRules.rainbowParticleUnit(this.getBbHeight(), this.getSeahorseSize());
 
                     this.level().addParticle(new DustParticleOptions(new Vector3f(148/255f, 0, 211/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 7, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
                     this.level().addParticle(new DustParticleOptions(new Vector3f(75/255f, 0, 130/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 6, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
@@ -156,23 +160,23 @@ public class SeahorseEntity extends BucketableMobEntity {
     protected void setBucketData(ItemStack bucket) {
         super.setBucketData(bucket);
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putInt("BucketVariantTag", this.getSeahorseType());
-        compoundtag.putInt("BucketSizeTag", this.getSeahorseSize());
+        compoundtag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getSeahorseType());
+        compoundtag.putInt(BucketEntityDataKeys.BUCKET_SIZE_TAG, this.getSeahorseSize());
         bucket.set(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, net.minecraft.world.item.component.CustomData.of(compoundtag));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putInt("SeahorseType", this.getSeahorseType());
-        compound.putInt("SeahorseSize", this.getSeahorseSize());
+        compound.putInt(SeahorseDataKeys.SEAHORSE_TYPE, this.getSeahorseType());
+        compound.putInt(SeahorseDataKeys.SEAHORSE_SIZE, this.getSeahorseSize());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setSeahorseType(compound.getInt("SeahorseType"));
-        this.setSeahorseSize(compound.getInt("SeahorseSize"));
+        this.setSeahorseType(compound.getInt(SeahorseDataKeys.SEAHORSE_TYPE));
+        this.setSeahorseSize(compound.getInt(SeahorseDataKeys.SEAHORSE_SIZE));
     }
 
     @Nullable
@@ -180,8 +184,8 @@ public class SeahorseEntity extends BucketableMobEntity {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
-        int type = rand.nextInt(10) + 1;
-        int size = rand.nextInt(5) + 1;
+        int type = SeahorseVariantCatalog.randomTypeId(rand.nextInt(SeahorseVariantCatalog.MAX_TYPE));
+        int size = SeahorseVariantCatalog.randomSizeId(rand.nextInt(SeahorseVariantCatalog.MAX_SIZE));
         this.setSeahorseType(type);
         this.setSeahorseSize(size);
         return spawnData;
@@ -190,11 +194,11 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     public void loadFromBucketTag(CompoundTag tag) {
         super.loadFromBucketTag(tag);
-        if (tag.contains("BucketVariantTag", Tag.TAG_INT)) {
-            this.setSeahorseType(tag.getInt("BucketVariantTag"));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG, Tag.TAG_INT)) {
+            this.setSeahorseType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG));
         }
-        if (tag.contains("BucketSizeTag", Tag.TAG_INT)) {
-            this.setSeahorseSize(tag.getInt("BucketSizeTag"));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_SIZE_TAG, Tag.TAG_INT)) {
+            this.setSeahorseSize(tag.getInt(BucketEntityDataKeys.BUCKET_SIZE_TAG));
         }
     }
 
@@ -208,58 +212,27 @@ public class SeahorseEntity extends BucketableMobEntity {
     }
 
     public static String getNameById(int id) {
-        return switch (id) {
-            case 1 -> "chat.pandoras_creatures.seahorseBucketTooltip.orange";
-            case 2 -> "chat.pandoras_creatures.seahorseBucketTooltip.green";
-            case 3 -> "chat.pandoras_creatures.seahorseBucketTooltip.red";
-            case 4 -> "chat.pandoras_creatures.seahorseBucketTooltip.yellow";
-            case 5 -> "chat.pandoras_creatures.seahorseBucketTooltip.chromatic";
-            case 6 -> "chat.pandoras_creatures.seahorseBucketTooltip.cyan";
-            case 7 -> "chat.pandoras_creatures.seahorseBucketTooltip.purple";
-            case 8 -> "chat.pandoras_creatures.seahorseBucketTooltip.pink";
-            case 9 -> "chat.pandoras_creatures.seahorseBucketTooltip.lime";
-            case 10 -> "chat.pandoras_creatures.seahorseBucketTooltip.ghost";
-            default -> "";
-        };
+        return SeahorseVariantCatalog.variantTooltipKey(id);
     }
 
     public static String getSizeById(int id) {
-        return switch (id) {
-            case 1 -> "chat.pandoras_creatures.seahorseBucketTooltip.verySmall";
-            case 2 -> "chat.pandoras_creatures.seahorseBucketTooltip.small";
-            case 3 -> "chat.pandoras_creatures.seahorseBucketTooltip.normal";
-            case 4 -> "chat.pandoras_creatures.seahorseBucketTooltip.big";
-            case 5 -> "chat.pandoras_creatures.seahorseBucketTooltip.veryBig";
-            default -> "";
-        };
+        return SeahorseVariantCatalog.sizeTooltipKey(id);
     }
 
     public int getSeahorseType() {
-        if (this.entityData.get(SEAHORSE_TYPE) == 0) {
-            RandomSource rand = this.random;
-            this.entityData.set(SEAHORSE_TYPE, rand.nextInt(10) + 1);
-            return this.entityData.get(SEAHORSE_TYPE);
-        } else {
-            return this.entityData.get(SEAHORSE_TYPE);
-        }
+        return SeahorseVariantCatalog.normalizeType(this.entityData.get(SEAHORSE_TYPE));
     }
 
     public int getSeahorseSize() {
-        if (this.entityData.get(SEAHORSE_SIZE) == 0) {
-            RandomSource rand = this.random;
-            this.entityData.set(SEAHORSE_SIZE, rand.nextInt(5) + 1);
-            return this.entityData.get(SEAHORSE_SIZE);
-        } else {
-            return this.entityData.get(SEAHORSE_SIZE);
-        }
+        return SeahorseVariantCatalog.normalizeSize(this.entityData.get(SEAHORSE_SIZE));
     }
 
     public void setSeahorseType(int typeId) {
-        this.entityData.set(SEAHORSE_TYPE, typeId);
+        this.entityData.set(SEAHORSE_TYPE, SeahorseVariantCatalog.normalizeType(typeId));
     }
 
     public void setSeahorseSize(int typeId) {
-        this.entityData.set(SEAHORSE_SIZE, typeId);
+        this.entityData.set(SEAHORSE_SIZE, SeahorseVariantCatalog.normalizeSize(typeId));
     }
 
     /**

@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.renderer.layer;
 
 import andrews.pandoras_creatures.client.renderer.util.PCRenderTypes;
 import andrews.pandoras_creatures.entities.ArachnonEntity;
+import andrews.pandoras_creatures.entities.arachnon.ArachnonVisualRules;
 import andrews.pandoras_creatures.util.Reference;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,7 +17,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ArachnonEyeLayer<E extends ArachnonEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation ARACHNON_EYE_LAYER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/arachnon/arachnon_eye.png");
+    private static final ResourceLocation ARACHNON_EYE_LAYER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, ArachnonVisualRules.eyeTexturePathString());
 
     public ArachnonEyeLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);

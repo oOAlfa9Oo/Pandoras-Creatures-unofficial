@@ -1,6 +1,10 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.bases.BucketableMobEntity;
+import andrews.pandoras_creatures.entities.bucket.BucketEntityDataKeys;
+import andrews.pandoras_creatures.entities.crab.CrabBehaviorRules;
+import andrews.pandoras_creatures.entities.crab.CrabDataKeys;
+import andrews.pandoras_creatures.entities.crab.CrabVariantCatalog;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.PCSounds;
@@ -55,7 +59,7 @@ public class CrabEntity extends BucketableMobEntity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(CRAB_TYPE, 0);
+        builder.define(CRAB_TYPE, CrabVariantCatalog.DEFAULT_TYPE);
     }
 
     @Override
@@ -72,20 +76,20 @@ public class CrabEntity extends BucketableMobEntity {
     protected void setBucketData(ItemStack bucket) {
         super.setBucketData(bucket);
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putInt("BucketVariantTag", this.getCrabType());
+        compoundtag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getCrabType());
         bucket.set(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, net.minecraft.world.item.component.CustomData.of(compoundtag));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putInt("CrabType", this.getCrabType());
+        compound.putInt(CrabDataKeys.CRAB_TYPE, this.getCrabType());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setCrabType(compound.getInt("CrabType"));
+        this.setCrabType(compound.getInt(CrabDataKeys.CRAB_TYPE));
     }
 
     @Nullable
@@ -93,7 +97,7 @@ public class CrabEntity extends BucketableMobEntity {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
-        int type = rand.nextInt(2) + 1;
+        int type = CrabVariantCatalog.randomTypeId(rand.nextInt(CrabVariantCatalog.MAX_TYPE));
         this.setCrabType(type);
         return spawnData;
     }
@@ -101,8 +105,8 @@ public class CrabEntity extends BucketableMobEntity {
     @Override
     public void loadFromBucketTag(CompoundTag tag) {
         super.loadFromBucketTag(tag);
-        if (tag.contains("BucketVariantTag")) {
-            this.setCrabType(tag.getInt("BucketVariantTag"));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG)) {
+            this.setCrabType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG));
         }
     }
 
@@ -129,14 +133,18 @@ public class CrabEntity extends BucketableMobEntity {
     @Override
     public void aiStep() {
         if (!this.level().isClientSide()) {
-            if (this.level().getBlockState(this.blockPosition()).is(Blocks.WATER) && !this.underWater) {
-                this.underWater = true;
-            } else if (!this.level().getBlockState(this.blockPosition()).is(Blocks.WATER) && this.underWater) {
-                this.underWater = false;
+            boolean shouldBeUnderwater = CrabBehaviorRules.shouldBeUnderwater(this.level().getBlockState(this.blockPosition()).is(Blocks.WATER));
+            if (this.underWater != shouldBeUnderwater) {
+                this.underWater = shouldBeUnderwater;
             }
         }
 
-        if (this.jukeboxPosition == null || !this.jukeboxPosition.closerToCenterThan(this.position(), 4 * 3.46D) || !this.level().getBlockState(this.jukeboxPosition).is(Blocks.JUKEBOX)) {
+        boolean keepPartying = CrabBehaviorRules.shouldKeepPartying(
+                this.jukeboxPosition != null,
+                this.jukeboxPosition != null && this.jukeboxPosition.closerToCenterThan(this.position(), CrabBehaviorRules.PARTY_JUKEBOX_RANGE),
+                this.jukeboxPosition != null && this.level().getBlockState(this.jukeboxPosition).is(Blocks.JUKEBOX)
+        );
+        if (!keepPartying) {
             this.partyCrab = false;
             this.jukeboxPosition = null;
         }
@@ -168,24 +176,14 @@ public class CrabEntity extends BucketableMobEntity {
     }
 
     public static String getNameById(int id) {
-        return switch (id) {
-            case 1 -> "chat.pandoras_creatures.crabBucketTooltip.sea";
-            case 2 -> "chat.pandoras_creatures.crabBucketTooltip.tropical";
-            default -> "";
-        };
+        return CrabVariantCatalog.tooltipKey(id);
     }
 
     public int getCrabType() {
-        if (this.entityData.get(CRAB_TYPE) == 0) {
-            RandomSource rand = this.random;
-            this.entityData.set(CRAB_TYPE, rand.nextInt(2) + 1);
-            return this.entityData.get(CRAB_TYPE);
-        } else {
-            return this.entityData.get(CRAB_TYPE);
-        }
+        return CrabVariantCatalog.normalizeType(this.entityData.get(CRAB_TYPE));
     }
 
     public void setCrabType(int typeId) {
-        this.entityData.set(CRAB_TYPE, typeId);
+        this.entityData.set(CRAB_TYPE, CrabVariantCatalog.normalizeType(typeId));
     }
 }

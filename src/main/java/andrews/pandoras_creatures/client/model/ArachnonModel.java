@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
 import andrews.pandoras_creatures.entities.ArachnonEntity;
+import andrews.pandoras_creatures.entities.arachnon.ArachnonVisualRules;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -559,8 +560,9 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
         poseStack.pushPose();
-        poseStack.translate(0.0D, -0.1D, 0.0D);
-        poseStack.scale(1.4F, 1.4F, 1.4F);
+        float arachnonScale = ArachnonVisualRules.renderScale();
+        poseStack.translate(0.0D, ArachnonVisualRules.renderYOffset(), 0.0D);
+        poseStack.scale(arachnonScale, arachnonScale, arachnonScale);
         this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
         poseStack.popPose();
     }

@@ -1,19 +1,17 @@
 package andrews.pandoras_creatures.entities.goals.end_troll;
 
 import andrews.pandoras_creatures.entities.EndTrollEntity;
-import andrews.pandoras_creatures.entities.projectiles.EndTrollBulletDamageEntity;
-import andrews.pandoras_creatures.entities.projectiles.EndTrollBulletPoisonEntity;
-import andrews.pandoras_creatures.entities.projectiles.EndTrollBulletWitherEntity;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileFactory;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileLaunch;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileRules;
 import andrews.pandoras_creatures.util.NetworkUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
 
@@ -29,19 +27,14 @@ public class EndTrollBulletAttackGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (goalOwner.level().getDifficulty() == Difficulty.PEACEFUL) {
-            return false;
-        }
         LivingEntity livingentity = goalOwner.getTarget();
-        if (livingentity != null && livingentity.isAlive() &&
-            !goalOwner.isAnimationPlaying(EndTrollEntity.SCREAM_ANIMATION) &&
-            !goalOwner.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION) &&
-            !goalOwner.isAnimationPlaying(EndTrollEntity.RIGHT_PUNCH_ANIMATION) &&
-            !goalOwner.isAnimationPlaying(EndTrollEntity.LEFT_PUNCH_ANIMATION) &&
-            !goalOwner.isWorldRemote()) {
-            return goalOwner.shootCooldown == 0;
-        }
-        return false;
+        return EndTrollBehaviorRules.shouldTryShoot(
+                goalOwner.level().getDifficulty() != Difficulty.PEACEFUL,
+                livingentity != null && livingentity.isAlive(),
+                goalOwner.blocksRangedAttackGoal(),
+                !goalOwner.isWorldRemote(),
+                goalOwner.getShootCooldown()
+        );
     }
 
     @Override
@@ -57,36 +50,22 @@ public class EndTrollBulletAttackGoal extends Goal {
             }
 
             if (goalOwner.isAnimationPlaying(EndTrollEntity.SHOOT_ANIMATION) && goalOwner.getAnimationTick() == 9) {
-                for (int i = 0; i < 5; i++) {
-                    goalOwner.level().addFreshEntity(getRandomEndTrollBullet(goalOwner.level(), goalOwner, livingentity, getAxis()));
+                EndTrollProjectileLaunch launch = EndTrollProjectileRules.createLaunchVector(goalOwner.yHeadRotO, goalOwner.getXRot());
+                for (int i = 0; i < EndTrollBehaviorRules.PROJECTILES_PER_VOLLEY; i++) {
+                    goalOwner.level().addFreshEntity(EndTrollProjectileFactory.createProjectile(
+                            goalOwner.level(),
+                            goalOwner,
+                            livingentity,
+                            getAxis(),
+                            EndTrollProjectileRules.selectProjectileKind(rand.nextInt(3)),
+                            launch
+                    ));
                 }
                 goalOwner.playSound(SoundEvents.SHULKER_SHOOT, 2.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
-                goalOwner.shootCooldown = 300;
+                goalOwner.resetShootCooldown();
             }
         }
         super.tick();
-    }
-
-    private Entity getRandomEndTrollBullet(Level level, EndTrollEntity owner, LivingEntity targetEntity, Direction.Axis directionAxis) {
-        float xMotion = -Mth.sin(owner.yHeadRotO * ((float) Math.PI / 180F)) * Mth.cos(owner.getXRot() * ((float) Math.PI / 180F));
-        float yMotion = -Mth.sin(owner.getXRot() * ((float) Math.PI / 180F));
-        float zMotion = Mth.cos(owner.getYHeadRot() * ((float) Math.PI / 180F)) * Mth.cos(owner.getXRot() * ((float) Math.PI / 180F));
-
-        switch (rand.nextInt(3) + 1) {
-            default:
-            case 1:
-                EndTrollBulletPoisonEntity bulletEntity0 = new EndTrollBulletPoisonEntity(level, owner, targetEntity, directionAxis);
-                bulletEntity0.push(xMotion, yMotion, zMotion);
-                return bulletEntity0;
-            case 2:
-                EndTrollBulletWitherEntity bulletEntity1 = new EndTrollBulletWitherEntity(level, owner, targetEntity, directionAxis);
-                bulletEntity1.push(xMotion, yMotion, zMotion);
-                return bulletEntity1;
-            case 3:
-                EndTrollBulletDamageEntity bulletEntity2 = new EndTrollBulletDamageEntity(level, owner, targetEntity, directionAxis);
-                bulletEntity2.push(xMotion, yMotion, zMotion);
-                return bulletEntity2;
-        }
     }
 
     private Direction.Axis getAxis() {

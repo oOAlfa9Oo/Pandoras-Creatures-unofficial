@@ -1,6 +1,9 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.bases.AnimatedCreatureEntity;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollDataKeys;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollPunchAnimation;
 import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollAttackGoal;
 import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollBulletAttackGoal;
 import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollScreamGoal;
@@ -64,8 +67,8 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
     public static final Animation DOUBLE_PUNCH_ANIMATION = new Animation(28);
     public static final Animation DEATH_ANIMATION = new Animation(50);
 
-    public int shootCooldown = 300;
-    public int screamCooldown = 400;
+    private int shootCooldown = EndTrollBehaviorRules.DEFAULT_SHOOT_COOLDOWN;
+    private int screamCooldown = EndTrollBehaviorRules.DEFAULT_SCREAM_COOLDOWN;
 
     public EndTrollEntity(EntityType<? extends EndTrollEntity> type, Level level) {
         super(type, level);
@@ -108,15 +111,15 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putBoolean("IsStanding", this.isEntityStanding());
-        compound.putBoolean("HasScreamed", this.hasScreamed());
+        compound.putBoolean(EndTrollDataKeys.IS_STANDING, this.isEntityStanding());
+        compound.putBoolean(EndTrollDataKeys.HAS_SCREAMED, this.hasScreamed());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setEntityStanding(compound.getBoolean("IsStanding"));
-        this.setHasScreamed(compound.getBoolean("HasScreamed"));
+        this.setEntityStanding(compound.getBoolean(EndTrollDataKeys.IS_STANDING));
+        this.setHasScreamed(compound.getBoolean(EndTrollDataKeys.HAS_SCREAMED));
     }
 
     @Override
@@ -148,32 +151,25 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
         if (this.isEntityStanding()) {
             // Breaks the Blocks during the Scream
             if (this.isAnimationPlaying(SCREAM_ANIMATION)) {
-                if (this.getAnimationTick() == 16) {
+                if (EndTrollBehaviorRules.shouldApplyScreamImpact(this.getAnimationTick())) {
                     screamBlockBreaking(this.getBoundingBox().inflate(5, 2, 5).move(0, 2, 0), this.level());
                     screamEntityKnockBack(this.getBoundingBox().inflate(5, 2, 5).move(0, 2, 0));
-                } else if (this.getAnimationTick() == 12) {
+                } else if (EndTrollBehaviorRules.shouldSpawnScreamExplosion(this.getAnimationTick())) {
                     this.level().addParticle(ParticleTypes.EXPLOSION_EMITTER, this.blockPosition().getX(), this.getY() + this.getEyeHeight() / 2, this.blockPosition().getZ(), 0, 0, 0);
-                } else if (this.getAnimationTick() == 7) {
+                } else if (EndTrollBehaviorRules.shouldPlayScreamSound(this.getAnimationTick())) {
                     this.level().playLocalSound(this.blockPosition().getX(), this.getY() + this.getEyeHeight(), this.blockPosition().getZ(), PCSounds.END_TROLL_SCREAM.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
                 }
-            } else if (this.isAnimationPlaying(RIGHT_PUNCH_ANIMATION) || this.isAnimationPlaying(LEFT_PUNCH_ANIMATION) || this.isAnimationPlaying(DOUBLE_PUNCH_ANIMATION)) {
-                if (this.getAnimationTick() == 4) {
-                    this.level().playLocalSound(this.blockPosition().getX(), this.getY() + this.getEyeHeight(), this.blockPosition().getZ(), PCSounds.END_TROLL_ATTACK.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
-                }
+            } else if (this.isAnyPunchAnimationPlaying() && EndTrollBehaviorRules.shouldPlayPunchSound(this.getAnimationTick())) {
+                this.level().playLocalSound(this.blockPosition().getX(), this.getY() + this.getEyeHeight(), this.blockPosition().getZ(), PCSounds.END_TROLL_ATTACK.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
             }
 
             if (!this.isWorldRemote() && this.isEntityStanding()) {
-                if (shootCooldown > 0) {
-                    shootCooldown--;
-                }
-                if (screamCooldown > 0) {
-                    screamCooldown--;
-                }
+                tickCombatCooldowns();
             }
         }
 
         // Breaks Chorus Plants
-        if ((this.tickCount % 10) == 0) {
+        if (EndTrollBehaviorRules.shouldBreakChorusThisTick(this.tickCount)) {
             if (!this.level().isClientSide()) {
                 if (EventHooks.canEntityGrief(this.level(), this)) {
                     breakChorusBlocks(this.getBoundingBox().inflate(2, 0, 2), this.level());
@@ -267,14 +263,10 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
     /**
      * Used to handle the EndTroll Attacks
      */
-    public boolean attackEntityAsMob(Entity target, boolean doublePunch) {
-        boolean flag;
-        if (doublePunch) {
-            flag = target.hurt(this.damageSources().mobAttack(this), (float) (14 + this.random.nextInt(7)));
-        } else {
-            flag = target.hurt(this.damageSources().mobAttack(this), (float) (12 + this.random.nextInt(4)));
-        }
-        return flag;
+    public boolean performPunchAttack(Entity target, boolean doublePunch) {
+        int randomBonus = this.random.nextInt(doublePunch ? 7 : 4);
+        return target.hurt(this.damageSources().mobAttack(this),
+                (float) EndTrollBehaviorRules.getPunchDamage(doublePunch, randomBonus));
     }
 
     /**
@@ -290,7 +282,7 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
                         BlockEntity blockEntity = level.getBlockEntity(pos);
 
                         if (!level.getBlockState(pos).isAir() && !level.getBlockState(pos).is(BlockTags.WITHER_IMMUNE)) {
-                            if (blockEntity == null && random.nextInt(4) + 1 == 4) {
+                            if (EndTrollBehaviorRules.shouldLaunchFallingBlock(blockEntity == null, random.nextInt(4) + 1)) {
                                 FallingBlockEntity fallingBlock = FallingBlockEntity.fall(level, pos, block.defaultBlockState());
                                 fallingBlock.setDeltaMovement(fallingBlock.getDeltaMovement().add(
                                         this.position().subtract(fallingBlock.position()).multiply(
@@ -310,10 +302,7 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
     }
 
     private boolean shouldDropItem(BlockEntity blockEntity) {
-        if (blockEntity == null) {
-            return random.nextInt(3) + 1 == 3;
-        }
-        return true;
+        return EndTrollBehaviorRules.shouldDropDestroyedBlock(blockEntity != null, random.nextInt(3) + 1);
     }
 
     /**
@@ -363,5 +352,56 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
      */
     public void setHasScreamed(boolean value) {
         this.entityData.set(HAS_SCREAMED, value);
+    }
+
+    public boolean isShootReady() {
+        return shootCooldown == 0;
+    }
+
+    public boolean isScreamReady() {
+        return screamCooldown == 0;
+    }
+
+    public int getShootCooldown() {
+        return shootCooldown;
+    }
+
+    public int getScreamCooldown() {
+        return screamCooldown;
+    }
+
+    public void resetShootCooldown() {
+        this.shootCooldown = EndTrollBehaviorRules.DEFAULT_SHOOT_COOLDOWN;
+    }
+
+    public void resetScreamCooldown() {
+        this.screamCooldown = EndTrollBehaviorRules.DEFAULT_SCREAM_COOLDOWN;
+    }
+
+    public boolean isAnyPunchAnimationPlaying() {
+        return this.isAnimationPlaying(RIGHT_PUNCH_ANIMATION)
+                || this.isAnimationPlaying(LEFT_PUNCH_ANIMATION)
+                || this.isAnimationPlaying(DOUBLE_PUNCH_ANIMATION);
+    }
+
+    public boolean blocksRangedAttackGoal() {
+        return this.isAnimationPlaying(SCREAM_ANIMATION) || this.isAnyPunchAnimationPlaying();
+    }
+
+    public void playPunchAnimation(EndTrollPunchAnimation punchAnimation) {
+        if (!this.isAnimationPlaying(BLANK_ANIMATION) || this.level().isClientSide()) {
+            return;
+        }
+
+        switch (punchAnimation) {
+            case RIGHT -> NetworkUtil.sendAnimationPacket(this, RIGHT_PUNCH_ANIMATION);
+            case LEFT -> NetworkUtil.sendAnimationPacket(this, LEFT_PUNCH_ANIMATION);
+            case DOUBLE -> NetworkUtil.sendAnimationPacket(this, DOUBLE_PUNCH_ANIMATION);
+        }
+    }
+
+    private void tickCombatCooldowns() {
+        this.shootCooldown = EndTrollBehaviorRules.tickCooldown(this.shootCooldown);
+        this.screamCooldown = EndTrollBehaviorRules.tickCooldown(this.screamCooldown);
     }
 }

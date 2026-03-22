@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.renderer.tile;
 
 import andrews.pandoras_creatures.client.model.tile.EndTrollBoxModel;
 import andrews.pandoras_creatures.registry.PCBlocks;
+import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,7 +23,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @OnlyIn(Dist.CLIENT)
 public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
@@ -33,10 +33,8 @@ public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
     private EndTrollBoxModel endTrollBoxModel;
 
     public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/tile/end_troll_box.png");
-    public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = Stream.of(
-            "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
-            "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
-    ).map(color -> ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/tile/" + color + "_end_troll_box.png"))
+    public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
+            .map(color -> ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEndTrollBoxPalette.texturePath(color)))
             .collect(ImmutableList.toImmutableList());
 
     public PCItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
@@ -65,23 +63,7 @@ public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     private boolean isEndTrollBox(Item item) {
-        return item == PCBlocks.END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.WHITE_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.ORANGE_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.MAGENTA_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.LIGHT_BLUE_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.YELLOW_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.LIME_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.PINK_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.GRAY_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.LIGHT_GRAY_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.CYAN_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.PURPLE_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.BLUE_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.BROWN_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.GREEN_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.RED_END_TROLL_BOX.get().asItem() ||
-                item == PCBlocks.BLACK_END_TROLL_BOX.get().asItem();
+        return PCBlocks.isEndTrollBoxItem(item);
     }
 
     private void renderEndTrollBox(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer,
@@ -130,22 +112,6 @@ public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     private DyeColor getColorFromItem(Item item) {
-        if (item == PCBlocks.WHITE_END_TROLL_BOX.get().asItem()) return DyeColor.WHITE;
-        if (item == PCBlocks.ORANGE_END_TROLL_BOX.get().asItem()) return DyeColor.ORANGE;
-        if (item == PCBlocks.MAGENTA_END_TROLL_BOX.get().asItem()) return DyeColor.MAGENTA;
-        if (item == PCBlocks.LIGHT_BLUE_END_TROLL_BOX.get().asItem()) return DyeColor.LIGHT_BLUE;
-        if (item == PCBlocks.YELLOW_END_TROLL_BOX.get().asItem()) return DyeColor.YELLOW;
-        if (item == PCBlocks.LIME_END_TROLL_BOX.get().asItem()) return DyeColor.LIME;
-        if (item == PCBlocks.PINK_END_TROLL_BOX.get().asItem()) return DyeColor.PINK;
-        if (item == PCBlocks.GRAY_END_TROLL_BOX.get().asItem()) return DyeColor.GRAY;
-        if (item == PCBlocks.LIGHT_GRAY_END_TROLL_BOX.get().asItem()) return DyeColor.LIGHT_GRAY;
-        if (item == PCBlocks.CYAN_END_TROLL_BOX.get().asItem()) return DyeColor.CYAN;
-        if (item == PCBlocks.PURPLE_END_TROLL_BOX.get().asItem()) return DyeColor.PURPLE;
-        if (item == PCBlocks.BLUE_END_TROLL_BOX.get().asItem()) return DyeColor.BLUE;
-        if (item == PCBlocks.BROWN_END_TROLL_BOX.get().asItem()) return DyeColor.BROWN;
-        if (item == PCBlocks.GREEN_END_TROLL_BOX.get().asItem()) return DyeColor.GREEN;
-        if (item == PCBlocks.RED_END_TROLL_BOX.get().asItem()) return DyeColor.RED;
-        if (item == PCBlocks.BLACK_END_TROLL_BOX.get().asItem()) return DyeColor.BLACK;
-        return null; // Default (no dye)
+        return PCBlocks.getEndTrollBoxColor(item);
     }
 }

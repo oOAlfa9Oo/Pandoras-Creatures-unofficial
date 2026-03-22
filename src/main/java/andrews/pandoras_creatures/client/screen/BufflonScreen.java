@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.screen;
 
 import andrews.pandoras_creatures.client.widget.bufflon.BufflonStateButton;
 import andrews.pandoras_creatures.entities.BufflonEntity;
+import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentType;
 import andrews.pandoras_creatures.menu.BufflonMenuLayout;
 import andrews.pandoras_creatures.menu.BufflonMenu;
 import andrews.pandoras_creatures.registry.PCItems;
@@ -134,12 +135,9 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         guiGraphics.blit(BUFFLON_GUI_TEXTURES, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (bufflonEntity.hasBackAttachment()) {
-            if (bufflonEntity.getBackAttachmentType() == 2) {
-                renderBufflonInventorySlots(guiGraphics, this.leftPos, this.topPos, 3);
-            } else if (bufflonEntity.getBackAttachmentType() == 3) {
-                renderBufflonInventorySlots(guiGraphics, this.leftPos, this.topPos, 6);
-            }
+        BufflonBackAttachmentType attachmentType = this.bufflonEntity.getBackAttachment();
+        if (attachmentType.hasStorage()) {
+            renderBufflonInventorySlots(guiGraphics, this.leftPos, this.topPos, attachmentType.getStorageRows());
         }
 
         // The Bufflon Entity inside the Menu

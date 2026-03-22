@@ -1,6 +1,6 @@
 package andrews.pandoras_creatures.crafting;
 
-import andrews.pandoras_creatures.objects.blocks.EndTrollBoxBlock;
+import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
 import andrews.pandoras_creatures.registry.PCRecipeSerializers;
 import andrews.pandoras_creatures.registry.PCTags;
 import com.mojang.serialization.Codec;

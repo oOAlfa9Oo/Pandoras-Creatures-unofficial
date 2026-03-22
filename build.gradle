@@ -27,22 +27,26 @@ neoForge {
     runs {
         client {
             client()
+            gameDirectory = project.layout.projectDirectory.dir('run/client')
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         server {
             server()
+            gameDirectory = project.layout.projectDirectory.dir('run/server')
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         gameTestServer {
             type = "gameTestServer"
+            gameDirectory = project.layout.projectDirectory.dir('run/gametest')
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         data {
             data()
+            gameDirectory = project.layout.projectDirectory.dir('run/data')
             programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
     }

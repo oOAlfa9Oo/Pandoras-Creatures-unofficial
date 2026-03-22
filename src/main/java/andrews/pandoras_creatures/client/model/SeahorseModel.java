@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
 import andrews.pandoras_creatures.entities.SeahorseEntity;
+import andrews.pandoras_creatures.entities.seahorse.SeahorseVisualRules;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -195,7 +196,7 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         // Horn visibility for special name
-        this.horn.visible = entity.getName().getString().equals("Mr.Sparkles");
+        this.horn.visible = SeahorseVisualRules.isSpecialNamed(entity.getName().getString());
 
         if (!entity.isInWater()) {
             // Outside Water Animation
@@ -326,9 +327,9 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
         poseStack.pushPose();
-        float size = 1.0F + (((entity.getSeahorseSize() - 3) * 2) * 0.07F);
+        float size = SeahorseVisualRules.renderScale(entity.getSeahorseSize());
 
-        poseStack.translate(0, -((entity.getSeahorseSize() - 3) * 0.18D), 0);
+        poseStack.translate(0, SeahorseVisualRules.renderYOffset(entity.getSeahorseSize()), 0);
 
         if (!this.entity.isInWater()) {
             poseStack.translate(0, 0.3F, 0);

@@ -2,6 +2,8 @@ package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
 import andrews.pandoras_creatures.entities.HellhoundEntity;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundChargeState;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundVisualRules;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -344,7 +346,7 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         if (entity.isEntityMoving()) {
-            if (entity.getIsCharging() != 0) {
+            if (HellhoundChargeState.isCharging(entity.getIsCharging())) {
                 animateCharging(entity, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
             } else {
                 animateWalking(entity, limbSwing, limbSwingAmount, netHeadYaw);
@@ -518,9 +520,10 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
         poseStack.pushPose();
-        if (entity.getHellhoundType() != 1) {
-            float hellhoundScale = 1.2F;
-            poseStack.translate(0, -0.3F, 0);
+        float hellhoundScale = HellhoundVisualRules.renderScale(entity.getHellhoundType());
+        float yOffset = HellhoundVisualRules.renderYOffset(entity.getHellhoundType());
+        if (hellhoundScale != 1.0F || yOffset != 0.0F) {
+            poseStack.translate(0, yOffset, 0);
             poseStack.scale(hellhoundScale, hellhoundScale, hellhoundScale);
         }
         this.body.render(poseStack, buffer, packedLight, packedOverlay, color);

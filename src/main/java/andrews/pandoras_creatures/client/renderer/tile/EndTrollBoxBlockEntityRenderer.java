@@ -2,7 +2,7 @@ package andrews.pandoras_creatures.client.renderer.tile;
 
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.client.model.tile.EndTrollBoxModel;
-import andrews.pandoras_creatures.objects.blocks.EndTrollBoxBlock;
+import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;

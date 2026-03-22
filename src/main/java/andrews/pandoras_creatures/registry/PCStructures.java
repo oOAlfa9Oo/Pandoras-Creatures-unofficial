@@ -10,7 +10,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class PCStructures {
+public final class PCStructures {
 
     public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
             DeferredRegister.create(Registries.STRUCTURE_TYPE, Reference.MODID);
@@ -25,4 +25,7 @@ public class PCStructures {
             STRUCTURE_PIECE_TYPES.register("end_prison_piece",
                     () -> (StructurePieceSerializationContext ctx, net.minecraft.nbt.CompoundTag tag) ->
                             new EndPrisonPieces.Piece(ctx.structureTemplateManager(), tag));
+
+    private PCStructures() {
+    }
 }

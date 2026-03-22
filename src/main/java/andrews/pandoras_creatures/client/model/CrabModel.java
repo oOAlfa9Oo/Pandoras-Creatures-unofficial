@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
 import andrews.pandoras_creatures.entities.CrabEntity;
+import andrews.pandoras_creatures.entities.crab.CrabBehaviorRules;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
@@ -241,7 +242,7 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         // Hat visibility
-        this.Hat.visible = entity.getName().getString().equals("fredrick");
+        this.Hat.visible = CrabBehaviorRules.showsHat(entity.getName().getString());
 
         if (entity.isEntityMoving()) {
             // Walk Animation

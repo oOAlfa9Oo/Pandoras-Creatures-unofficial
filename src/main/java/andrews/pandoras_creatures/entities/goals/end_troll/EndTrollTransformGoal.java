@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities.goals.end_troll;
 
 import andrews.pandoras_creatures.entities.EndTrollEntity;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
 import andrews.pandoras_creatures.util.NetworkUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -19,7 +20,11 @@ public class EndTrollTransformGoal extends Goal {
     @Override
     public boolean canUse() {
         LivingEntity livingentity = this.endTroll.getTarget();
-        return !this.endTroll.isEntityStanding() && livingentity != null && this.endTroll.distanceToSqr(livingentity) < 150.0D;
+        return EndTrollBehaviorRules.shouldTryTransform(
+                this.endTroll.isEntityStanding(),
+                livingentity != null,
+                livingentity == null ? Double.MAX_VALUE : this.endTroll.distanceToSqr(livingentity)
+        );
     }
 
     @Override

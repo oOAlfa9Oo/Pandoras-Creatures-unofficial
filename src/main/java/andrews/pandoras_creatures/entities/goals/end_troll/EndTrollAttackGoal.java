@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.entities.goals.end_troll;
 
 import andrews.pandoras_creatures.entities.EndTrollEntity;
-import andrews.pandoras_creatures.util.NetworkUtil;
+import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntitySelector;
@@ -109,9 +109,7 @@ public class EndTrollAttackGoal extends Goal {
 
     @Override
     public void tick() {
-        if (!this.attacker.isAnimationPlaying(EndTrollEntity.RIGHT_PUNCH_ANIMATION) &&
-            !this.attacker.isAnimationPlaying(EndTrollEntity.LEFT_PUNCH_ANIMATION) &&
-            !this.attacker.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION)) {
+        if (!this.attacker.isAnyPunchAnimationPlaying()) {
 
             if (this.hasPerformedAttackLogic) {
                 this.hasPerformedAttackLogic = false;
@@ -158,22 +156,18 @@ public class EndTrollAttackGoal extends Goal {
             this.attackTick = Math.max(this.attackTick - 1, 0);
             this.checkAndPlayAnimation(livingentity, d0);
         } else {
-            if ((attacker.isAnimationPlaying(EndTrollEntity.RIGHT_PUNCH_ANIMATION) ||
-                 attacker.isAnimationPlaying(EndTrollEntity.LEFT_PUNCH_ANIMATION) ||
-                 attacker.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION)) &&
-                attacker.getAnimationTick() >= 10) {
+            if (attacker.isAnyPunchAnimationPlaying() &&
+                EndTrollBehaviorRules.shouldResolvePunchDamage(attacker.getAnimationTick(), this.hasPerformedAttackLogic)) {
 
-                if (!this.hasPerformedAttackLogic) {
-                    LivingEntity livingentity = this.attacker.getTarget();
-                    if (livingentity != null) {
-                        this.attackTick = 20;
-                        if (attacker.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION)) {
-                            this.attacker.attackEntityAsMob(livingentity, true);
-                        } else {
-                            this.attacker.attackEntityAsMob(livingentity, false);
-                        }
-                        this.hasPerformedAttackLogic = true;
+                LivingEntity livingentity = this.attacker.getTarget();
+                if (livingentity != null) {
+                    this.attackTick = 20;
+                    if (attacker.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION)) {
+                        this.attacker.performPunchAttack(livingentity, true);
+                    } else {
+                        this.attacker.performPunchAttack(livingentity, false);
                     }
+                    this.hasPerformedAttackLogic = true;
                 }
             }
         }
@@ -182,21 +176,7 @@ public class EndTrollAttackGoal extends Goal {
     protected void checkAndPlayAnimation(LivingEntity enemy, double distToEnemySqr) {
         double reachDistance = this.getAttackReachSqr(enemy);
         if (distToEnemySqr <= reachDistance && this.attackTick <= 0) {
-            if (attacker.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION) && !attacker.level().isClientSide()) {
-                switch (rand.nextInt(3)) {
-                    case 0:
-                        NetworkUtil.sendAnimationPacket(attacker, EndTrollEntity.RIGHT_PUNCH_ANIMATION);
-                        break;
-                    case 1:
-                        NetworkUtil.sendAnimationPacket(attacker, EndTrollEntity.LEFT_PUNCH_ANIMATION);
-                        break;
-                    case 2:
-                        NetworkUtil.sendAnimationPacket(attacker, EndTrollEntity.DOUBLE_PUNCH_ANIMATION);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            attacker.playPunchAnimation(EndTrollBehaviorRules.selectPunchAnimation(rand.nextInt(3)));
         }
     }
 

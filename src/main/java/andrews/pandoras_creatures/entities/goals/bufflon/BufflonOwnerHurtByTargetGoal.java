@@ -21,7 +21,7 @@ public class BufflonOwnerHurtByTargetGoal extends TargetGoal {
 
     @Override
     public boolean canUse() {
-        if (this.bufflonEntity.isTamed() && !this.bufflonEntity.isSitting() && this.bufflonEntity.isInCombatMode()) {
+        if (this.bufflonEntity.canProtectOwner()) {
             LivingEntity livingentity = this.bufflonEntity.getOwner();
             if (livingentity == null) {
                 return false;

@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class PCRecipeSerializers {
+public final class PCRecipeSerializers {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, Reference.MODID);
 
@@ -17,4 +17,7 @@ public class PCRecipeSerializers {
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<EndTrollBoxColoringRecipe>> END_TROLL_BOX_COLORING_RECIPE =
             RECIPE_SERIALIZERS.register("end_troll_box_coloring", () -> new EndTrollBoxColoringRecipe.Serializer());
+
+    private PCRecipeSerializers() {
+    }
 }

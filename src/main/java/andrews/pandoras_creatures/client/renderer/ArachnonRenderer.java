@@ -4,6 +4,7 @@ import andrews.pandoras_creatures.client.model.ArachnonModel;
 import andrews.pandoras_creatures.client.model.base.PCModelLayers;
 import andrews.pandoras_creatures.client.renderer.layer.ArachnonEyeLayer;
 import andrews.pandoras_creatures.entities.ArachnonEntity;
+import andrews.pandoras_creatures.entities.arachnon.ArachnonVisualRules;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -21,6 +22,6 @@ public class ArachnonRenderer extends MobRenderer<ArachnonEntity, ArachnonModel<
 
     @Override
     public ResourceLocation getTextureLocation(ArachnonEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/arachnon/arachnon.png");
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, ArachnonVisualRules.texturePathString());
     }
 }

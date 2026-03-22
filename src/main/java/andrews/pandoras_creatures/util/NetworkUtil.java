@@ -23,6 +23,7 @@ public class NetworkUtil {
      */
     public static void sendAnimationPacket(Entity entity, int animationIndex) {
         if (!entity.level().isClientSide()) {
+            applyServerAnimationState(entity, animationIndex);
             PacketDistributor.sendToPlayersTrackingEntity(
                     entity,
                     new AnimationPayload(entity.getId(), animationIndex)
@@ -46,11 +47,30 @@ public class NetworkUtil {
                 }
             }
             if (index >= 0) {
+                applyServerAnimationState(entity, index);
                 PacketDistributor.sendToPlayersTrackingEntity(
                         entity,
                         new AnimationPayload(entity.getId(), index)
                 );
             }
+        }
+    }
+
+    private static void applyServerAnimationState(Entity entity, int animationIndex) {
+        if (!(entity instanceof IAnimatedEntity animatedEntity)) {
+            return;
+        }
+
+        if (animationIndex == -1) {
+            animatedEntity.resetAnimation();
+            animatedEntity.setAnimationTick(0);
+            return;
+        }
+
+        Animation[] animations = animatedEntity.getAnimations();
+        if (animationIndex >= 0 && animationIndex < animations.length) {
+            animatedEntity.setPlayingAnimation(animations[animationIndex]);
+            animatedEntity.setAnimationTick(0);
         }
     }
 

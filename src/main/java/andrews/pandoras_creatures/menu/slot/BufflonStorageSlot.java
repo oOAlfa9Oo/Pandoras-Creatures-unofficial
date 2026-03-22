@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.menu.slot;
 
 import andrews.pandoras_creatures.entities.BufflonEntity;
+import andrews.pandoras_creatures.entities.bufflon.BufflonInventoryLayout;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 
@@ -16,17 +17,6 @@ public class BufflonStorageSlot extends Slot {
 
     @Override
     public boolean isActive() {
-        if (bufflonEntity.hasBackAttachment()) {
-            // If the Bufflon Entity has a Small Storage
-            if (bufflonEntity.getBackAttachmentType() == 2) {
-                return index < 29;
-            }
-            // If the Bufflon Entity has a Large Storage
-            if (bufflonEntity.getBackAttachmentType() == 3) {
-                return true;
-            }
-            return false;
-        }
-        return false;
+        return BufflonInventoryLayout.isStorageSlotActive(this.bufflonEntity.getBackAttachment(), this.index);
     }
 }

@@ -1,10 +1,11 @@
 package andrews.pandoras_creatures.menu;
 
 import andrews.pandoras_creatures.entities.BufflonEntity;
+import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentItems;
+import andrews.pandoras_creatures.entities.bufflon.BufflonInventoryLayout;
 import andrews.pandoras_creatures.menu.slot.BufflonBackAttachmentSlot;
 import andrews.pandoras_creatures.menu.slot.BufflonSaddleSlot;
 import andrews.pandoras_creatures.menu.slot.BufflonStorageSlot;
-import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.PCMenuTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,9 +27,9 @@ public class BufflonMenu extends AbstractContainerMenu {
         bufflonStorage.startOpen(playerInventory.player);
 
         // Bufflon equipment slots.
-        this.addSlot(new BufflonSaddleSlot(bufflonEntity, bufflonStorage, 0,
+        this.addSlot(new BufflonSaddleSlot(bufflonEntity, bufflonStorage, BufflonInventoryLayout.SADDLE_SLOT,
                 BufflonMenuLayout.SADDLE_SLOT_X, BufflonMenuLayout.SADDLE_SLOT_Y));
-        this.addSlot(new BufflonBackAttachmentSlot(bufflonEntity, bufflonStorage, 1,
+        this.addSlot(new BufflonBackAttachmentSlot(bufflonEntity, bufflonStorage, BufflonInventoryLayout.BACK_ATTACHMENT_SLOT,
                 BufflonMenuLayout.BACK_ATTACHMENT_SLOT_X, BufflonMenuLayout.BACK_ATTACHMENT_SLOT_Y));
 
         // Bufflon storage slots. Background rows render one pixel above/left of these icon positions.
@@ -37,7 +38,7 @@ public class BufflonMenu extends AbstractContainerMenu {
                 this.addSlot(new BufflonStorageSlot(
                         bufflonEntity,
                         bufflonStorage,
-                        x + y * BufflonMenuLayout.STORAGE_COLUMNS + 2,
+                        BufflonInventoryLayout.FIRST_STORAGE_SLOT + x + y * BufflonMenuLayout.STORAGE_COLUMNS,
                         BufflonMenuLayout.STORAGE_SLOT_X + x * BufflonMenuLayout.SLOT_SPACING,
                         BufflonMenuLayout.STORAGE_SLOT_Y + y * BufflonMenuLayout.SLOT_SPACING
                 ));
@@ -80,8 +81,8 @@ public class BufflonMenu extends AbstractContainerMenu {
             ItemStack stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
-            if (index < (6 * 9) + 2) {
-                if (!this.moveItemStackTo(stackInSlot, (6 * 9) + 2, this.slots.size(), true)) {
+            if (index < this.bufflonStorage.getContainerSize()) {
+                if (!this.moveItemStackTo(stackInSlot, this.bufflonStorage.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (!this.moveItemStackTo(stackInSlot, 0, getInventorySizeForAttachments(), false)) {
@@ -98,20 +99,12 @@ public class BufflonMenu extends AbstractContainerMenu {
     }
 
     private int getInventorySizeForAttachments() {
-        if (!this.slots.get(1).hasItem()) {
-            return 2;
-        } else {
-            ItemStack stack = this.slots.get(1).getItem();
-            if (stack.getItem() == PCItems.BUFFLON_PLAYER_SEATS.get()) {
-                return 2;
-            } else if (stack.getItem() == PCItems.BUFFLON_SMALL_STORAGE.get()) {
-                return (3 * 9) + 2;
-            } else if (stack.getItem() == PCItems.BUFFLON_LARGE_STORAGE.get()) {
-                return (6 * 9) + 2;
-            } else {
-                return 2;
-            }
+        if (!this.slots.get(BufflonInventoryLayout.BACK_ATTACHMENT_SLOT).hasItem()) {
+            return BufflonInventoryLayout.EQUIPMENT_SLOT_COUNT;
         }
+
+        ItemStack stack = this.slots.get(BufflonInventoryLayout.BACK_ATTACHMENT_SLOT).getItem();
+        return BufflonInventoryLayout.getAccessibleSlotCount(BufflonBackAttachmentItems.getType(stack));
     }
 
     @Override

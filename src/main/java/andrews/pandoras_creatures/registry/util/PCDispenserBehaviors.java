@@ -5,7 +5,10 @@ import andrews.pandoras_creatures.registry.PCItems;
 /**
  * Registers dispenser behaviors for Pandoras Creatures items.
  */
-public class PCDispenserBehaviors {
+public final class PCDispenserBehaviors {
+
+    private PCDispenserBehaviors() {
+    }
 
     /**
      * Register all dispenser behaviors

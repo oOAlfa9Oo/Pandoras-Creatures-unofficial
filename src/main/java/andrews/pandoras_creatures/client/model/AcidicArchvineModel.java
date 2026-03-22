@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
 import andrews.pandoras_creatures.entities.AcidicArchvineEntity;
+import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineAttackState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -664,11 +665,11 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
 
         this.tongue_1.visible = !entity.hasTargetedEntity();
 
-        if (entity.getAttackState() == 0) {
+        if (entity.getAttackState() == AcidicArchvineAttackState.IDLE) {
             animateIdle(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else if (entity.getAttackState() == 1) {
+        } else if (entity.getAttackState() == AcidicArchvineAttackState.GRABBING) {
             animateGrabbing(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else if (entity.getAttackState() == 2) {
+        } else if (entity.getAttackState() == AcidicArchvineAttackState.CHEWING) {
             animateChewing(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         }
     }

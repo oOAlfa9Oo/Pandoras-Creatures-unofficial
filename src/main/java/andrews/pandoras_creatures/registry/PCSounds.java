@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.registry;
 
+import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -7,53 +8,56 @@ import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class PCSounds {
+public final class PCSounds {
     public static final DeferredRegister<SoundEvent> SOUNDS =
             DeferredRegister.create(Registries.SOUND_EVENT, Reference.MODID);
 
     // Arachnon
     public static final DeferredHolder<SoundEvent, SoundEvent> ARACHNON_AMBIENT =
-            registerSound("entity.arachnon.ambient");
+            registerSound(PCSoundCatalog.ARACHNON_AMBIENT);
     public static final DeferredHolder<SoundEvent, SoundEvent> ARACHNON_HURT =
-            registerSound("entity.arachnon.hurt");
+            registerSound(PCSoundCatalog.ARACHNON_HURT);
     public static final DeferredHolder<SoundEvent, SoundEvent> ARACHNON_DEATH =
-            registerSound("entity.arachnon.death");
+            registerSound(PCSoundCatalog.ARACHNON_DEATH);
 
     // Hellhound
     public static final DeferredHolder<SoundEvent, SoundEvent> HELLHOUND_AMBIENT =
-            registerSound("entity.hellhound.ambient");
+            registerSound(PCSoundCatalog.HELLHOUND_AMBIENT);
     public static final DeferredHolder<SoundEvent, SoundEvent> HELLHOUND_HURT =
-            registerSound("entity.hellhound.hurt");
+            registerSound(PCSoundCatalog.HELLHOUND_HURT);
     public static final DeferredHolder<SoundEvent, SoundEvent> HELLHOUND_DEATH =
-            registerSound("entity.hellhound.death");
+            registerSound(PCSoundCatalog.HELLHOUND_DEATH);
 
     // Crab
     public static final DeferredHolder<SoundEvent, SoundEvent> CRAB_HURT =
-            registerSound("entity.crab.hurt");
+            registerSound(PCSoundCatalog.CRAB_HURT);
     public static final DeferredHolder<SoundEvent, SoundEvent> CRAB_DEATH =
-            registerSound("entity.crab.death");
+            registerSound(PCSoundCatalog.CRAB_DEATH);
 
     // Acidic Archvine
     public static final DeferredHolder<SoundEvent, SoundEvent> ACIDIC_ARCHVINE_ATTACK =
-            registerSound("entity.acidic_archvine.attack");
+            registerSound(PCSoundCatalog.ACIDIC_ARCHVINE_ATTACK);
 
     // Bufflon
     public static final DeferredHolder<SoundEvent, SoundEvent> BUFFLON_AMBIENT =
-            registerSound("entity.bufflon.ambient");
+            registerSound(PCSoundCatalog.BUFFLON_AMBIENT);
     public static final DeferredHolder<SoundEvent, SoundEvent> BUFFLON_HURT =
-            registerSound("entity.bufflon.hurt");
+            registerSound(PCSoundCatalog.BUFFLON_HURT);
     public static final DeferredHolder<SoundEvent, SoundEvent> BUFFLON_DEATH =
-            registerSound("entity.bufflon.death");
+            registerSound(PCSoundCatalog.BUFFLON_DEATH);
     public static final DeferredHolder<SoundEvent, SoundEvent> BUFFLON_ATTACK =
-            registerSound("entity.bufflon.attack");
+            registerSound(PCSoundCatalog.BUFFLON_ATTACK);
 
     // End Troll
     public static final DeferredHolder<SoundEvent, SoundEvent> END_TROLL_SCREAM =
-            registerSound("entity.end_troll.scream");
+            registerSound(PCSoundCatalog.END_TROLL_SCREAM);
     public static final DeferredHolder<SoundEvent, SoundEvent> END_TROLL_ATTACK =
-            registerSound("entity.end_troll.attack");
+            registerSound(PCSoundCatalog.END_TROLL_ATTACK);
     public static final DeferredHolder<SoundEvent, SoundEvent> END_TROLL_DEATH =
-            registerSound("entity.end_troll.death");
+            registerSound(PCSoundCatalog.END_TROLL_DEATH);
+
+    private PCSounds() {
+    }
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Reference.MODID, name);
