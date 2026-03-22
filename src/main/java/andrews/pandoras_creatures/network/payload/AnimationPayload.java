@@ -1,14 +1,12 @@
 package andrews.pandoras_creatures.network.payload;
 
+import andrews.pandoras_creatures.client.network.AnimationPayloadClientHandler;
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
@@ -36,23 +34,6 @@ public record AnimationPayload(int entityId, int animationIndex) implements Cust
      * Handle the payload on the client side
      */
     public static void handleClient(AnimationPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Level level = Minecraft.getInstance().level;
-            if (level != null) {
-                Entity entity = level.getEntity(payload.entityId());
-                // TODO: Implement animation handling when entity classes are migrated
-                // if (entity instanceof IAnimatedEntity animatedEntity) {
-                //     if (payload.animationIndex() == -1) {
-                //         animatedEntity.resetAnimation();
-                //     } else {
-                //         Animation[] animations = animatedEntity.getAnimations();
-                //         if (payload.animationIndex() >= 0 && payload.animationIndex() < animations.length) {
-                //             animatedEntity.setPlayingAnimation(animations[payload.animationIndex()]);
-                //         }
-                //     }
-                //     animatedEntity.setAnimationTick(0);
-                // }
-            }
-        });
+        context.enqueueWork(() -> AnimationPayloadClientHandler.handle(payload));
     }
 }

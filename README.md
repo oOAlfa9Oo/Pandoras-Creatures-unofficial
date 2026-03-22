@@ -63,6 +63,16 @@ Changes include:
 
 ---
 
+## Development
+
+Project restructuring and migration planning are being tracked in:
+
+* [PLAN_REESTRUCTURACION_MULTILOADER.md](./PLAN_REESTRUCTURACION_MULTILOADER.md)
+* [CONTRIBUTING.md](./CONTRIBUTING.md)
+* [docs/README.md](./docs/README.md)
+
+---
+
 ## License
 
 This project is licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0), in accordance with the original work by **andrew0030**.

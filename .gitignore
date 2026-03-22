@@ -5,12 +5,14 @@ backup/
 net/
 .vscode/
 .claude/
+docs/
 build_error.txt
 build_output.txt
 *.log
-
+.gitignore
 # Local analysis notes not intended for publication
 ANIMATION_SYSTEM_PORT.md
 AUDITORIA_ESTADISTICAS_ENTIDADES.md
 BUFFLON_MIGRACION_LEVANTAMIENTO.md
 LEVANTAMIENTO_*.md
+PLAN_REESTRUCTURACION_MULTILOADER.md
