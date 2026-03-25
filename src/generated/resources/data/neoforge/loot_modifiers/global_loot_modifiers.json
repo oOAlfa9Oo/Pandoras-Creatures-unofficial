@@ -1,0 +1,10 @@
+{
+  "entries": [
+    "pandoras_creatures:bufflon_desert_pyramid",
+    "pandoras_creatures:bufflon_end_city",
+    "pandoras_creatures:bufflon_jungle_temple",
+    "pandoras_creatures:bufflon_nether_bridge",
+    "pandoras_creatures:bufflon_simple_dungeon"
+  ],
+  "replace": false
+}

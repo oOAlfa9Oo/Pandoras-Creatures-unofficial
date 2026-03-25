@@ -50,12 +50,7 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
             return false;
         } else {
             this.findNearestTarget();
-
-            if (isProtectedByPlantHat(this.nearestTarget)) {
-                return false;
-            }
-
-            return this.nearestTarget != null;
+            return this.hasValidNearestTarget();
         }
     }
 
@@ -101,11 +96,7 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.nearestTarget != null && this.nearestTarget.isAlive()) {
-            if (isProtectedByPlantHat(this.nearestTarget)) {
-                return false;
-            }
-
+        if (this.hasValidNearestTarget()) {
             double followDistance = this.getFollowDistance();
             if (!AcidicArchvineTargetingRules.isWithinFollowDistance(this.mob.distanceToSqr(this.nearestTarget), followDistance)) {
                 return false;
@@ -126,7 +117,7 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
     @Override
     public void tick() {
         super.tick();
-        if (this.nearestTarget != null) {
+        if (this.hasValidNearestTarget()) {
             if (this.biteCooldown > 0) {
                 this.biteCooldown--;
             }
@@ -169,6 +160,10 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
             }
             this.nearestTarget.hurtMarked = true;
         }
+    }
+
+    private boolean hasValidNearestTarget() {
+        return AcidicArchvineTargetingRules.isValidTarget(this.nearestTarget, isProtectedByPlantHat(this.nearestTarget));
     }
 
     private boolean isProtectedByPlantHat(@Nullable LivingEntity target) {

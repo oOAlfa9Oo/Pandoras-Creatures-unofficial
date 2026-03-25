@@ -6,6 +6,7 @@ net/
 .vscode/
 .claude/
 docs/
+src/generated/resources/.cache/
 build_error.txt
 build_output.txt
 *.log

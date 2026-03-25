@@ -4,10 +4,8 @@ import andrews.pandoras_creatures.entities.EndTrollEntity;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 
@@ -49,9 +47,7 @@ public class EndTrollAttackGoal extends Goal {
         } else {
             this.lastCanUseCheck = i;
             LivingEntity livingentity = this.attacker.getTarget();
-            if (livingentity == null) {
-                return false;
-            } else if (!livingentity.isAlive()) {
+            if (!EndTrollBehaviorRules.isValidCombatTarget(livingentity)) {
                 return false;
             } else {
                 if (canPenalize) {
@@ -76,17 +72,18 @@ public class EndTrollAttackGoal extends Goal {
     @Override
     public boolean canContinueToUse() {
         LivingEntity livingentity = this.attacker.getTarget();
-        if (livingentity == null) {
-            return false;
-        } else if (!livingentity.isAlive()) {
-            return false;
-        } else if (!this.longMemory) {
-            return !this.attacker.getNavigation().isDone();
-        } else if (!this.attacker.isWithinRestriction(livingentity.blockPosition())) {
-            return false;
-        } else {
-            return !(livingentity instanceof Player) || !livingentity.isSpectator() && !((Player) livingentity).isCreative();
-        }
+        boolean hasValidTarget = EndTrollBehaviorRules.isValidCombatTarget(livingentity);
+        boolean withinRestriction = hasValidTarget && this.attacker.isWithinRestriction(livingentity.blockPosition());
+        boolean withinAttackReach = hasValidTarget
+                && this.attacker.distanceToSqr(livingentity.getX(), livingentity.getBoundingBox().minY, livingentity.getZ()) <= this.getAttackReachSqr(livingentity);
+        return EndTrollBehaviorRules.shouldContinueMeleeAttack(
+                hasValidTarget,
+                this.longMemory,
+                this.attacker.getNavigation().isDone(),
+                withinRestriction,
+                this.attacker.isAnyPunchAnimationPlaying(),
+                withinAttackReach
+        );
     }
 
     @Override
@@ -94,17 +91,29 @@ public class EndTrollAttackGoal extends Goal {
         this.attacker.getNavigation().moveTo(this.path, this.speedTowardsTarget);
         this.attacker.setAggressive(true);
         this.delayCounter = 0;
+        this.attackTick = 0;
     }
 
     @Override
     public void stop() {
         LivingEntity livingentity = this.attacker.getTarget();
-        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+        if (!EndTrollBehaviorRules.isValidCombatTarget(livingentity)) {
             this.attacker.setTarget(null);
+            if (this.attacker.isAnyPunchAnimationPlaying()) {
+                this.attacker.resetAnimation();
+            }
         }
 
         this.attacker.setAggressive(false);
         this.attacker.getNavigation().stop();
+        this.path = null;
+        this.delayCounter = 0;
+        this.targetX = 0.0D;
+        this.targetY = 0.0D;
+        this.targetZ = 0.0D;
+        this.attackTick = 0;
+        this.failedPathFindingPenalty = 0;
+        this.hasPerformedAttackLogic = false;
     }
 
     @Override
@@ -116,7 +125,7 @@ public class EndTrollAttackGoal extends Goal {
             }
 
             LivingEntity livingentity = this.attacker.getTarget();
-            if (livingentity == null) return;
+            if (!EndTrollBehaviorRules.isValidCombatTarget(livingentity)) return;
 
             this.attacker.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
             double d0 = this.attacker.distanceToSqr(livingentity.getX(), livingentity.getBoundingBox().minY, livingentity.getZ());
@@ -160,7 +169,7 @@ public class EndTrollAttackGoal extends Goal {
                 EndTrollBehaviorRules.shouldResolvePunchDamage(attacker.getAnimationTick(), this.hasPerformedAttackLogic)) {
 
                 LivingEntity livingentity = this.attacker.getTarget();
-                if (livingentity != null) {
+                if (EndTrollBehaviorRules.isValidCombatTarget(livingentity)) {
                     this.attackTick = 20;
                     if (attacker.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION)) {
                         this.attacker.performPunchAttack(livingentity, true);

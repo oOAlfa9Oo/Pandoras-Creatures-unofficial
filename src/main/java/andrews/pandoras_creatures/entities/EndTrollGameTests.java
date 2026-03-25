@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.end_troll.EndTrollPunchAnimation;
+import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollAttackGoal;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.util.NetworkUtil;
 import andrews.pandoras_creatures.util.Reference;
@@ -81,6 +82,37 @@ public final class EndTrollGameTests {
 
         helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.RIGHT_PUNCH_ANIMATION),
                 "End Troll should track punch animation state on the server");
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void meleeGoalKeepsRunningWhilePunchAnimationIsActive(GameTestHelper helper) {
+        EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+        Cow target = helper.spawn(EntityType.COW, TARGET_POS);
+        EndTrollAttackGoal attackGoal = new EndTrollAttackGoal(endTroll, 0.3D, false);
+
+        endTroll.setEntityStanding(true);
+        endTroll.setHasScreamed(true);
+        endTroll.setTarget(target);
+        endTroll.playPunchAnimation(EndTrollPunchAnimation.RIGHT);
+
+        helper.assertTrue(attackGoal.canContinueToUse(),
+                "End Troll melee goal should stay active while a punch animation is still resolving");
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void meleeGoalKeepsRunningAtCloseRangeWithoutPath(GameTestHelper helper) {
+        EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+        Cow target = helper.spawn(EntityType.COW, TARGET_POS);
+        EndTrollAttackGoal attackGoal = new EndTrollAttackGoal(endTroll, 0.3D, false);
+
+        endTroll.setEntityStanding(true);
+        endTroll.setHasScreamed(true);
+        endTroll.setTarget(target);
+
+        helper.assertTrue(attackGoal.canContinueToUse(),
+                "End Troll melee goal should remain active when the target is already inside punch reach");
         helper.succeed();
     }
 

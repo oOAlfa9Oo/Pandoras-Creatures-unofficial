@@ -1,5 +1,8 @@
 package andrews.pandoras_creatures.entities.end_troll;
 
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+
 public final class EndTrollBehaviorRules {
     public static final int DEFAULT_SHOOT_COOLDOWN = 300;
     public static final int DEFAULT_SCREAM_COOLDOWN = 400;
@@ -21,6 +24,33 @@ public final class EndTrollBehaviorRules {
 
     public static boolean shouldTryTransform(boolean isStanding, boolean hasTarget, double distanceToTargetSqr) {
         return !isStanding && hasTarget && distanceToTargetSqr < TRANSFORM_RANGE_SQR;
+    }
+
+    public static boolean hasValidCombatTarget(boolean hasTarget, boolean targetAlive, boolean creativeOrSpectator) {
+        return hasTarget && targetAlive && !creativeOrSpectator;
+    }
+
+    public static boolean isValidCombatTarget(LivingEntity target) {
+        boolean creativeOrSpectator = target instanceof Player player && (player.isCreative() || player.isSpectator());
+        return hasValidCombatTarget(target != null, target != null && target.isAlive(), creativeOrSpectator);
+    }
+
+    public static boolean shouldContinueMeleeAttack(boolean hasValidTarget,
+            boolean longMemory,
+            boolean navigationDone,
+            boolean withinRestriction,
+            boolean punchAnimationPlaying,
+            boolean withinAttackReach) {
+        if (!hasValidTarget) {
+            return false;
+        }
+        if (punchAnimationPlaying || withinAttackReach) {
+            return true;
+        }
+        if (!longMemory) {
+            return !navigationDone;
+        }
+        return withinRestriction;
     }
 
     public static boolean shouldTryScream(boolean hostileDifficulty,

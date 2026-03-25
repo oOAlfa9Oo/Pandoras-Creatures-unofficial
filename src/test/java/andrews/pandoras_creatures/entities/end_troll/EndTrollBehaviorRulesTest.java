@@ -23,6 +23,20 @@ class EndTrollBehaviorRulesTest {
     }
 
     @Test
+    void combatTargetValidationAndMeleeContinuationStayStable() {
+        assertTrue(EndTrollBehaviorRules.hasValidCombatTarget(true, true, false));
+        assertFalse(EndTrollBehaviorRules.hasValidCombatTarget(true, true, true));
+        assertFalse(EndTrollBehaviorRules.hasValidCombatTarget(true, false, false));
+        assertFalse(EndTrollBehaviorRules.hasValidCombatTarget(false, true, false));
+
+        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, false, true, true, true, false));
+        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, false, true, true, false, true));
+        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, true, true, true, false, false));
+        assertFalse(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, false, true, true, false, false));
+        assertFalse(EndTrollBehaviorRules.shouldContinueMeleeAttack(false, false, false, true, true, true));
+    }
+
+    @Test
     void cooldownAndDamageRulesStayStable() {
         assertEquals(0, EndTrollBehaviorRules.tickCooldown(0));
         assertEquals(9, EndTrollBehaviorRules.tickCooldown(10));

@@ -1,8 +1,0 @@
-{
-  "type": "neoforge:add_features",
-  "biomes": [
-    "minecraft:swamp"
-  ],
-  "features": "pandoras_creatures:dhania",
-  "step": "vegetal_decoration"
-}

@@ -22,7 +22,7 @@ public class EndTrollScreamGoal extends Goal {
         LivingEntity livingentity = goalOwner.getTarget();
         return EndTrollBehaviorRules.shouldTryScream(
                 goalOwner.level().getDifficulty() != Difficulty.PEACEFUL,
-                livingentity != null && livingentity.isAlive(),
+                EndTrollBehaviorRules.isValidCombatTarget(livingentity),
                 goalOwner.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION),
                 !goalOwner.isWorldRemote(),
                 this.goalOwner.getNavigation().isDone(),

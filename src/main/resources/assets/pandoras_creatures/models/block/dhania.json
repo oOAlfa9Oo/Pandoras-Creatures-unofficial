@@ -1,7 +1,0 @@
-{
-    "render_type": "cutout",
-    "parent": "block/cross",
-    "textures": {
-        "cross": "pandoras_creatures:block/dhania"
-    }
-}

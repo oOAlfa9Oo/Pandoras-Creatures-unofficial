@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smoking",
+  "cookingtime": 100,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "pandoras_creatures:bufflon_beef"
+  },
+  "result": {
+    "id": "pandoras_creatures:bufflon_beef_cooked"
+  }
+}

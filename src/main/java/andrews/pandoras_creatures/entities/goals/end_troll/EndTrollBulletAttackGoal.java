@@ -30,7 +30,7 @@ public class EndTrollBulletAttackGoal extends Goal {
         LivingEntity livingentity = goalOwner.getTarget();
         return EndTrollBehaviorRules.shouldTryShoot(
                 goalOwner.level().getDifficulty() != Difficulty.PEACEFUL,
-                livingentity != null && livingentity.isAlive(),
+                EndTrollBehaviorRules.isValidCombatTarget(livingentity),
                 goalOwner.blocksRangedAttackGoal(),
                 !goalOwner.isWorldRemote(),
                 goalOwner.getShootCooldown()
@@ -40,7 +40,7 @@ public class EndTrollBulletAttackGoal extends Goal {
     @Override
     public void tick() {
         LivingEntity livingentity = goalOwner.getTarget();
-        if (livingentity == null) return;
+        if (!EndTrollBehaviorRules.isValidCombatTarget(livingentity)) return;
 
         goalOwner.getLookControl().setLookAt(livingentity, 180.0F, 180.0F);
         double d0 = goalOwner.distanceToSqr(livingentity);

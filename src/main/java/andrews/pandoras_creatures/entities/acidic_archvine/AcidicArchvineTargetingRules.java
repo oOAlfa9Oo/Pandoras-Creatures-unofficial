@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.entities.acidic_archvine;
 
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,6 +18,18 @@ public final class AcidicArchvineTargetingRules {
 
     public static boolean isProtectedByPlantHat(boolean wearsPlantHat) {
         return wearsPlantHat;
+    }
+
+    public static boolean hasValidTarget(boolean hasTarget,
+            boolean targetAlive,
+            boolean creativeOrSpectator,
+            boolean protectedByPlantHat) {
+        return hasTarget && targetAlive && !creativeOrSpectator && !protectedByPlantHat;
+    }
+
+    public static boolean isValidTarget(LivingEntity target, boolean protectedByPlantHat) {
+        boolean creativeOrSpectator = target instanceof Player player && (player.isCreative() || player.isSpectator());
+        return hasValidTarget(target != null, target != null && target.isAlive(), creativeOrSpectator, protectedByPlantHat);
     }
 
     public static AABB createTargetableArea(AABB archvineBounds, double followDistance) {

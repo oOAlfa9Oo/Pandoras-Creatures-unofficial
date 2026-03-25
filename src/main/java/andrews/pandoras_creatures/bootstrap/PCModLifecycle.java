@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.bootstrap;
 
 import andrews.pandoras_creatures.PandorasCreatures;
+import andrews.pandoras_creatures.datagen.PCDataGenerators;
 import andrews.pandoras_creatures.network.PCNetwork;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.entity.PCEntityAttributes;
@@ -23,6 +24,7 @@ public final class PCModLifecycle {
         modEventBus.addListener(PCModLifecycle::registerEntityAttributes);
         modEventBus.addListener(PCModLifecycle::registerSpawnPlacements);
         modEventBus.addListener(PCModLifecycle::registerPayloadHandlers);
+        modEventBus.addListener(PCDataGenerators::gatherData);
     }
 
     private static void commonSetup(final FMLCommonSetupEvent event) {

@@ -9,6 +9,10 @@ class AcidicArchvineTargetingRulesTest {
     @Test
     void appliesDistanceThresholds() {
         assertTrue(AcidicArchvineTargetingRules.isProtectedByPlantHat(true));
+        assertTrue(AcidicArchvineTargetingRules.hasValidTarget(true, true, false, false));
+        assertFalse(AcidicArchvineTargetingRules.hasValidTarget(true, true, true, false));
+        assertFalse(AcidicArchvineTargetingRules.hasValidTarget(true, true, false, true));
+        assertFalse(AcidicArchvineTargetingRules.hasValidTarget(true, false, false, false));
         assertTrue(AcidicArchvineTargetingRules.isWithinFollowDistance(9.0D, 3.0D));
         assertFalse(AcidicArchvineTargetingRules.isWithinFollowDistance(10.0D, 3.0D));
         assertTrue(AcidicArchvineTargetingRules.canHoldTarget(1.5D));

@@ -1,0 +1,37 @@
+{
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "pandoras_creatures:bufflon_saddle",
+          "weight": 3.0
+        },
+        {
+          "type": "minecraft:item",
+          "name": "pandoras_creatures:bufflon_player_seats",
+          "weight": 3.0
+        },
+        {
+          "type": "minecraft:item",
+          "name": "pandoras_creatures:bufflon_small_storage",
+          "weight": 3.0
+        },
+        {
+          "type": "minecraft:item",
+          "name": "pandoras_creatures:bufflon_large_storage",
+          "weight": 3.0
+        },
+        {
+          "type": "empty",
+          "weight": 88
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 1.0
+      }
+    }
+  ]
+}

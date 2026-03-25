@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "minecraft:leather_helmet"
+    },
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "T": {
+      "item": "pandoras_creatures:acidic_archvine_tongue"
+    }
+  },
+  "pattern": [
+    "LLL",
+    "SSS",
+    "THT"
+  ],
+  "result": {
+    "id": "pandoras_creatures:plant_hat"
+  }
+}

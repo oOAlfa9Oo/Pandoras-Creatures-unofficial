@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:item/generated",
+  "display": {
+    "ground": {
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ]
+    },
+    "gui": {
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    }
+  },
+  "textures": {
+    "layer0": "pandoras_creatures:item/seahorse_cooked"
+  }
+}

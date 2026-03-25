@@ -22,7 +22,7 @@ public class EndTrollTransformGoal extends Goal {
         LivingEntity livingentity = this.endTroll.getTarget();
         return EndTrollBehaviorRules.shouldTryTransform(
                 this.endTroll.isEntityStanding(),
-                livingentity != null,
+                EndTrollBehaviorRules.isValidCombatTarget(livingentity),
                 livingentity == null ? Double.MAX_VALUE : this.endTroll.distanceToSqr(livingentity)
         );
     }
