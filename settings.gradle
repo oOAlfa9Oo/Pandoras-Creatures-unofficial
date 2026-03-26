@@ -11,3 +11,5 @@ plugins {
 }
 
 rootProject.name = 'pandoras_creatures'
+include 'common'
+include 'neoforge'

@@ -1,0 +1,25 @@
+package andrews.pandoras_creatures.registry.block;
+
+import net.minecraft.world.item.DyeColor;
+import java.util.List;
+
+public final class PCEndTrollBoxPalette {
+    private static final List<DyeColor> ORDERED_COLORS = PCEndTrollBoxNaming.orderedColorNames().stream()
+            .map(colorName -> DyeColor.byName(colorName, DyeColor.WHITE))
+            .toList();
+
+    private PCEndTrollBoxPalette() {
+    }
+
+    public static List<DyeColor> orderedColors() {
+        return ORDERED_COLORS;
+    }
+
+    public static String blockName(DyeColor color) {
+        return PCEndTrollBoxNaming.blockName(color == null ? null : color.getName());
+    }
+
+    public static String texturePath(DyeColor color) {
+        return PCEndTrollBoxNaming.texturePath(color == null ? null : color.getName());
+    }
+}

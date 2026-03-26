@@ -1,128 +1,58 @@
 plugins {
-    id 'java-library'
-    id 'eclipse'
-    id 'idea'
-    id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.42-beta'
+    id 'base'
 }
 
 version = mod_version
 group = mod_group_id
 
-base {
-    archivesName = mod_id
+tasks.named('clean') {
+    dependsOn ':common:clean', ':neoforge:clean'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-neoForge {
-    version = neo_version
-
-    // Parchment disabled - mappings not available for this MC version yet
-    // parchment {
-    //     mappingsVersion = "2024.11.17"
-    //     minecraftVersion = "1.21"
-    // }
-
-    runs {
-        client {
-            client()
-            gameDirectory = project.layout.projectDirectory.dir('run/client')
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        }
-
-        server {
-            server()
-            gameDirectory = project.layout.projectDirectory.dir('run/server')
-            programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        }
-
-        gameTestServer {
-            type = "gameTestServer"
-            gameDirectory = project.layout.projectDirectory.dir('run/gametest')
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        }
-
-        data {
-            data()
-            gameDirectory = project.layout.projectDirectory.dir('run/data')
-            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-    }
-
-    mods {
-        "${mod_id}" {
-            sourceSet sourceSets.main
-        }
-    }
+tasks.named('assemble') {
+    dependsOn ':common:assemble', ':neoforge:assemble'
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
+tasks.named('check') {
+    dependsOn ':common:test', ':neoforge:test'
 }
 
-repositories {
-    mavenLocal()
-    maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
-    }
+tasks.named('build') {
+    dependsOn ':common:build', ':neoforge:build'
 }
 
-dependencies {
-    // NeoForge is already included by the moddev plugin
-    testImplementation platform('org.junit:junit-bom:5.14.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+tasks.register('compileJava') {
+    group = 'build'
+    description = 'Compiles common and NeoForge Java sources from the workspace root.'
+    dependsOn ':common:compileJava', ':neoforge:compileJava'
 }
 
-tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            neo_version_range      : neo_version_range,
-            loader_version_range   : loader_version_range,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_authors            : mod_authors,
-    ]
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties + [project: project]
-    }
+tasks.register('test') {
+    group = 'verification'
+    description = 'Runs unit tests for common and NeoForge from the workspace root.'
+    dependsOn ':common:test', ':neoforge:test'
 }
 
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
-        }
-    }
+tasks.register('runClient') {
+    group = 'moddev'
+    description = 'Runs the NeoForge development client from the workspace root.'
+    dependsOn ':neoforge:runClient'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+tasks.register('runServer') {
+    group = 'moddev'
+    description = 'Runs the NeoForge dedicated server from the workspace root.'
+    dependsOn ':neoforge:runServer'
 }
 
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
+tasks.register('runGameTestServer') {
+    group = 'verification'
+    description = 'Runs the NeoForge GameTest server from the workspace root.'
+    dependsOn ':neoforge:runGameTestServer'
 }
 
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
+tasks.register('runData') {
+    group = 'moddev'
+    description = 'Runs NeoForge data generation from the workspace root.'
+    dependsOn ':neoforge:runData'
 }
