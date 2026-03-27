@@ -1,15 +1,14 @@
 package andrews.pandoras_creatures.entities.goals.end_troll;
 
+import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.EndTrollEntity;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileFactory;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileLaunch;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileRules;
-import andrews.pandoras_creatures.util.NetworkUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -29,16 +28,26 @@ public class EndTrollBulletAttackGoal extends Goal {
     public boolean canUse() {
         LivingEntity livingentity = goalOwner.getTarget();
         return EndTrollBehaviorRules.shouldTryShoot(
-                goalOwner.level().getDifficulty() != Difficulty.PEACEFUL,
+                goalOwner.isHostileDifficulty(),
                 EndTrollBehaviorRules.isValidCombatTarget(livingentity),
                 goalOwner.blocksRangedAttackGoal(),
                 !goalOwner.isWorldRemote(),
+                livingentity == null ? Double.MAX_VALUE : goalOwner.distanceToSqr(livingentity),
                 goalOwner.getShootCooldown()
         );
     }
 
     @Override
+    public boolean canContinueToUse() {
+        return this.canUse();
+    }
+
+    @Override
     public void tick() {
+        if (!goalOwner.isHostileDifficulty()) {
+            return;
+        }
+
         LivingEntity livingentity = goalOwner.getTarget();
         if (!EndTrollBehaviorRules.isValidCombatTarget(livingentity)) return;
 
@@ -46,7 +55,7 @@ public class EndTrollBulletAttackGoal extends Goal {
         double d0 = goalOwner.distanceToSqr(livingentity);
         if (d0 < 400.0D) {
             if (goalOwner.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION) && !goalOwner.level().isClientSide()) {
-                NetworkUtil.sendAnimationPacket(goalOwner, EndTrollEntity.SHOOT_ANIMATION);
+                PandorasCreaturesCommon.platform().entities().syncAnimation(goalOwner, EndTrollEntity.SHOOT_ANIMATION);
             }
 
             if (goalOwner.isAnimationPlaying(EndTrollEntity.SHOOT_ANIMATION) && goalOwner.getAnimationTick() == 9) {

@@ -1,12 +1,11 @@
 package andrews.pandoras_creatures.datagen.worldgen;
 
-import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,7 +18,7 @@ public final class PCStructureSetDataProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
-        return DataProvider.saveStable(cachedOutput, createEndPrisonStructureSet(), structureSetPathProvider.json(id("end_prison")));
+        return DataProvider.saveStable(cachedOutput, createEndPrisonStructureSet(), structureSetPathProvider.json(PCStructureIds.id(PCStructureIds.END_PRISON)));
     }
 
     @Override
@@ -32,7 +31,7 @@ public final class PCStructureSetDataProvider implements DataProvider {
 
         JsonArray structures = new JsonArray();
         JsonObject structure = new JsonObject();
-        structure.addProperty("structure", "pandoras_creatures:end_prison");
+        structure.addProperty("structure", PCStructureIds.qualified(PCStructureIds.END_PRISON));
         structure.addProperty("weight", 1);
         structures.add(structure);
         root.add("structures", structures);
@@ -50,9 +49,5 @@ public final class PCStructureSetDataProvider implements DataProvider {
 
         root.add("placement", placement);
         return root;
-    }
-
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
     }
 }

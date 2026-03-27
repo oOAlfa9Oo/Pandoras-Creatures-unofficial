@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.entities.seahorse;
 
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
+
 public final class SeahorseVariantCatalog {
     public static final int MIN_TYPE = 1;
     public static final int MAX_TYPE = 10;
@@ -29,26 +31,26 @@ public final class SeahorseVariantCatalog {
 
     public static String variantTooltipKey(int typeId) {
         return switch (normalizeType(typeId)) {
-            case 1 -> "chat.pandoras_creatures.seahorseBucketTooltip.orange";
-            case 2 -> "chat.pandoras_creatures.seahorseBucketTooltip.green";
-            case 3 -> "chat.pandoras_creatures.seahorseBucketTooltip.red";
-            case 4 -> "chat.pandoras_creatures.seahorseBucketTooltip.yellow";
-            case 5 -> "chat.pandoras_creatures.seahorseBucketTooltip.chromatic";
-            case 6 -> "chat.pandoras_creatures.seahorseBucketTooltip.cyan";
-            case 7 -> "chat.pandoras_creatures.seahorseBucketTooltip.purple";
-            case 8 -> "chat.pandoras_creatures.seahorseBucketTooltip.pink";
-            case 9 -> "chat.pandoras_creatures.seahorseBucketTooltip.lime";
-            default -> "chat.pandoras_creatures.seahorseBucketTooltip.ghost";
+            case 1 -> PCLanguageKeys.chat("seahorseBucketTooltip.orange");
+            case 2 -> PCLanguageKeys.chat("seahorseBucketTooltip.green");
+            case 3 -> PCLanguageKeys.chat("seahorseBucketTooltip.red");
+            case 4 -> PCLanguageKeys.chat("seahorseBucketTooltip.yellow");
+            case 5 -> PCLanguageKeys.chat("seahorseBucketTooltip.chromatic");
+            case 6 -> PCLanguageKeys.chat("seahorseBucketTooltip.cyan");
+            case 7 -> PCLanguageKeys.chat("seahorseBucketTooltip.purple");
+            case 8 -> PCLanguageKeys.chat("seahorseBucketTooltip.pink");
+            case 9 -> PCLanguageKeys.chat("seahorseBucketTooltip.lime");
+            default -> PCLanguageKeys.chat("seahorseBucketTooltip.ghost");
         };
     }
 
     public static String sizeTooltipKey(int sizeId) {
         return switch (normalizeSize(sizeId)) {
-            case 1 -> "chat.pandoras_creatures.seahorseBucketTooltip.verySmall";
-            case 2 -> "chat.pandoras_creatures.seahorseBucketTooltip.small";
-            case 3 -> "chat.pandoras_creatures.seahorseBucketTooltip.normal";
-            case 4 -> "chat.pandoras_creatures.seahorseBucketTooltip.big";
-            default -> "chat.pandoras_creatures.seahorseBucketTooltip.veryBig";
+            case 1 -> PCLanguageKeys.chat("seahorseBucketTooltip.verySmall");
+            case 2 -> PCLanguageKeys.chat("seahorseBucketTooltip.small");
+            case 3 -> PCLanguageKeys.chat("seahorseBucketTooltip.normal");
+            case 4 -> PCLanguageKeys.chat("seahorseBucketTooltip.big");
+            default -> PCLanguageKeys.chat("seahorseBucketTooltip.veryBig");
         };
     }
 

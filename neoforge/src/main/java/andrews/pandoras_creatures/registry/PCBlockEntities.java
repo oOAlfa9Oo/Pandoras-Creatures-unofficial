@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.registry;
 
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.block_entities.PandoricShardBlockEntity;
+import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -13,13 +14,13 @@ public class PCBlockEntities {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Reference.MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndTrollBoxBlockEntity>> END_TROLL_BOX =
-            BLOCK_ENTITY_TYPES.register("end_troll_shulker", () -> BlockEntityType.Builder.of(
+            BLOCK_ENTITY_TYPES.register(PCBlockEntityIds.END_TROLL_BOX, () -> BlockEntityType.Builder.of(
                     EndTrollBoxBlockEntity::new,
                     PCBlocks.getEndTrollBoxBlockArray()
             ).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PandoricShardBlockEntity>> PANDORIC_SHARD =
-            BLOCK_ENTITY_TYPES.register("pandoric_shard", () -> BlockEntityType.Builder.of(
+            BLOCK_ENTITY_TYPES.register(PCBlockEntityIds.PANDORIC_SHARD, () -> BlockEntityType.Builder.of(
                     PandoricShardBlockEntity::new,
                     PCBlocks.PANDORIC_SHARD.get()
             ).build(null));

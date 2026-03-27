@@ -16,6 +16,7 @@ public final class EndTrollBehaviorRules {
     private static final int CHORUS_BREAK_INTERVAL = 10;
     private static final double TRANSFORM_RANGE_SQR = 150.0D;
     private static final double SCREAM_RANGE = 10.0D;
+    private static final double SHOOT_RANGE_SQR = 400.0D;
     private static final int SINGLE_PUNCH_BASE_DAMAGE = 12;
     private static final int DOUBLE_PUNCH_BASE_DAMAGE = 14;
 
@@ -24,6 +25,10 @@ public final class EndTrollBehaviorRules {
 
     public static boolean shouldTryTransform(boolean isStanding, boolean hasTarget, double distanceToTargetSqr) {
         return !isStanding && hasTarget && distanceToTargetSqr < TRANSFORM_RANGE_SQR;
+    }
+
+    public static boolean isHostileDifficulty(boolean hostileDifficulty) {
+        return hostileDifficulty;
     }
 
     public static boolean hasValidCombatTarget(boolean hasTarget, boolean targetAlive, boolean creativeOrSpectator) {
@@ -36,12 +41,13 @@ public final class EndTrollBehaviorRules {
     }
 
     public static boolean shouldContinueMeleeAttack(boolean hasValidTarget,
+            boolean hostileDifficulty,
             boolean longMemory,
             boolean navigationDone,
             boolean withinRestriction,
             boolean punchAnimationPlaying,
             boolean withinAttackReach) {
-        if (!hasValidTarget) {
+        if (!hostileDifficulty || !hasValidTarget) {
             return false;
         }
         if (punchAnimationPlaying || withinAttackReach) {
@@ -53,8 +59,13 @@ public final class EndTrollBehaviorRules {
         return withinRestriction;
     }
 
+    public static boolean shouldAbortCombat(boolean hostileDifficulty, boolean hasValidTarget, boolean combatAnimationPlaying) {
+        return (!hostileDifficulty || !hasValidTarget) && combatAnimationPlaying;
+    }
+
     public static boolean shouldTryScream(boolean hostileDifficulty,
             boolean hasAliveTarget,
+            boolean hasScreamed,
             boolean blankAnimation,
             boolean serverSide,
             boolean navigationDone,
@@ -62,6 +73,7 @@ public final class EndTrollBehaviorRules {
             int screamCooldown) {
         return hostileDifficulty
                 && hasAliveTarget
+                && !hasScreamed
                 && blankAnimation
                 && serverSide
                 && !navigationDone
@@ -73,11 +85,13 @@ public final class EndTrollBehaviorRules {
             boolean hasAliveTarget,
             boolean blockedByAnimation,
             boolean serverSide,
+            double distanceToTargetSqr,
             int shootCooldown) {
         return hostileDifficulty
                 && hasAliveTarget
                 && !blockedByAnimation
                 && serverSide
+                && distanceToTargetSqr <= SHOOT_RANGE_SQR
                 && shootCooldown == 0;
     }
 

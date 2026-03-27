@@ -3,12 +3,11 @@ package andrews.pandoras_creatures.registry;
 import andrews.pandoras_creatures.content.block.ArachnonCrystalBlock;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
 import andrews.pandoras_creatures.content.block.PCPlantBlock;
-import andrews.pandoras_creatures.content.item.EndTrollBoxItem;
+import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -30,31 +29,31 @@ public class PCBlocks {
     private static final Map<DyeColor, DeferredHolder<Block, Block>> COLORED_END_TROLL_BOXES = new EnumMap<>(DyeColor.class);
 
     // Simple blocks
-    public static final DeferredHolder<Block, Block> ARACHNON_CRYSTAL = registerBlock("arachnon_crystal",
+    public static final DeferredHolder<Block, Block> ARACHNON_CRYSTAL = registerBlock(PCBlockIds.ARACHNON_CRYSTAL,
             () -> new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
                     .strength(1.5F, 6.0F)
                     .lightLevel(state -> 9)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()));
 
-    public static final DeferredHolder<Block, Block> HORSETAIL = registerBlock("horsetail",
+    public static final DeferredHolder<Block, Block> HORSETAIL = registerBlock(PCBlockIds.HORSETAIL,
             () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                     .noCollission()
                     .noOcclusion()));
 
-    public static final DeferredHolder<Block, Block> DHANIA = registerBlock("dhania",
+    public static final DeferredHolder<Block, Block> DHANIA = registerBlock(PCBlockIds.DHANIA,
             () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                     .noCollission()
                     .noOcclusion()));
 
-    public static final DeferredHolder<Block, Block> HILL_BLOOM = registerBlock("hill_bloom",
+    public static final DeferredHolder<Block, Block> HILL_BLOOM = registerBlock(PCBlockIds.HILL_BLOOM,
             () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                     .noCollission()
                     .noOcclusion()));
 
     // End Troll Boxes - Using custom EndTrollBoxBlock and EndTrollBoxItem
     public static final DeferredHolder<Block, Block> END_TROLL_BOX = registerEndTrollBox(
-            PCEndTrollBoxPalette.blockName(null),
+            PCBlockIds.END_TROLL_BOX,
             null,
             Blocks.SHULKER_BOX
     );
@@ -92,19 +91,17 @@ public class PCBlocks {
     public static final DeferredHolder<Block, Block> BLACK_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.BLACK, Blocks.BLACK_SHULKER_BOX);
 
     // Pandoric Shard - TODO: Implement PandoricShardBlock class
-    public static final DeferredHolder<Block, Block> PANDORIC_SHARD = registerBlock("pandoric_shard",
+    public static final DeferredHolder<Block, Block> PANDORIC_SHARD = registerBlock(PCBlockIds.PANDORIC_SHARD,
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
                     .noOcclusion()
                     .lightLevel(state -> 10)));
 
     private static DeferredHolder<Block, Block> registerBlock(String name, Supplier<Block> block) {
-        DeferredHolder<Block, Block> blockHolder = BLOCKS.register(name, block);
-        PCItems.ITEMS.register(name, () -> new BlockItem(blockHolder.get(), new Item.Properties()));
-        return blockHolder;
+        return BLOCKS.register(name, block);
     }
 
     private static DeferredHolder<Block, Block> registerColoredEndTrollBox(DyeColor color, Block sourceBlock) {
-        return registerEndTrollBox(PCEndTrollBoxPalette.blockName(color), color, sourceBlock);
+        return registerEndTrollBox(PCBlockIds.endTrollBox(color.getName()), color, sourceBlock);
     }
 
     private static DeferredHolder<Block, Block> registerEndTrollBox(String name, @Nullable DyeColor color, Block sourceBlock) {
@@ -114,7 +111,6 @@ public class PCBlocks {
 
     private static DeferredHolder<Block, Block> registerTrackedEndTrollBox(@Nullable DyeColor color, String name, Supplier<Block> block) {
         DeferredHolder<Block, Block> blockHolder = BLOCKS.register(name, block);
-        PCItems.ITEMS.register(name, () -> new EndTrollBoxItem(blockHolder.get(), new Item.Properties().stacksTo(1).fireResistant()));
         END_TROLL_BOX_BLOCKS.add(blockHolder);
         if (color != null) {
             COLORED_END_TROLL_BOXES.put(color, blockHolder);

@@ -1,8 +1,8 @@
 package andrews.pandoras_creatures.block_entities;
 
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import andrews.pandoras_creatures.menu.EndTrollBoxMenu;
 import andrews.pandoras_creatures.registry.PCBlockEntities;
-import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -141,7 +141,7 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
 
     @Override
     protected Component getDefaultName() {
-        return Component.translatable("container." + Reference.MODID + ".end_troll_box");
+        return Component.translatable(PCLanguageKeys.END_TROLL_BOX_CONTAINER);
     }
 
     @Override

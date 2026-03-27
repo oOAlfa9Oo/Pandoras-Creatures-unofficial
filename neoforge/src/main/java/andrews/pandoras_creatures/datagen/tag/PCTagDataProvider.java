@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.datagen.tag;
 
+import andrews.pandoras_creatures.registry.block.PCBlockIds;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
@@ -28,8 +30,8 @@ public final class PCTagDataProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(endTrollBoxValues()), itemTagPathProvider.json(id("end_troll_boxes"))));
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(vanillaShulkerBoxValues()), itemTagPathProvider.json(id("vanilla_shulker_boxes"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of("pandoras_creatures:arachnon")), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("arthropod"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of("pandoras_creatures:hellhound")), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("undead"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.ARACHNON))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("arthropod"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.HELLHOUND))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("undead"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -53,9 +55,9 @@ public final class PCTagDataProvider implements DataProvider {
 
     private static List<String> endTrollBoxValues() {
         List<String> values = new ArrayList<>();
-        values.add("pandoras_creatures:end_troll_box");
+        values.add(modId(PCBlockIds.END_TROLL_BOX));
         PCEndTrollBoxPalette.orderedColors().forEach(color ->
-                values.add("pandoras_creatures:" + PCEndTrollBoxPalette.blockName(color)));
+                values.add(modId(PCBlockIds.endTrollBox(color.getName()))));
         return values;
     }
 
@@ -65,5 +67,9 @@ public final class PCTagDataProvider implements DataProvider {
         PCEndTrollBoxPalette.orderedColors().forEach(color ->
                 values.add("minecraft:" + color.getName() + "_shulker_box"));
         return values;
+    }
+
+    private static String modId(String path) {
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path).toString();
     }
 }

@@ -1,9 +1,87 @@
+import groovy.io.FileType
+
 plugins {
     id 'base'
 }
 
 version = mod_version
 group = mod_group_id
+
+def commonSourceRoots = [
+        layout.projectDirectory.dir('common/src/main/java').asFile,
+        layout.projectDirectory.dir('common/src/test/java').asFile
+]
+
+def commonResourceRoots = [
+        layout.projectDirectory.dir('common/src/main/resources').asFile,
+        layout.projectDirectory.dir('common/src/generated/resources').asFile,
+        layout.projectDirectory.dir('common/src/test/resources').asFile
+]
+
+def forbiddenLoaderImports = [
+        [label: 'NeoForge import', pattern: ~/^\s*import\s+net\.neoforged\./],
+        [label: 'Forge import', pattern: ~/^\s*import\s+net\.minecraftforge\./],
+        [label: 'Fabric import', pattern: ~/^\s*import\s+net\.fabricmc\./],
+        [label: 'ModLauncher import', pattern: ~/^\s*import\s+cpw\.mods\./]
+]
+
+def loaderSpecificResourceRules = [
+        [label: 'NeoForge mod descriptor', pattern: ~/(^|[\\/])META-INF[\\/]neoforge\.mods\.toml$/],
+        [label: 'Forge mod descriptor', pattern: ~/(^|[\\/])META-INF[\\/]mods\.toml$/],
+        [label: 'Fabric descriptor', pattern: ~/(^|[\\/])fabric\.mod\.json$/],
+        [label: 'NeoForge registry namespace', pattern: ~/(^|[\\/])data[\\/]neoforge([\\/]|$)/],
+        [label: 'Loader-specific namespaced data', pattern: ~/(^|[\\/])data[\\/][^\\/]+[\\/]neoforge([\\/]|$)/]
+]
+
+tasks.register('verifyArchitecture') {
+    group = 'verification'
+    description = 'Verifies that common stays free of loader imports and loader-specific resources.'
+
+    doLast {
+        def violations = []
+
+        commonSourceRoots.each { root ->
+            if (!root.exists()) {
+                return
+            }
+
+            root.eachFileRecurse(FileType.FILES) { file ->
+                if (!file.name.endsWith('.java')) {
+                    return
+                }
+
+                def lineNumber = 0
+                file.eachLine('UTF-8') { line ->
+                    lineNumber++
+                    forbiddenLoaderImports.each { rule ->
+                        if (line ==~ rule.pattern) {
+                            violations << "${rule.label} in ${project.relativePath(file)}:${lineNumber}"
+                        }
+                    }
+                }
+            }
+        }
+
+        commonResourceRoots.each { root ->
+            if (!root.exists()) {
+                return
+            }
+
+            root.eachFileRecurse(FileType.FILES) { file ->
+                def normalizedPath = file.absolutePath.replace('\\', '/')
+                loaderSpecificResourceRules.each { rule ->
+                    if (rule.pattern.matcher(normalizedPath).find()) {
+                        violations << "${rule.label} outside neoforge in ${project.relativePath(file)}"
+                    }
+                }
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("Architecture validation failed:\n - " + violations.join('\n - '))
+        }
+    }
+}
 
 tasks.named('clean') {
     dependsOn ':common:clean', ':neoforge:clean'
@@ -14,7 +92,7 @@ tasks.named('assemble') {
 }
 
 tasks.named('check') {
-    dependsOn ':common:test', ':neoforge:test'
+    dependsOn ':common:test', ':neoforge:test', 'verifyArchitecture'
 }
 
 tasks.named('build') {
@@ -30,7 +108,7 @@ tasks.register('compileJava') {
 tasks.register('test') {
     group = 'verification'
     description = 'Runs unit tests for common and NeoForge from the workspace root.'
-    dependsOn ':common:test', ':neoforge:test'
+    dependsOn 'verifyArchitecture', ':common:test', ':neoforge:test'
 }
 
 tasks.register('runClient') {

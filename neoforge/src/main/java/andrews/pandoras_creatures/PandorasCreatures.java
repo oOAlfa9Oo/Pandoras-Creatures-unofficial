@@ -1,7 +1,6 @@
 package andrews.pandoras_creatures;
 
-import andrews.pandoras_creatures.bootstrap.PCModLifecycle;
-import andrews.pandoras_creatures.registry.bootstrap.PCDeferredRegisters;
+import andrews.pandoras_creatures.bootstrap.PCNeoForgeBootstrap;
 import andrews.pandoras_creatures.util.Reference;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -17,7 +16,6 @@ public class PandorasCreatures {
     public PandorasCreatures(IEventBus modEventBus, ModContainer modContainer) {
         instance = this;
 
-        PCDeferredRegisters.registerAll(modEventBus);
-        PCModLifecycle.register(modEventBus);
+        PCNeoForgeBootstrap.register(modEventBus);
     }
 }

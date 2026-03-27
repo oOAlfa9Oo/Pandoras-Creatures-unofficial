@@ -1,15 +1,14 @@
 package andrews.pandoras_creatures.client.renderer.tile;
 
+import andrews.pandoras_creatures.client.model.base.PCModelLayers;
 import andrews.pandoras_creatures.client.model.tile.EndTrollBoxModel;
 import andrews.pandoras_creatures.registry.PCBlocks;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
-import andrews.pandoras_creatures.util.Reference;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -26,20 +25,17 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
-    public static final ModelLayerLocation END_TROLL_BOX_LAYER = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(Reference.MODID, "end_troll_box"), "main");
-
     private static PCItemRenderer instance;
     private EndTrollBoxModel endTrollBoxModel;
 
-    public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/tile/end_troll_box.png");
+    public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
     public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
-            .map(color -> ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEndTrollBoxPalette.texturePath(color)))
+            .map(PCEndTrollBoxPalette::textureId)
             .collect(ImmutableList.toImmutableList());
 
     public PCItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
         super(dispatcher, modelSet);
-        this.endTrollBoxModel = new EndTrollBoxModel(modelSet.bakeLayer(END_TROLL_BOX_LAYER));
+        this.endTrollBoxModel = new EndTrollBoxModel(modelSet.bakeLayer(PCModelLayers.END_TROLL_BOX));
     }
 
     public static PCItemRenderer getInstance() {

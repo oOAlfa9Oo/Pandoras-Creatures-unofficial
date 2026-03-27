@@ -1,9 +1,9 @@
 package andrews.pandoras_creatures.entities.seahorse;
 
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SeahorseVariantCatalogTest {
     @Test
@@ -16,8 +16,8 @@ class SeahorseVariantCatalogTest {
 
     @Test
     void exposesTooltipKeysForVariantAndSize() {
-        assertTrue(SeahorseVariantCatalog.variantTooltipKey(5).contains("chromatic"));
-        assertTrue(SeahorseVariantCatalog.sizeTooltipKey(4).contains("big"));
+        assertEquals(PCLanguageKeys.chat("seahorseBucketTooltip.chromatic"), SeahorseVariantCatalog.variantTooltipKey(5));
+        assertEquals(PCLanguageKeys.chat("seahorseBucketTooltip.big"), SeahorseVariantCatalog.sizeTooltipKey(4));
     }
 
     @Test

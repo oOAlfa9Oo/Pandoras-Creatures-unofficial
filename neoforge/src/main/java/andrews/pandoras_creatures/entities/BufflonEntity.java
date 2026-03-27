@@ -16,7 +16,6 @@ import andrews.pandoras_creatures.entities.goals.bufflon.*;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.PCSounds;
-import andrews.pandoras_creatures.util.NetworkUtil;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -232,7 +231,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), PCSounds.BUFFLON_ATTACK.get(), this.getSoundSource(), 0.6F, 0.8F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
         // The attack animation
         if (this.isAnimationPlaying(BLANK_ANIMATION) && !this.level().isClientSide()) {
-            NetworkUtil.sendAnimationPacket(this, ATTACK_HEAD_ANIMATION);
+            PandorasCreaturesCommon.platform().entities().syncAnimation(this, ATTACK_HEAD_ANIMATION);
         }
 
         if (flag) {
@@ -304,7 +303,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
                         entity.stopRiding();
                         entity.setDeltaMovement(entity.getDeltaMovement().add((random.nextInt(3) - 1) * PASSENGER_THROW_HORIZONTAL_SPEED, PASSENGER_THROW_VERTICAL_SPEED, (random.nextInt(3) - 1) * PASSENGER_THROW_HORIZONTAL_SPEED));
                         entity.hurtMarked = true;
-                        NetworkUtil.sendAnimationPacket(this, THROW_ANIMATION);
+                        PandorasCreaturesCommon.platform().entities().syncAnimation(this, THROW_ANIMATION);
                     }
                     this.broadcastTameResult(false);
                 }

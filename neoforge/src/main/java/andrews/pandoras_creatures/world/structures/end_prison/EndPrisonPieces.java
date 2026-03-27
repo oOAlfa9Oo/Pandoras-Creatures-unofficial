@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.world.structures.end_prison;
 
 import andrews.pandoras_creatures.registry.PCStructures;
-import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +35,7 @@ public class EndPrisonPieces {
     // Use the preserved 1.16.5 ship template shipped with the mod.
     // The vanilla 1.21.1 end ship has different dimensions, which breaks the old offsets.
     private static final ResourceLocation SHIP_TEMPLATE =
-            ResourceLocation.fromNamespaceAndPath(Reference.MODID, "end_prison/end_prison_ship");
+            PCStructureIds.id(PCStructureIds.END_PRISON_SHIP_TEMPLATE);
 
     public static void addPieces(StructureTemplateManager templateManager, BlockPos pos, Rotation rotation, StructurePiecesBuilder builder, RandomSource random) {
         if (random.nextInt(3) == 0) {

@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.datagen.loot;
 
+import andrews.pandoras_creatures.registry.block.PCBlockIds;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
@@ -20,33 +22,33 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     private static final String ITEM_ENTRY_TYPE = "minecraft:item";
     private static final String LOOTING_ENCHANTMENT = "minecraft:looting";
     private static final EntityLootDefinition[] DEFINITIONS = new EntityLootDefinition[]{
-            new EntityLootDefinition("acidic_archvine", List.of(
+            new EntityLootDefinition(PCEntityIds.ACIDIC_ARCHVINE, List.of(
                     new LootPoolDefinition("pool_acidic_archvine_1", 1.0D, 1.0D,
                             new ItemDropDefinition(PCItems.ACIDIC_ARCHVINE_TONGUE.get(), 1.0D, 1.0D, false, false, 0.0D, 0.0D))
             )),
-            new EntityLootDefinition("arachnon", List.of(
+            new EntityLootDefinition(PCEntityIds.ARACHNON, List.of(
                     new LootPoolDefinition("pool_arachnon_1", 1.0D, 1.0D,
                             new ItemDropDefinition(PCBlocksAndVanilla.ARACHNON_CRYSTAL_ID, 1.0D, 1.0D, false, true, 0.0D, 1.0D))
             )),
-            new EntityLootDefinition("bufflon", List.of(
+            new EntityLootDefinition(PCEntityIds.BUFFLON, List.of(
                     new LootPoolDefinition("pool_bufflon_1", 1.0D, 1.0D,
                             new ItemDropDefinition(PCItems.BUFFLON_HIDE.get(), 1.0D, 3.0D, false, true, 0.0D, 1.0D)),
                     new LootPoolDefinition("pool_bufflon_2", 1.0D, 1.0D,
                             new ItemDropDefinition(PCItems.BUFFLON_BEEF.get(), 1.0D, 4.0D, true, true, 0.0D, 1.0D))
             )),
-            new EntityLootDefinition("crab", List.of(
+            new EntityLootDefinition(PCEntityIds.CRAB, List.of(
                     new LootPoolDefinition("pool_crab_1", 1.0D, 1.0D,
                             new ItemDropDefinition(PCItems.CRAB_MEAT.get(), 1.0D, 2.0D, true, true, 0.0D, 1.0D))
             )),
-            new EntityLootDefinition("end_troll", List.of(
+            new EntityLootDefinition(PCEntityIds.END_TROLL, List.of(
                     new LootPoolDefinition("pool_end_troll_1", 1.0D, 1.0D,
                             new ItemDropDefinition(PCItems.END_TROLL_SKIN.get(), 16.0D, 18.0D, false, true, 1.0D, 2.0D))
             )),
-            new EntityLootDefinition("hellhound", List.of(
+            new EntityLootDefinition(PCEntityIds.HELLHOUND, List.of(
                     new LootPoolDefinition("pool_hellhound_1", 1.0D, 1.0D,
                             new ItemDropDefinition(ResourceLocation.withDefaultNamespace("bone"), 1.0D, 3.0D, false, true, 0.0D, 1.0D))
             )),
-            new EntityLootDefinition("seahorse", List.of(
+            new EntityLootDefinition(PCEntityIds.SEAHORSE, List.of(
                     new LootPoolDefinition("pool_seahorse_1", 1.0D, 1.0D,
                             new ItemDropDefinition(PCItems.SEAHORSE.get(), 1.0D, 1.0D, true, false, 0.0D, 0.0D))
             ))
@@ -171,7 +173,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     }
 
     private static final class PCBlocksAndVanilla {
-        private static final ResourceLocation ARACHNON_CRYSTAL_ID = id("arachnon_crystal");
+        private static final ResourceLocation ARACHNON_CRYSTAL_ID = id(PCBlockIds.ARACHNON_CRYSTAL);
 
         private PCBlocksAndVanilla() {
         }

@@ -1,8 +1,8 @@
 package andrews.pandoras_creatures.entities.goals.end_troll;
 
+import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.EndTrollEntity;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
-import andrews.pandoras_creatures.util.NetworkUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -22,9 +22,14 @@ public class EndTrollTransformGoal extends Goal {
         LivingEntity livingentity = this.endTroll.getTarget();
         return EndTrollBehaviorRules.shouldTryTransform(
                 this.endTroll.isEntityStanding(),
-                EndTrollBehaviorRules.isValidCombatTarget(livingentity),
+                this.endTroll.hasValidCombatTarget(),
                 livingentity == null ? Double.MAX_VALUE : this.endTroll.distanceToSqr(livingentity)
         );
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return this.canUse();
     }
 
     @Override
@@ -43,9 +48,12 @@ public class EndTrollTransformGoal extends Goal {
     @Override
     public void tick() {
         super.tick();
+        if (!this.endTroll.isHostileDifficulty()) {
+            return;
+        }
         if (this.target != null) {
             if (this.endTroll.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION) && !this.endTroll.isWorldRemote()) {
-                NetworkUtil.sendAnimationPacket(this.endTroll, EndTrollEntity.TRANSFORM_ANIMATION);
+                PandorasCreaturesCommon.platform().entities().syncAnimation(this.endTroll, EndTrollEntity.TRANSFORM_ANIMATION);
             }
         }
     }

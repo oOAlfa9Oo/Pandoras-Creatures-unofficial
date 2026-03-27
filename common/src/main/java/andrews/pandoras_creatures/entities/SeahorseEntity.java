@@ -6,6 +6,8 @@ import andrews.pandoras_creatures.entities.bucket.BucketEntityDataKeys;
 import andrews.pandoras_creatures.entities.seahorse.SeahorseDataKeys;
 import andrews.pandoras_creatures.entities.seahorse.SeahorseVariantCatalog;
 import andrews.pandoras_creatures.entities.seahorse.SeahorseVisualRules;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -40,9 +42,6 @@ import org.joml.Vector3f;
 import javax.annotation.Nullable;
 
 public class SeahorseEntity extends BucketableMobEntity {
-    private static final String SEAHORSE_ENTITY_ID = "seahorse";
-    private static final String SEAHORSE_SPAWN_EGG_ID = "seahorse_spawn_egg";
-    private static final String SEAHORSE_BUCKET_ID = "seahorse_bucket";
     private static final EntityDataAccessor<Integer> SEAHORSE_TYPE = SynchedEntityData.defineId(SeahorseEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SEAHORSE_SIZE = SynchedEntityData.defineId(SeahorseEntity.class, EntityDataSerializers.INT);
 
@@ -52,7 +51,7 @@ public class SeahorseEntity extends BucketableMobEntity {
     }
 
     public SeahorseEntity(Level level, double posX, double posY, double posZ) {
-        this(PandorasCreaturesCommon.platform().registry().entityType(SEAHORSE_ENTITY_ID), level);
+        this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.SEAHORSE), level);
         this.moveTo(posX, posY, posZ);
     }
 
@@ -72,7 +71,7 @@ public class SeahorseEntity extends BucketableMobEntity {
     }
 
     public ItemStack getPickedResult(HitResult target) {
-        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(SEAHORSE_SPAWN_EGG_ID));
+        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.SEAHORSE_SPAWN_EGG));
     }
 
     @Override
@@ -205,7 +204,7 @@ public class SeahorseEntity extends BucketableMobEntity {
 
     @Override
     public ItemStack getBucketItemStack() {
-        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(SEAHORSE_BUCKET_ID));
+        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.SEAHORSE_BUCKET));
     }
 
     protected boolean canRandomSwim() {

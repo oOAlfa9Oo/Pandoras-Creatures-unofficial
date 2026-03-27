@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.datagen.worldgen;
 
+import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -31,7 +32,11 @@ public final class PCPlacedFeatureDataProvider implements DataProvider {
         for (CountPlacedFeatureDefinition definition : COUNT_FEATURES) {
             futures.add(DataProvider.saveStable(cachedOutput, createCountPlacedFeature(definition), placedFeaturePathProvider.json(id(definition.name()))));
         }
-        futures.add(DataProvider.saveStable(cachedOutput, createSimplePlacedFeature("minecraft:chorus_plant"), placedFeaturePathProvider.json(id("end_prison_chorus_plant"))));
+        futures.add(DataProvider.saveStable(
+                cachedOutput,
+                createSimplePlacedFeature("minecraft:chorus_plant"),
+                placedFeaturePathProvider.json(id(PCStructureIds.END_PRISON_CHORUS_PLANT))
+        ));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 

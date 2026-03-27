@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.entities.crab;
 
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +17,7 @@ class CrabVariantCatalogTest {
 
     @Test
     void exposesTooltipAndTextureData() {
-        assertTrue(CrabVariantCatalog.tooltipKey(2).contains("tropical"));
+        assertEquals(PCLanguageKeys.chat("crabBucketTooltip.tropical"), CrabVariantCatalog.tooltipKey(2));
         assertTrue(CrabVariantCatalog.texturePath(2).contains("crab_2"));
     }
 }

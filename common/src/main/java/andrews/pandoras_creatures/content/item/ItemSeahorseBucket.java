@@ -3,6 +3,7 @@ package andrews.pandoras_creatures.content.item;
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.bucket.BucketEntityDataKeys;
 import andrews.pandoras_creatures.entities.seahorse.SeahorseVariantCatalog;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -16,10 +17,8 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.List;
 
 public class ItemSeahorseBucket extends ItemMobBucket {
-    private static final String SEAHORSE_ENTITY_ID = "seahorse";
-
     public ItemSeahorseBucket() {
-        super(() -> PandorasCreaturesCommon.platform().registry().entityType(SEAHORSE_ENTITY_ID), () -> Fluids.WATER, new Properties().stacksTo(1));
+        super(() -> PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.SEAHORSE), () -> Fluids.WATER, new Properties().stacksTo(1));
     }
 
     @Override

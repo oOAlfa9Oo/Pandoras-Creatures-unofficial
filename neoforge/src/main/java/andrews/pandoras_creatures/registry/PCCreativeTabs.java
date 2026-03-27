@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.registry;
 
+import andrews.pandoras_creatures.registry.creative.PCCreativeTabIds;
 import andrews.pandoras_creatures.registry.creative.PCCreativeTabEntries;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.Registries;
@@ -14,8 +15,8 @@ public class PCCreativeTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Reference.MODID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> PANDORAS_CREATURES_TAB =
-            CREATIVE_TABS.register("pandoras_creatures", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup." + Reference.MODID))
+            CREATIVE_TABS.register(PCCreativeTabIds.PANDORAS_CREATURES, () -> CreativeModeTab.builder()
+                    .title(Component.translatable(PCCreativeTabIds.PANDORAS_CREATURES_TRANSLATION_KEY))
                     .icon(() -> new ItemStack(PCItems.BUFFLON_SADDLE.get()))
                     .displayItems((parameters, output) -> PCCreativeTabEntries.populatePandorasCreaturesTab(output))
                     .build());

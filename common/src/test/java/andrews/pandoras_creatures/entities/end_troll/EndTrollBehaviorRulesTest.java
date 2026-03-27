@@ -16,24 +16,31 @@ class EndTrollBehaviorRulesTest {
 
     @Test
     void screamAndShootRespectCooldownsAndState() {
-        assertTrue(EndTrollBehaviorRules.shouldTryScream(true, true, true, true, false, 9.0D, 0));
-        assertFalse(EndTrollBehaviorRules.shouldTryScream(true, true, true, true, false, 12.0D, 0));
-        assertTrue(EndTrollBehaviorRules.shouldTryShoot(true, true, false, true, 0));
-        assertFalse(EndTrollBehaviorRules.shouldTryShoot(true, true, true, true, 0));
+        assertTrue(EndTrollBehaviorRules.shouldTryScream(true, true, false, true, true, false, 9.0D, 0));
+        assertFalse(EndTrollBehaviorRules.shouldTryScream(true, true, true, true, true, false, 9.0D, 0));
+        assertFalse(EndTrollBehaviorRules.shouldTryScream(true, true, false, true, true, false, 12.0D, 0));
+        assertTrue(EndTrollBehaviorRules.shouldTryShoot(true, true, false, true, 399.0D, 0));
+        assertFalse(EndTrollBehaviorRules.shouldTryShoot(true, true, false, true, 625.0D, 0));
+        assertFalse(EndTrollBehaviorRules.shouldTryShoot(true, true, true, true, 399.0D, 0));
     }
 
     @Test
     void combatTargetValidationAndMeleeContinuationStayStable() {
+        assertTrue(EndTrollBehaviorRules.isHostileDifficulty(true));
+        assertFalse(EndTrollBehaviorRules.isHostileDifficulty(false));
         assertTrue(EndTrollBehaviorRules.hasValidCombatTarget(true, true, false));
         assertFalse(EndTrollBehaviorRules.hasValidCombatTarget(true, true, true));
         assertFalse(EndTrollBehaviorRules.hasValidCombatTarget(true, false, false));
         assertFalse(EndTrollBehaviorRules.hasValidCombatTarget(false, true, false));
 
-        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, false, true, true, true, false));
-        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, false, true, true, false, true));
-        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, true, true, true, false, false));
-        assertFalse(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, false, true, true, false, false));
-        assertFalse(EndTrollBehaviorRules.shouldContinueMeleeAttack(false, false, false, true, true, true));
+        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, true, false, true, true, true, false));
+        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, true, false, true, true, false, true));
+        assertTrue(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, true, true, true, true, false, false));
+        assertFalse(EndTrollBehaviorRules.shouldContinueMeleeAttack(true, true, false, true, true, false, false));
+        assertFalse(EndTrollBehaviorRules.shouldContinueMeleeAttack(false, true, false, false, true, true, true));
+        assertTrue(EndTrollBehaviorRules.shouldAbortCombat(false, true, true));
+        assertTrue(EndTrollBehaviorRules.shouldAbortCombat(true, false, true));
+        assertFalse(EndTrollBehaviorRules.shouldAbortCombat(true, true, true));
     }
 
     @Test

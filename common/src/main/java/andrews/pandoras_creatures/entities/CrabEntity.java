@@ -6,6 +6,8 @@ import andrews.pandoras_creatures.entities.bucket.BucketEntityDataKeys;
 import andrews.pandoras_creatures.entities.crab.CrabBehaviorRules;
 import andrews.pandoras_creatures.entities.crab.CrabDataKeys;
 import andrews.pandoras_creatures.entities.crab.CrabVariantCatalog;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.BlockPos;
@@ -32,9 +34,6 @@ import net.minecraft.world.phys.HitResult;
 import javax.annotation.Nullable;
 
 public class CrabEntity extends BucketableMobEntity {
-    private static final String CRAB_ENTITY_ID = "crab";
-    private static final String CRAB_SPAWN_EGG_ID = "crab_spawn_egg";
-    private static final String CRAB_BUCKET_ID = "crab_bucket";
     private static final EntityDataAccessor<Integer> CRAB_TYPE = SynchedEntityData.defineId(CrabEntity.class, EntityDataSerializers.INT);
     private boolean partyCrab;
     private boolean underWater = false;
@@ -45,7 +44,7 @@ public class CrabEntity extends BucketableMobEntity {
     }
 
     public CrabEntity(Level level, double posX, double posY, double posZ) {
-        this(PandorasCreaturesCommon.platform().registry().entityType(CRAB_ENTITY_ID), level);
+        this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.CRAB), level);
         this.moveTo(posX, posY, posZ);
     }
 
@@ -63,7 +62,7 @@ public class CrabEntity extends BucketableMobEntity {
     }
 
     public ItemStack getPickedResult(HitResult target) {
-        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(CRAB_SPAWN_EGG_ID));
+        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.CRAB_SPAWN_EGG));
     }
 
     @Override
@@ -116,7 +115,7 @@ public class CrabEntity extends BucketableMobEntity {
 
     @Override
     public ItemStack getBucketItemStack() {
-        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(CRAB_BUCKET_ID));
+        return new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.CRAB_BUCKET));
     }
 
     @Override

@@ -3,6 +3,7 @@ package andrews.pandoras_creatures.datagen.recipe;
 import andrews.pandoras_creatures.registry.PCBlocks;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
+import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public final class PCRecipeDataProvider implements DataProvider {
-    private static final String END_TROLL_BOX_COLORING_GROUP = "end_troll_box_coloring";
     private static final CookingRecipeDefinition[] COOKING_RECIPES = new CookingRecipeDefinition[]{
             new CookingRecipeDefinition("bufflon_beef_cooked", "minecraft:smelting", PCItems.BUFFLON_BEEF.get(), PCItems.BUFFLON_BEEF_COOKED.get(), 0.35F, 200),
             new CookingRecipeDefinition("bufflon_beef_cooked_from_smoking", "minecraft:smoking", PCItems.BUFFLON_BEEF.get(), PCItems.BUFFLON_BEEF_COOKED.get(), 0.35F, 100),
@@ -60,7 +60,7 @@ public final class PCRecipeDataProvider implements DataProvider {
     }
 
     private static void addCustomEndTrollBoxRecipes(Map<ResourceLocation, JsonObject> recipes) {
-        recipes.put(id("end_troll_box"), createEndTrollBoxRecipe());
+        recipes.put(PCRecipeIds.id(PCRecipeIds.END_TROLL_BOX), createEndTrollBoxRecipe());
         PCEndTrollBoxPalette.orderedColors().forEach(color -> {
             String recipeName = PCEndTrollBoxPalette.blockName(color);
             recipes.put(id(recipeName), createEndTrollBoxColoringRecipe(color, PCBlocks.getEndTrollBox(color).asItem()));
@@ -103,7 +103,7 @@ public final class PCRecipeDataProvider implements DataProvider {
 
     private static JsonObject createEndTrollBoxRecipe() {
         JsonObject root = new JsonObject();
-        root.addProperty("type", "pandoras_creatures:end_troll_box");
+        root.addProperty("type", PCRecipeIds.qualified(PCRecipeIds.END_TROLL_BOX));
         root.add("pattern", toJsonArray(List.of("SSS", "SBS", "SSS")));
 
         JsonObject key = new JsonObject();
@@ -116,8 +116,8 @@ public final class PCRecipeDataProvider implements DataProvider {
 
     private static JsonObject createEndTrollBoxColoringRecipe(DyeColor color, Item output) {
         JsonObject root = new JsonObject();
-        root.addProperty("type", "pandoras_creatures:end_troll_box_coloring");
-        root.addProperty("group", END_TROLL_BOX_COLORING_GROUP);
+        root.addProperty("type", PCRecipeIds.qualified(PCRecipeIds.END_TROLL_BOX_COLORING));
+        root.addProperty("group", PCRecipeIds.END_TROLL_BOX_COLORING_GROUP);
 
         JsonArray ingredients = new JsonArray();
         ingredients.add(tagIngredient("pandoras_creatures:end_troll_boxes"));

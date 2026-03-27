@@ -1,12 +1,11 @@
 package andrews.pandoras_creatures.datagen.worldgen;
 
-import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +13,24 @@ import java.util.concurrent.CompletableFuture;
 
 public final class PCTemplatePoolDataProvider implements DataProvider {
     private static final SinglePoolElementDefinition[] SINGLE_POOLS = new SinglePoolElementDefinition[]{
-            new SinglePoolElementDefinition("end_prison", "pandoras_creatures:end_prison", "pandoras_creatures:end_prison/end_prison_body")
+            new SinglePoolElementDefinition(
+                    PCStructureIds.END_PRISON,
+                    PCStructureIds.qualified(PCStructureIds.END_PRISON),
+                    PCStructureIds.qualified(PCStructureIds.END_PRISON_BODY_TEMPLATE)
+            )
     };
     private static final FeaturePoolElementDefinition[] FEATURE_POOLS = new FeaturePoolElementDefinition[]{
-            new FeaturePoolElementDefinition("end_prison_chorus_plant", "pandoras_creatures:end_prison_chorus_plant", "pandoras_creatures:end_prison_chorus_plant")
+            new FeaturePoolElementDefinition(
+                    PCStructureIds.END_PRISON_CHORUS_PLANT,
+                    PCStructureIds.qualified(PCStructureIds.END_PRISON_CHORUS_PLANT),
+                    PCStructureIds.qualified(PCStructureIds.END_PRISON_CHORUS_PLANT)
+            )
     };
     private static final EmptyPoolElementDefinition[] EMPTY_POOLS = new EmptyPoolElementDefinition[]{
-            new EmptyPoolElementDefinition("end_prison_ship", "pandoras_creatures:end_prison_ship")
+            new EmptyPoolElementDefinition(
+                    PCStructureIds.END_PRISON_SHIP,
+                    PCStructureIds.qualified(PCStructureIds.END_PRISON_SHIP)
+            )
     };
 
     private final PackOutput.PathProvider templatePoolPathProvider;
@@ -33,13 +43,13 @@ public final class PCTemplatePoolDataProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         for (SinglePoolElementDefinition definition : SINGLE_POOLS) {
-            futures.add(DataProvider.saveStable(cachedOutput, createSinglePool(definition), templatePoolPathProvider.json(id(definition.name()))));
+            futures.add(DataProvider.saveStable(cachedOutput, createSinglePool(definition), templatePoolPathProvider.json(PCStructureIds.id(definition.name()))));
         }
         for (FeaturePoolElementDefinition definition : FEATURE_POOLS) {
-            futures.add(DataProvider.saveStable(cachedOutput, createFeaturePool(definition), templatePoolPathProvider.json(id(definition.name()))));
+            futures.add(DataProvider.saveStable(cachedOutput, createFeaturePool(definition), templatePoolPathProvider.json(PCStructureIds.id(definition.name()))));
         }
         for (EmptyPoolElementDefinition definition : EMPTY_POOLS) {
-            futures.add(DataProvider.saveStable(cachedOutput, createEmptyPool(definition), templatePoolPathProvider.json(id(definition.name()))));
+            futures.add(DataProvider.saveStable(cachedOutput, createEmptyPool(definition), templatePoolPathProvider.json(PCStructureIds.id(definition.name()))));
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -107,10 +117,6 @@ public final class PCTemplatePoolDataProvider implements DataProvider {
         root.addProperty("name", poolId);
         root.addProperty("fallback", "minecraft:empty");
         return root;
-    }
-
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     private record SinglePoolElementDefinition(String name, String poolId, String location) {

@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.content.material;
 
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -18,8 +19,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PCArmorMaterials {
-    private static final String ACIDIC_ARCHVINE_TONGUE_ITEM_ID = "acidic_archvine_tongue";
-
     // Plant Hat: durability=30, defense=1, enchantability=15
     public static final Holder<ArmorMaterial> PLANT_HAT = register("plant_hat",
             Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
@@ -33,7 +32,7 @@ public class PCArmorMaterials {
             SoundEvents.ARMOR_EQUIP_LEATHER,
             0.0F, // toughness
             0.0F, // knockback resistance
-            () -> Ingredient.of(PandorasCreaturesCommon.platform().registry().item(ACIDIC_ARCHVINE_TONGUE_ITEM_ID))
+            () -> Ingredient.of(PandorasCreaturesCommon.platform().registry().item(PCItemIds.ACIDIC_ARCHVINE_TONGUE))
     );
 
     private static Holder<ArmorMaterial> register(String name, EnumMap<ArmorItem.Type, Integer> defense,

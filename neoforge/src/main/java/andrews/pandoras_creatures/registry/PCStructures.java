@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.registry;
 
+import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import andrews.pandoras_creatures.util.Reference;
 import andrews.pandoras_creatures.world.structures.end_prison.EndPrisonPieces;
 import andrews.pandoras_creatures.world.structures.end_prison.EndPrisonStructure;
@@ -16,13 +17,13 @@ public final class PCStructures {
             DeferredRegister.create(Registries.STRUCTURE_TYPE, Reference.MODID);
 
     public static final DeferredHolder<StructureType<?>, StructureType<EndPrisonStructure>> END_PRISON_TYPE =
-            STRUCTURE_TYPES.register("end_prison", () -> () -> EndPrisonStructure.CODEC);
+            STRUCTURE_TYPES.register(PCStructureIds.END_PRISON, () -> () -> EndPrisonStructure.CODEC);
 
     public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPES =
             DeferredRegister.create(Registries.STRUCTURE_PIECE, Reference.MODID);
 
     public static final DeferredHolder<StructurePieceType, StructurePieceType> END_PRISON_PIECE =
-            STRUCTURE_PIECE_TYPES.register("end_prison_piece",
+            STRUCTURE_PIECE_TYPES.register(PCStructureIds.END_PRISON_PIECE,
                     () -> (StructurePieceSerializationContext ctx, net.minecraft.nbt.CompoundTag tag) ->
                             new EndPrisonPieces.Piece(ctx.structureTemplateManager(), tag));
 

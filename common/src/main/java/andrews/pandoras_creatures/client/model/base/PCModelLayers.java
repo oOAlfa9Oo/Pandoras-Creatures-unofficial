@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.client.model.base;
 
+import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -19,8 +20,8 @@ public class PCModelLayers {
     public static final ModelLayerLocation SEAHORSE = createLocation("seahorse");
 
     // Block entity model layers
-    public static final ModelLayerLocation END_TROLL_BOX = createLocation("end_troll_box");
-    public static final ModelLayerLocation PANDORIC_SHARD = createLocation("pandoric_shard");
+    public static final ModelLayerLocation END_TROLL_BOX = createLocation(PCBlockIds.END_TROLL_BOX);
+    public static final ModelLayerLocation PANDORIC_SHARD = createLocation(PCBlockIds.PANDORIC_SHARD);
 
     private static ModelLayerLocation createLocation(String name) {
         return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name), "main");

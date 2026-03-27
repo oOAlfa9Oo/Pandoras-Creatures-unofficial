@@ -1,16 +1,19 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollPunchAnimation;
 import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollAttackGoal;
 import andrews.pandoras_creatures.registry.PCEntities;
-import andrews.pandoras_creatures.util.NetworkUtil;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -46,9 +49,11 @@ public final class EndTrollGameTests {
     @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void standingAiTicksCombatCooldowns(GameTestHelper helper) {
         EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+        Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
         endTroll.setEntityStanding(true);
         endTroll.setHasScreamed(true);
+        endTroll.setTarget(target);
         endTroll.resetShootCooldown();
         endTroll.resetScreamCooldown();
         int initialShootCooldown = endTroll.getShootCooldown();
@@ -120,7 +125,7 @@ public final class EndTrollGameTests {
     public static void transformAnimationCompletesAndSetsStandingOnServer(GameTestHelper helper) {
         EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
 
-        NetworkUtil.sendAnimationPacket(endTroll, EndTrollEntity.TRANSFORM_ANIMATION);
+        PandorasCreaturesCommon.platform().entities().syncAnimation(endTroll, EndTrollEntity.TRANSFORM_ANIMATION);
         for (int i = 0; i < EndTrollEntity.TRANSFORM_ANIMATION.getAnimationTickDuration(); i++) {
             endTroll.tick();
         }
@@ -128,6 +133,92 @@ public final class EndTrollGameTests {
         helper.assertTrue(endTroll.isEntityStanding(), "End Troll should become standing after transform animation completes");
         helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION),
                 "End Troll should return to the blank animation after transform completes");
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void invalidTargetClearsCombatAnimationDuringAiStep(GameTestHelper helper) {
+        EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+
+        endTroll.setEntityStanding(true);
+        endTroll.setHasScreamed(true);
+        endTroll.playPunchAnimation(EndTrollPunchAnimation.RIGHT);
+        endTroll.setTarget(null);
+
+        endTroll.aiStep();
+
+        helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION),
+                "End Troll should reset combat animation when it no longer has a valid target");
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void peacefulDifficultyClearsCombatState(GameTestHelper helper) {
+        EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+        Cow target = helper.spawn(EntityType.COW, TARGET_POS);
+
+        endTroll.setEntityStanding(true);
+        endTroll.setHasScreamed(true);
+        endTroll.setTarget(target);
+        endTroll.playPunchAnimation(EndTrollPunchAnimation.RIGHT);
+        helper.getLevel().getServer().setDifficulty(Difficulty.PEACEFUL, true);
+
+        endTroll.aiStep();
+
+        helper.assertTrue(endTroll.getTarget() == null, "End Troll should clear its combat target in peaceful difficulty");
+        helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION),
+                "End Troll should stop combat animations in peaceful difficulty");
+        helper.getLevel().getServer().setDifficulty(Difficulty.NORMAL, true);
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void deadTargetResetsEncounterStateForNextCombat(GameTestHelper helper) {
+        EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+        Player firstTarget = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        firstTarget.moveTo(helper.absolutePos(TARGET_POS), 0.0F, 0.0F);
+        endTroll.setEntityStanding(true);
+        endTroll.setHasScreamed(true);
+        endTroll.setTarget(firstTarget);
+        endTroll.resetShootCooldown();
+        endTroll.resetScreamCooldown();
+
+        endTroll.aiStep();
+        endTroll.playPunchAnimation(EndTrollPunchAnimation.RIGHT);
+        firstTarget.kill();
+
+        endTroll.aiStep();
+
+        helper.assertTrue(endTroll.getTarget() == null, "End Troll should clear a dead combat target");
+        helper.assertFalse(endTroll.hasScreamed(), "End Troll should reset encounter scream state when combat target dies");
+        helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION),
+                "End Troll should clear lingering combat animations when combat target dies");
+        helper.assertValueEqual(endTroll.getShootCooldown(), 300, "shoot cooldown after dead target reset");
+        helper.assertValueEqual(endTroll.getScreamCooldown(), 400, "scream cooldown after dead target reset");
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void freshPlayerAfterDeathStartsFreshEncounter(GameTestHelper helper) {
+        EndTrollEntity endTroll = helper.spawn(PCEntities.END_TROLL.get(), END_TROLL_POS);
+        Player firstTarget = helper.makeMockPlayer(GameType.SURVIVAL);
+        Player secondTarget = helper.makeMockPlayer(GameType.SURVIVAL);
+
+        firstTarget.moveTo(helper.absolutePos(TARGET_POS), 0.0F, 0.0F);
+        secondTarget.moveTo(helper.absolutePos(TARGET_POS.offset(1, 0, 0)), 0.0F, 0.0F);
+
+        endTroll.setEntityStanding(true);
+        endTroll.setHasScreamed(true);
+        endTroll.setTarget(firstTarget);
+        firstTarget.kill();
+
+        endTroll.aiStep();
+        endTroll.setTarget(secondTarget);
+        endTroll.aiStep();
+
+        helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.SCREAM_ANIMATION),
+                "End Troll should restart a clean encounter against a newly respawned player target");
         helper.succeed();
     }
 }

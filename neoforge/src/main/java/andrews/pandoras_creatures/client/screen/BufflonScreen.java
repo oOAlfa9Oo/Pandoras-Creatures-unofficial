@@ -4,6 +4,7 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.client.widget.bufflon.BufflonStateButton;
 import andrews.pandoras_creatures.entities.BufflonEntity;
 import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentType;
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import andrews.pandoras_creatures.menu.BufflonMenuLayout;
 import andrews.pandoras_creatures.menu.BufflonMenu;
 import andrews.pandoras_creatures.registry.PCItems;
@@ -48,7 +49,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 this.leftPos + BufflonMenuLayout.LEFT_BUTTON_X,
                 this.topPos + BufflonMenuLayout.SIT_BUTTON_Y,
                 0,
-                "gui.button.pandoras_creatures.bufflon.sit",
+                PCLanguageKeys.guiButton("bufflon.sit"),
                 this.bufflonEntity::isSitting,
                 bufflon -> {
                     if (!bufflon.isSitting()) {
@@ -65,7 +66,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 this.leftPos + BufflonMenuLayout.LEFT_BUTTON_X,
                 this.topPos + BufflonMenuLayout.FOLLOW_BUTTON_Y,
                 26,
-                "gui.button.pandoras_creatures.bufflon.follow",
+                PCLanguageKeys.guiButton("bufflon.follow"),
                 this.bufflonEntity::isFollowingOwner,
                 bufflon -> {
                     if (!bufflon.isFollowingOwner()) {
@@ -82,7 +83,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 this.leftPos + BufflonMenuLayout.LEFT_BUTTON_X,
                 this.topPos + BufflonMenuLayout.MOVE_FREELY_BUTTON_Y,
                 52,
-                "gui.button.pandoras_creatures.bufflon.move_freely",
+                PCLanguageKeys.guiButton("bufflon.move_freely"),
                 () -> !this.bufflonEntity.isSitting() && !this.bufflonEntity.isFollowingOwner(),
                 bufflon -> {
                     if (bufflon.isSitting()) {
@@ -99,7 +100,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 this.leftPos + BufflonMenuLayout.RIGHT_BUTTON_X,
                 this.topPos + BufflonMenuLayout.COMBAT_BUTTON_Y,
                 78,
-                "gui.button.pandoras_creatures.bufflon.combat",
+                PCLanguageKeys.guiButton("bufflon.combat"),
                 this.bufflonEntity::isInCombatMode,
                 bufflon -> {
                     if (!bufflon.isInCombatMode()) {
@@ -113,7 +114,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 this.leftPos + BufflonMenuLayout.RIGHT_BUTTON_X,
                 this.topPos + BufflonMenuLayout.PEACEFUL_BUTTON_Y,
                 104,
-                "gui.button.pandoras_creatures.bufflon.peaceful",
+                PCLanguageKeys.guiButton("bufflon.peaceful"),
                 () -> !this.bufflonEntity.isInCombatMode(),
                 bufflon -> {
                     if (bufflon.isInCombatMode()) {

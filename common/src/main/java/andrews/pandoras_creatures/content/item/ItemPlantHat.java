@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.content.item;
 
 import andrews.pandoras_creatures.content.material.PCArmorMaterials;
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,7 @@ public class ItemPlantHat extends ArmorItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.pandoras_creatures.plant_hat.tooltip"));
+        tooltip.add(Component.translatable(PCLanguageKeys.PLANT_HAT_TOOLTIP));
         super.appendHoverText(stack, context, tooltip, flag);
     }
 

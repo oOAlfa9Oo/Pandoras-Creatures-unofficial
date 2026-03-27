@@ -1,9 +1,10 @@
 package andrews.pandoras_creatures.client.renderer.tile;
 
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
+import andrews.pandoras_creatures.client.model.base.PCModelLayers;
 import andrews.pandoras_creatures.client.model.tile.EndTrollBoxModel;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
-import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -20,21 +21,18 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @OnlyIn(Dist.CLIENT)
 public class EndTrollBoxBlockEntityRenderer implements BlockEntityRenderer<EndTrollBoxBlockEntity> {
     private final EndTrollBoxModel blockModel;
 
-    public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/tile/end_troll_box.png");
-    public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = Stream.of(
-            "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
-            "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
-    ).map(color -> ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/tile/" + color + "_end_troll_box.png"))
+    public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
+    public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
+            .map(PCEndTrollBoxPalette::textureId)
             .collect(ImmutableList.toImmutableList());
 
     public EndTrollBoxBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.blockModel = new EndTrollBoxModel(context.bakeLayer(PCItemRenderer.END_TROLL_BOX_LAYER));
+        this.blockModel = new EndTrollBoxModel(context.bakeLayer(PCModelLayers.END_TROLL_BOX));
     }
 
     @Override

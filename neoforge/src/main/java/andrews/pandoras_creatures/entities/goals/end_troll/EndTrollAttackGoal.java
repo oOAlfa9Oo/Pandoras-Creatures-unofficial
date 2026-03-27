@@ -38,7 +38,7 @@ public class EndTrollAttackGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (attacker.level().getDifficulty() == Difficulty.PEACEFUL) {
+        if (!attacker.isHostileDifficulty()) {
             return false;
         }
         long i = this.attacker.level().getGameTime();
@@ -78,6 +78,7 @@ public class EndTrollAttackGoal extends Goal {
                 && this.attacker.distanceToSqr(livingentity.getX(), livingentity.getBoundingBox().minY, livingentity.getZ()) <= this.getAttackReachSqr(livingentity);
         return EndTrollBehaviorRules.shouldContinueMeleeAttack(
                 hasValidTarget,
+                this.attacker.isHostileDifficulty(),
                 this.longMemory,
                 this.attacker.getNavigation().isDone(),
                 withinRestriction,
@@ -97,9 +98,9 @@ public class EndTrollAttackGoal extends Goal {
     @Override
     public void stop() {
         LivingEntity livingentity = this.attacker.getTarget();
-        if (!EndTrollBehaviorRules.isValidCombatTarget(livingentity)) {
+        if (!this.attacker.isHostileDifficulty() || !EndTrollBehaviorRules.isValidCombatTarget(livingentity)) {
             this.attacker.setTarget(null);
-            if (this.attacker.isAnyPunchAnimationPlaying()) {
+            if (this.attacker.hasActiveCombatAnimation()) {
                 this.attacker.resetAnimation();
             }
         }
@@ -118,6 +119,10 @@ public class EndTrollAttackGoal extends Goal {
 
     @Override
     public void tick() {
+        if (!this.attacker.isHostileDifficulty()) {
+            return;
+        }
+
         if (!this.attacker.isAnyPunchAnimationPlaying()) {
 
             if (this.hasPerformedAttackLogic) {

@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.entities.crab;
 
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
+
 public final class CrabVariantCatalog {
     public static final int MIN_TYPE = 1;
     public static final int MAX_TYPE = 2;
@@ -21,8 +23,8 @@ public final class CrabVariantCatalog {
 
     public static String tooltipKey(int typeId) {
         return switch (normalizeType(typeId)) {
-            case 1 -> "chat.pandoras_creatures.crabBucketTooltip.sea";
-            default -> "chat.pandoras_creatures.crabBucketTooltip.tropical";
+            case 1 -> PCLanguageKeys.chat("crabBucketTooltip.sea");
+            default -> PCLanguageKeys.chat("crabBucketTooltip.tropical");
         };
     }
 

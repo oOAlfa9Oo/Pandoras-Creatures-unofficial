@@ -1,12 +1,11 @@
 package andrews.pandoras_creatures.datagen.worldgen;
 
-import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -25,7 +24,7 @@ public final class PCWorldgenTagDataProvider implements DataProvider {
                 "minecraft:end_midlands",
                 "minecraft:end_barrens",
                 "minecraft:small_end_islands"
-        )), biomeTagPathProvider.json(id("end_prison")));
+        )), biomeTagPathProvider.json(PCStructureIds.id(PCStructureIds.END_PRISON)));
     }
 
     @Override
@@ -39,9 +38,5 @@ public final class PCWorldgenTagDataProvider implements DataProvider {
         values.forEach(jsonValues::add);
         root.add("values", jsonValues);
         return root;
-    }
-
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
     }
 }

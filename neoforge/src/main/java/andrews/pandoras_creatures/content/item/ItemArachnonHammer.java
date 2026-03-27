@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.content.item;
 
 import andrews.pandoras_creatures.content.material.PCToolMaterials;
+import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -34,7 +35,7 @@ public class ItemArachnonHammer extends PickaxeItem {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.pandoras_creatures.arachnon_hammer.tooltip"));
+        tooltip.add(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
         super.appendHoverText(stack, context, tooltip, flag);
     }
 

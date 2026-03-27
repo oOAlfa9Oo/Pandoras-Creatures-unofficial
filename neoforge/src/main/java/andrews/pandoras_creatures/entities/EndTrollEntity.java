@@ -1,6 +1,8 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.bases.AnimatedCreatureEntity;
+import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollDataKeys;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollPunchAnimation;
@@ -11,7 +13,6 @@ import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollTransformGoal
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.registry.PCItems;
 import andrews.pandoras_creatures.registry.PCSounds;
-import andrews.pandoras_creatures.util.NetworkUtil;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.Difficulty;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -53,7 +55,7 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
 
-public class EndTrollEntity extends AnimatedCreatureEntity {
+public class EndTrollEntity extends AnimatedMonsterEntity {
     private static final EntityDataAccessor<Boolean> IS_STANDING = SynchedEntityData.defineId(EndTrollEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_SCREAMED = SynchedEntityData.defineId(EndTrollEntity.class, EntityDataSerializers.BOOLEAN);
 
@@ -137,13 +139,17 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
 
     @Override
     public void aiStep() {
+        if (!this.level().isClientSide()) {
+            this.updateCombatState();
+        }
+
         super.aiStep();
 
         // Plays the Scream Animation
-        if (!this.hasScreamed()) {
+        if (this.isHostileDifficulty() && this.hasValidCombatTarget() && !this.hasScreamed()) {
             if (this.isEntityStanding()) {
                 if (this.isAnimationPlaying(BLANK_ANIMATION) && !this.level().isClientSide()) {
-                    NetworkUtil.sendAnimationPacket(this, SCREAM_ANIMATION);
+                    PandorasCreaturesCommon.platform().entities().syncAnimation(this, SCREAM_ANIMATION);
                 }
             }
         }
@@ -163,7 +169,7 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
                 this.level().playLocalSound(this.blockPosition().getX(), this.getY() + this.getEyeHeight(), this.blockPosition().getZ(), PCSounds.END_TROLL_ATTACK.get(), SoundSource.HOSTILE, 2.0F, 1.0F, false);
             }
 
-            if (!this.isWorldRemote() && this.isEntityStanding()) {
+            if (!this.isWorldRemote() && this.isEntityStanding() && (this.hasValidCombatTarget() || this.hasActiveCombatAnimation())) {
                 tickCombatCooldowns();
             }
         }
@@ -394,14 +400,68 @@ public class EndTrollEntity extends AnimatedCreatureEntity {
         }
 
         switch (punchAnimation) {
-            case RIGHT -> NetworkUtil.sendAnimationPacket(this, RIGHT_PUNCH_ANIMATION);
-            case LEFT -> NetworkUtil.sendAnimationPacket(this, LEFT_PUNCH_ANIMATION);
-            case DOUBLE -> NetworkUtil.sendAnimationPacket(this, DOUBLE_PUNCH_ANIMATION);
+            case RIGHT -> PandorasCreaturesCommon.platform().entities().syncAnimation(this, RIGHT_PUNCH_ANIMATION);
+            case LEFT -> PandorasCreaturesCommon.platform().entities().syncAnimation(this, LEFT_PUNCH_ANIMATION);
+            case DOUBLE -> PandorasCreaturesCommon.platform().entities().syncAnimation(this, DOUBLE_PUNCH_ANIMATION);
         }
     }
 
     private void tickCombatCooldowns() {
         this.shootCooldown = EndTrollBehaviorRules.tickCooldown(this.shootCooldown);
         this.screamCooldown = EndTrollBehaviorRules.tickCooldown(this.screamCooldown);
+    }
+
+    public boolean isHostileDifficulty() {
+        return EndTrollBehaviorRules.isHostileDifficulty(this.level().getDifficulty() != Difficulty.PEACEFUL);
+    }
+
+    public boolean hasValidCombatTarget() {
+        return this.isHostileDifficulty() && EndTrollBehaviorRules.isValidCombatTarget(this.getTarget());
+    }
+
+    public boolean hasActiveCombatAnimation() {
+        return this.isAnimationPlaying(TRANSFORM_ANIMATION)
+                || this.isAnimationPlaying(SCREAM_ANIMATION)
+                || this.isAnimationPlaying(SHOOT_ANIMATION)
+                || this.isAnyPunchAnimationPlaying();
+    }
+
+    private boolean hasEncounterState() {
+        return this.getTarget() != null
+                || this.hasScreamed()
+                || this.hasActiveCombatAnimation()
+                || this.shootCooldown != EndTrollBehaviorRules.DEFAULT_SHOOT_COOLDOWN
+                || this.screamCooldown != EndTrollBehaviorRules.DEFAULT_SCREAM_COOLDOWN;
+    }
+
+    private void resetEncounterState() {
+        if (this.hasActiveCombatAnimation()) {
+            this.resetAnimation();
+        }
+
+        this.setHasScreamed(false);
+        this.resetShootCooldown();
+        this.resetScreamCooldown();
+    }
+
+    void updateCombatState() {
+        LivingEntity currentTarget = this.getTarget();
+        boolean hostileDifficulty = this.isHostileDifficulty();
+        boolean hasValidTarget = EndTrollBehaviorRules.isValidCombatTarget(currentTarget);
+
+        if (!hostileDifficulty || !hasValidTarget) {
+            this.getNavigation().stop();
+            this.setAggressive(false);
+        }
+
+        if (!hostileDifficulty) {
+            this.setTarget(null);
+        } else if (!hasValidTarget) {
+            this.setTarget(null);
+        }
+
+        if ((!hostileDifficulty || !hasValidTarget) && this.hasEncounterState()) {
+            this.resetEncounterState();
+        }
     }
 }
