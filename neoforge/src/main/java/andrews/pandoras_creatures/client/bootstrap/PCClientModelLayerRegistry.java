@@ -19,5 +19,6 @@ public final class PCClientModelLayerRegistry {
         event.registerLayerDefinition(PCModelLayers.END_TROLL, EndTrollModel::createBodyLayer);
         event.registerLayerDefinition(PCModelLayers.END_TROLL_BULLET, EndTrollBulletModel::createBodyLayer);
         event.registerLayerDefinition(PCModelLayers.END_TROLL_BOX, EndTrollBoxModel::createBodyLayer);
+        event.registerLayerDefinition(PCModelLayers.PLANT_HAT, PlantHatModel::createBodyLayer);
     }
 }

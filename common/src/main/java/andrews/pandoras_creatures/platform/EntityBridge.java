@@ -12,4 +12,6 @@ public interface EntityBridge {
     void syncAnimation(Entity entity, Animation animation);
 
     int getExperienceDrop(Mob entity, Player attackingPlayer, int originalExperience);
+
+    boolean canEntityGrief(Entity entity);
 }

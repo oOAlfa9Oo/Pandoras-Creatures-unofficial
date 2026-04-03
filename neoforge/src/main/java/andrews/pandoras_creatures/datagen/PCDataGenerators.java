@@ -19,27 +19,51 @@ import andrews.pandoras_creatures.datagen.worldgen.PCWorldgenTagDataProvider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import java.nio.file.Path;
+
 public final class PCDataGenerators {
+    private static final String SHARED_CLIENT_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedClientOutput";
+    private static final String SHARED_WORLDGEN_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedWorldgenOutput";
+
     private PCDataGenerators() {
     }
 
     public static void gatherData(GatherDataEvent event) {
         PackOutput output = event.getGenerator().getPackOutput();
+        PackOutput sharedClientOutput = sharedClientOutput(output);
+        PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
         event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCLootModifierDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(output));
+        event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCConfiguredFeatureDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCPlacedFeatureDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCTemplatePoolDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCStructureDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCStructureSetDataProvider(output));
-        event.getGenerator().addProvider(event.includeClient(), new PCLanguageDataProvider(output));
-        event.getGenerator().addProvider(event.includeClient(), new PCBlockStateModelDataProvider(output, event.getExistingFileHelper()));
-        event.getGenerator().addProvider(event.includeClient(), new PCItemModelDataProvider(output, event.getExistingFileHelper()));
+        event.getGenerator().addProvider(event.includeServer(), new PCConfiguredFeatureDataProvider(sharedWorldgenOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCPlacedFeatureDataProvider(sharedWorldgenOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCTemplatePoolDataProvider(sharedWorldgenOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCStructureDataProvider(sharedWorldgenOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCStructureSetDataProvider(sharedWorldgenOutput));
+        event.getGenerator().addProvider(event.includeClient(), new PCLanguageDataProvider(sharedClientOutput));
+        event.getGenerator().addProvider(event.includeClient(), new PCBlockStateModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
+        event.getGenerator().addProvider(event.includeClient(), new PCItemModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
+    }
+
+    private static PackOutput sharedClientOutput(PackOutput fallbackOutput) {
+        return redirectedOutput(SHARED_CLIENT_OUTPUT_PROPERTY, fallbackOutput);
+    }
+
+    private static PackOutput sharedWorldgenOutput(PackOutput fallbackOutput) {
+        return redirectedOutput(SHARED_WORLDGEN_OUTPUT_PROPERTY, fallbackOutput);
+    }
+
+    private static PackOutput redirectedOutput(String propertyName, PackOutput fallbackOutput) {
+        String sharedOutputPath = System.getProperty(propertyName);
+        if (sharedOutputPath == null || sharedOutputPath.isBlank()) {
+            return fallbackOutput;
+        }
+
+        return new PackOutput(Path.of(sharedOutputPath));
     }
 }

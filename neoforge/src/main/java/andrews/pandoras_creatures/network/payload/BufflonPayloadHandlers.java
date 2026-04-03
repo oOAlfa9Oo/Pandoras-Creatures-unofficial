@@ -7,23 +7,23 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.function.BiConsumer;
 
-final class BufflonPayloadHandlers {
+public final class BufflonPayloadHandlers {
     private BufflonPayloadHandlers() {
     }
 
-    static void handleInventoryRequest(int entityId, IPayloadContext context) {
+    public static void handleInventoryRequest(int entityId, IPayloadContext context) {
         withBufflon(context, entityId, (serverPlayer, bufflon) -> bufflon.openGUI(serverPlayer));
     }
 
-    static void handleSitRequest(int entityId, boolean shouldSit, IPayloadContext context) {
+    public static void handleSitRequest(int entityId, boolean shouldSit, IPayloadContext context) {
         withOwnedBufflon(context, entityId, (serverPlayer, bufflon) -> bufflon.setOrderedToSit(shouldSit));
     }
 
-    static void handleFollowRequest(int entityId, boolean shouldFollow, IPayloadContext context) {
+    public static void handleFollowRequest(int entityId, boolean shouldFollow, IPayloadContext context) {
         withOwnedBufflon(context, entityId, (serverPlayer, bufflon) -> bufflon.setFollowingOwner(shouldFollow));
     }
 
-    static void handleCombatModeRequest(int entityId, boolean combatMode, IPayloadContext context) {
+    public static void handleCombatModeRequest(int entityId, boolean combatMode, IPayloadContext context) {
         withOwnedBufflon(context, entityId, (serverPlayer, bufflon) -> bufflon.setIsInCombatMode(combatMode));
     }
 

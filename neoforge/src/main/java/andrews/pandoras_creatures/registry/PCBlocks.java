@@ -1,9 +1,9 @@
 package andrews.pandoras_creatures.registry;
 
-import andrews.pandoras_creatures.content.block.ArachnonCrystalBlock;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
-import andrews.pandoras_creatures.content.block.PCPlantBlock;
+import andrews.pandoras_creatures.registry.block.PCBlockBootstrap;
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
+import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.Registries;
@@ -25,92 +25,53 @@ import java.util.function.Supplier;
 
 public class PCBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, Reference.MODID);
+    private static final Map<String, DeferredHolder<Block, ? extends Block>> SIMPLE_BLOCKS =
+            PCBlockBootstrap.registerSimpleBlocks((id, factory) -> BLOCKS.register(id, factory::get));
+    private static final Map<String, DeferredHolder<Block, ? extends Block>> SHARED_END_TROLL_BOX_BLOCKS =
+            PCEndTrollBoxBootstrap.registerBlocks((id, factory) -> BLOCKS.register(id, factory::get));
     private static final List<DeferredHolder<Block, Block>> END_TROLL_BOX_BLOCKS = new ArrayList<>();
     private static final Map<DyeColor, DeferredHolder<Block, Block>> COLORED_END_TROLL_BOXES = new EnumMap<>(DyeColor.class);
 
     // Simple blocks
-    public static final DeferredHolder<Block, Block> ARACHNON_CRYSTAL = registerBlock(PCBlockIds.ARACHNON_CRYSTAL,
-            () -> new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
-                    .strength(1.5F, 6.0F)
-                    .lightLevel(state -> 9)
-                    .requiresCorrectToolForDrops()
-                    .noOcclusion()));
+    public static final DeferredHolder<Block, Block> ARACHNON_CRYSTAL = simpleBlock(PCBlockIds.ARACHNON_CRYSTAL);
 
-    public static final DeferredHolder<Block, Block> HORSETAIL = registerBlock(PCBlockIds.HORSETAIL,
-            () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                    .noCollission()
-                    .noOcclusion()));
+    public static final DeferredHolder<Block, Block> HORSETAIL = simpleBlock(PCBlockIds.HORSETAIL);
 
-    public static final DeferredHolder<Block, Block> DHANIA = registerBlock(PCBlockIds.DHANIA,
-            () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                    .noCollission()
-                    .noOcclusion()));
+    public static final DeferredHolder<Block, Block> DHANIA = simpleBlock(PCBlockIds.DHANIA);
 
-    public static final DeferredHolder<Block, Block> HILL_BLOOM = registerBlock(PCBlockIds.HILL_BLOOM,
-            () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                    .noCollission()
-                    .noOcclusion()));
+    public static final DeferredHolder<Block, Block> HILL_BLOOM = simpleBlock(PCBlockIds.HILL_BLOOM);
+
+    public static final DeferredHolder<Block, Block> PANDORIC_SHARD = simpleBlock(PCBlockIds.PANDORIC_SHARD);
 
     // End Troll Boxes - Using custom EndTrollBoxBlock and EndTrollBoxItem
-    public static final DeferredHolder<Block, Block> END_TROLL_BOX = registerEndTrollBox(
-            PCBlockIds.END_TROLL_BOX,
-            null,
-            Blocks.SHULKER_BOX
-    );
+    public static final DeferredHolder<Block, Block> END_TROLL_BOX = sharedEndTrollBox(null);
 
-    public static final DeferredHolder<Block, Block> WHITE_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.WHITE, Blocks.WHITE_SHULKER_BOX);
+    public static final DeferredHolder<Block, Block> WHITE_END_TROLL_BOX = sharedEndTrollBox(DyeColor.WHITE);
+    public static final DeferredHolder<Block, Block> ORANGE_END_TROLL_BOX = sharedEndTrollBox(DyeColor.ORANGE);
+    public static final DeferredHolder<Block, Block> MAGENTA_END_TROLL_BOX = sharedEndTrollBox(DyeColor.MAGENTA);
+    public static final DeferredHolder<Block, Block> LIGHT_BLUE_END_TROLL_BOX = sharedEndTrollBox(DyeColor.LIGHT_BLUE);
+    public static final DeferredHolder<Block, Block> YELLOW_END_TROLL_BOX = sharedEndTrollBox(DyeColor.YELLOW);
+    public static final DeferredHolder<Block, Block> LIME_END_TROLL_BOX = sharedEndTrollBox(DyeColor.LIME);
+    public static final DeferredHolder<Block, Block> PINK_END_TROLL_BOX = sharedEndTrollBox(DyeColor.PINK);
+    public static final DeferredHolder<Block, Block> GRAY_END_TROLL_BOX = sharedEndTrollBox(DyeColor.GRAY);
+    public static final DeferredHolder<Block, Block> LIGHT_GRAY_END_TROLL_BOX = sharedEndTrollBox(DyeColor.LIGHT_GRAY);
+    public static final DeferredHolder<Block, Block> CYAN_END_TROLL_BOX = sharedEndTrollBox(DyeColor.CYAN);
+    public static final DeferredHolder<Block, Block> PURPLE_END_TROLL_BOX = sharedEndTrollBox(DyeColor.PURPLE);
+    public static final DeferredHolder<Block, Block> BLUE_END_TROLL_BOX = sharedEndTrollBox(DyeColor.BLUE);
+    public static final DeferredHolder<Block, Block> BROWN_END_TROLL_BOX = sharedEndTrollBox(DyeColor.BROWN);
+    public static final DeferredHolder<Block, Block> GREEN_END_TROLL_BOX = sharedEndTrollBox(DyeColor.GREEN);
+    public static final DeferredHolder<Block, Block> RED_END_TROLL_BOX = sharedEndTrollBox(DyeColor.RED);
+    public static final DeferredHolder<Block, Block> BLACK_END_TROLL_BOX = sharedEndTrollBox(DyeColor.BLACK);
 
-    public static final DeferredHolder<Block, Block> ORANGE_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.ORANGE, Blocks.ORANGE_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> MAGENTA_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.MAGENTA, Blocks.MAGENTA_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> LIGHT_BLUE_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> YELLOW_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.YELLOW, Blocks.YELLOW_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> LIME_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.LIME, Blocks.LIME_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> PINK_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.PINK, Blocks.PINK_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> GRAY_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.GRAY, Blocks.GRAY_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> LIGHT_GRAY_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> CYAN_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.CYAN, Blocks.CYAN_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> PURPLE_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.PURPLE, Blocks.PURPLE_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> BLUE_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.BLUE, Blocks.BLUE_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> BROWN_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.BROWN, Blocks.BROWN_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> GREEN_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.GREEN, Blocks.GREEN_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> RED_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.RED, Blocks.RED_SHULKER_BOX);
-
-    public static final DeferredHolder<Block, Block> BLACK_END_TROLL_BOX = registerColoredEndTrollBox(DyeColor.BLACK, Blocks.BLACK_SHULKER_BOX);
-
-    // Pandoric Shard - TODO: Implement PandoricShardBlock class
-    public static final DeferredHolder<Block, Block> PANDORIC_SHARD = registerBlock(PCBlockIds.PANDORIC_SHARD,
-            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
-                    .noOcclusion()
-                    .lightLevel(state -> 10)));
-
-    private static DeferredHolder<Block, Block> registerBlock(String name, Supplier<Block> block) {
-        return BLOCKS.register(name, block);
+    @SuppressWarnings("unchecked")
+    private static DeferredHolder<Block, Block> simpleBlock(String id) {
+        return (DeferredHolder<Block, Block>) SIMPLE_BLOCKS.get(id);
     }
 
-    private static DeferredHolder<Block, Block> registerColoredEndTrollBox(DyeColor color, Block sourceBlock) {
-        return registerEndTrollBox(PCBlockIds.endTrollBox(color.getName()), color, sourceBlock);
-    }
-
-    private static DeferredHolder<Block, Block> registerEndTrollBox(String name, @Nullable DyeColor color, Block sourceBlock) {
-        return registerTrackedEndTrollBox(color, name,
-                () -> new EndTrollBoxBlock(color, BlockBehaviour.Properties.ofFullCopy(sourceBlock)));
-    }
-
-    private static DeferredHolder<Block, Block> registerTrackedEndTrollBox(@Nullable DyeColor color, String name, Supplier<Block> block) {
-        DeferredHolder<Block, Block> blockHolder = BLOCKS.register(name, block);
+    @SuppressWarnings("unchecked")
+    private static DeferredHolder<Block, Block> sharedEndTrollBox(@Nullable DyeColor color) {
+        String id = PCEndTrollBoxBootstrap.blockId(color);
+        DeferredHolder<Block, Block> blockHolder = (DeferredHolder<Block, Block>) SHARED_END_TROLL_BOX_BLOCKS.get(id);
         END_TROLL_BOX_BLOCKS.add(blockHolder);
         if (color != null) {
             COLORED_END_TROLL_BOXES.put(color, blockHolder);
@@ -143,6 +104,15 @@ public class PCBlocks {
 
         DeferredHolder<Block, Block> holder = COLORED_END_TROLL_BOXES.get(color);
         return holder != null ? holder.get() : END_TROLL_BOX.get();
+    }
+
+    public static Block getSimpleBlock(String id) {
+        DeferredHolder<Block, ? extends Block> holder = SIMPLE_BLOCKS.get(id);
+        if (holder == null) {
+            throw new IllegalArgumentException("Unknown shared simple block id: " + id);
+        }
+
+        return holder.get();
     }
 
     @Nullable

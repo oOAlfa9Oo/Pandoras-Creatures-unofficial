@@ -84,31 +84,31 @@ tasks.register('verifyArchitecture') {
 }
 
 tasks.named('clean') {
-    dependsOn ':common:clean', ':neoforge:clean'
+    dependsOn ':common:clean', ':fabric:clean', ':neoforge:clean'
 }
 
 tasks.named('assemble') {
-    dependsOn ':common:assemble', ':neoforge:assemble'
+    dependsOn ':common:assemble', ':fabric:assemble', ':neoforge:assemble'
 }
 
 tasks.named('check') {
-    dependsOn ':common:test', ':neoforge:test', 'verifyArchitecture'
+    dependsOn ':common:test', ':fabric:test', ':neoforge:test', 'verifyArchitecture'
 }
 
 tasks.named('build') {
-    dependsOn ':common:build', ':neoforge:build'
+    dependsOn ':common:build', ':fabric:build', ':neoforge:build'
 }
 
 tasks.register('compileJava') {
     group = 'build'
-    description = 'Compiles common and NeoForge Java sources from the workspace root.'
-    dependsOn ':common:compileJava', ':neoforge:compileJava'
+    description = 'Compiles common, Fabric and NeoForge Java sources from the workspace root.'
+    dependsOn ':common:compileJava', ':fabric:compileJava', ':neoforge:compileJava'
 }
 
 tasks.register('test') {
     group = 'verification'
-    description = 'Runs unit tests for common and NeoForge from the workspace root.'
-    dependsOn 'verifyArchitecture', ':common:test', ':neoforge:test'
+    description = 'Runs unit tests for common, Fabric and NeoForge from the workspace root.'
+    dependsOn 'verifyArchitecture', ':common:test', ':fabric:test', ':neoforge:test'
 }
 
 tasks.register('runClient') {
@@ -117,10 +117,22 @@ tasks.register('runClient') {
     dependsOn ':neoforge:runClient'
 }
 
+tasks.register('runFabricClient') {
+    group = 'moddev'
+    description = 'Runs the Fabric development client from the workspace root.'
+    dependsOn ':fabric:runClient'
+}
+
 tasks.register('runServer') {
     group = 'moddev'
     description = 'Runs the NeoForge dedicated server from the workspace root.'
     dependsOn ':neoforge:runServer'
+}
+
+tasks.register('runFabricServer') {
+    group = 'moddev'
+    description = 'Runs the Fabric dedicated server from the workspace root.'
+    dependsOn ':fabric:runServer'
 }
 
 tasks.register('runGameTestServer') {

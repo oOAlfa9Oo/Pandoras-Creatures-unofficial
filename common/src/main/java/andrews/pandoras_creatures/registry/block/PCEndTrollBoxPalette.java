@@ -22,6 +22,16 @@ public final class PCEndTrollBoxPalette {
         return PCEndTrollBoxNaming.blockName(color == null ? null : color.getName());
     }
 
+    public static DyeColor colorForBlockName(String blockName) {
+        for (DyeColor color : ORDERED_COLORS) {
+            if (blockName(color).equals(blockName)) {
+                return color;
+            }
+        }
+
+        return null;
+    }
+
     public static String texturePath(DyeColor color) {
         return PCEndTrollBoxNaming.texturePath(color == null ? null : color.getName());
     }

@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.platform.neoforge;
 
 import andrews.pandoras_creatures.entities.bases.IAnimatedEntity;
+import andrews.pandoras_creatures.network.AnimationSync;
 import andrews.pandoras_creatures.network.payload.AnimationPayload;
 import andrews.pandoras_creatures.platform.EntityBridge;
 import andrews.pandoras_creatures.util.animation.Animation;
@@ -22,7 +23,7 @@ final class NeoForgeEntityBridge implements EntityBridge {
             return;
         }
 
-        int animationIndex = findAnimationIndex(animatedEntity.getAnimations(), animation);
+        int animationIndex = AnimationSync.findAnimationIndex(animatedEntity, animation);
         if (animationIndex < 0) {
             return;
         }
@@ -37,12 +38,8 @@ final class NeoForgeEntityBridge implements EntityBridge {
         return EventHooks.getExperienceDrop(entity, attackingPlayer, originalExperience);
     }
 
-    private static int findAnimationIndex(Animation[] animations, Animation animation) {
-        for (int i = 0; i < animations.length; i++) {
-            if (animations[i] == animation) {
-                return i;
-            }
-        }
-        return -1;
+    @Override
+    public boolean canEntityGrief(Entity entity) {
+        return EventHooks.canEntityGrief(entity.level(), entity);
     }
 }

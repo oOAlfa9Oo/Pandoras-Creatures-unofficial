@@ -1,0 +1,27 @@
+package andrews.pandoras_creatures.network.payload;
+
+import andrews.pandoras_creatures.network.PCPayloadIds;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+
+/**
+ * Shared payload for syncing entity animations from server to client.
+ */
+public record AnimationPayload(int entityId, int animationIndex) implements CustomPacketPayload {
+    public static final Type<AnimationPayload> TYPE =
+            new Type<>(PCPayloadIds.id(PCPayloadIds.ANIMATION));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnimationPayload> STREAM_CODEC =
+            StreamCodec.composite(
+                    ByteBufCodecs.INT, AnimationPayload::entityId,
+                    ByteBufCodecs.INT, AnimationPayload::animationIndex,
+                    AnimationPayload::new
+            );
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+}

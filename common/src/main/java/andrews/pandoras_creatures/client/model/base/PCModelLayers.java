@@ -17,6 +17,7 @@ public class PCModelLayers {
     public static final ModelLayerLocation END_TROLL = createLocation("end_troll");
     public static final ModelLayerLocation END_TROLL_BULLET = createLocation("end_troll_bullet");
     public static final ModelLayerLocation HELLHOUND = createLocation("hellhound");
+    public static final ModelLayerLocation PLANT_HAT = createLocation("plant_hat");
     public static final ModelLayerLocation SEAHORSE = createLocation("seahorse");
 
     // Block entity model layers

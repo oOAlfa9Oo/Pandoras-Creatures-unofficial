@@ -20,10 +20,14 @@ sourceSets {
     main {
         java.srcDirs = [project.file('src/main/java')]
         resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')]
+        compileClasspath += project(':common').sourceSets.main.output
+        runtimeClasspath += project(':common').sourceSets.main.output
     }
     test {
         java.srcDirs = [project.file('src/test/java')]
         resources.srcDirs = [project.file('src/test/resources')]
+        compileClasspath += project(':common').sourceSets.main.output
+        runtimeClasspath += project(':common').sourceSets.main.output
     }
 }
 
@@ -53,7 +57,15 @@ neoForge {
         data {
             data()
             gameDirectory = rootProject.layout.projectDirectory.dir('run/data')
-            programArguments.addAll '--mod', mod_id, '--all', '--output', project.file('src/generated/resources/').getAbsolutePath(), '--existing', project.file('src/main/resources/').getAbsolutePath()
+            systemProperty 'pandoras_creatures.sharedGeneratedClientOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            systemProperty 'pandoras_creatures.sharedGeneratedWorldgenOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            programArguments.addAll '--mod', mod_id, '--all',
+                    '--output', project.file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', project.file('src/main/resources/').getAbsolutePath(),
+                    '--existing', rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile.absolutePath,
+                    '--existing', rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
         }
     }
 

@@ -1,0 +1,38 @@
+package andrews.pandoras_creatures.entities.goals.hellhound;
+
+import andrews.pandoras_creatures.entities.HellhoundEntity;
+import andrews.pandoras_creatures.entities.goals.bases.PCMeleeAttackGoal;
+import andrews.pandoras_creatures.entities.hellhound.HellhoundChargeState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+
+public class HellHoundAttack extends PCMeleeAttackGoal {
+    public HellHoundAttack(PathfinderMob creature, double speedIn, boolean useLongMemory) {
+        super(creature, speedIn, useLongMemory);
+    }
+
+    @Override
+    protected void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
+        super.checkAndPerformAttack(enemy, distToEnemySqr);
+
+        double reach = this.getAttackReachSqr(enemy);
+        if (distToEnemySqr <= reach && this.attackTick <= 0) {
+            this.attackTick = 10;
+            this.attacker.doHurtTarget(enemy);
+        }
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        attacker.level().broadcastEntityEvent(attacker, HellhoundChargeState.START_EVENT_ID);
+        ((HellhoundEntity) this.attacker).setIsCharging(HellhoundChargeState.CHARGING);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        ((HellhoundEntity) this.attacker).setIsCharging(HellhoundChargeState.IDLE);
+        attacker.level().broadcastEntityEvent(attacker, HellhoundChargeState.STOP_EVENT_ID);
+    }
+}
