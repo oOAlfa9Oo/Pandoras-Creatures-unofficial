@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -52,6 +53,12 @@ final class NeoForgeRegistryBridge implements RegistryBridge {
     @Override
     public <T extends AbstractContainerMenu> MenuType<T> menuType(String path) {
         return (MenuType<T>) BuiltInRegistries.MENU.get(id(path));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends net.minecraft.world.item.crafting.Recipe<?>> RecipeSerializer<T> recipeSerializer(String path) {
+        return (RecipeSerializer<T>) BuiltInRegistries.RECIPE_SERIALIZER.get(id(path));
     }
 
     @Override

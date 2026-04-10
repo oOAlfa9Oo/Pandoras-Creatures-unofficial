@@ -91,6 +91,8 @@ public final class PCLanguageDataProvider implements DataProvider {
         translations.put(PCLanguageKeys.entity(PCEntityIds.END_TROLL_BULLET_POISON), "Poison End Troll Bullet");
         translations.put(PCLanguageKeys.entity(PCEntityIds.END_TROLL_BULLET_WITHER), "Wither End Troll Bullet");
         translations.put(PCLanguageKeys.entity(PCEntityIds.END_TROLL_BULLET_DAMAGE), "Damage End Troll Bullet");
+        translations.put("advancement.pandoras_creatures.free_the_end_troll.title", "Freedom for the End Troll");
+        translations.put("advancement.pandoras_creatures.free_the_end_troll.description", "Break the End Troll out of its prison");
 
         translations.put(PCLanguageKeys.END_TROLL_BOX_CONTAINER, "End Troll Box");
 

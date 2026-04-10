@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.registry.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
@@ -9,7 +10,8 @@ public final class PCEntitySpawnRules {
     private static final int MAX_ARACHNON_BRIGHTNESS = 7;
     private static final int MIN_BUFFLON_BRIGHTNESS = 9;
     private static final int MIN_JUNGLE_ARCHVINE_Y = 62;
-    private static final int MIN_NETHER_ARCHVINE_Y = 40;
+    private static final int MIN_NETHER_ARCHVINE_Y = 38;
+    private static final int ACIDIC_ARCHVINE_REQUIRED_AIR_DEPTH = 5;
     private static final int MIN_WARM_OCEAN_CRAB_Y = 30;
     private static final int MAX_WARM_OCEAN_CRAB_Y = 60;
     private static final int MIN_BEACH_CRAB_Y = 56;
@@ -61,8 +63,7 @@ public final class PCEntitySpawnRules {
     }
 
     public static boolean isNetherArchvineBiome(LevelAccessor level, BlockPos pos) {
-        return level.getBiome(pos).is(Biomes.NETHER_WASTES)
-                || level.getBiome(pos).is(Biomes.CRIMSON_FOREST);
+        return level.getBiome(pos).is(BiomeTags.IS_NETHER);
     }
 
     public static boolean hasValidAcidicArchvineCeiling(LevelAccessor level, BlockPos pos) {
@@ -77,6 +78,10 @@ public final class PCEntitySpawnRules {
             }
         }
         return true;
+    }
+
+    public static int acidicArchvineRequiredAirDepth() {
+        return ACIDIC_ARCHVINE_REQUIRED_AIR_DEPTH;
     }
 
     static boolean isAllowedCrabHeight(boolean inBeach, boolean inWarmOcean, int y) {

@@ -24,7 +24,7 @@ public class PCSpawnEggItem extends SpawnEggItem {
         this.entityTypeSupplier = entityType;
     }
 
-    private EntityType<?> getDefaultType() {
+    protected EntityType<?> getDefaultType() {
         return this.entityTypeSupplier.get();
     }
 

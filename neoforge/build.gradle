@@ -11,7 +11,7 @@ group = rootProject.group
 evaluationDependsOn(':common')
 
 base {
-    archivesName = mod_id
+    archivesName = "${mod_id}-neoforge"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)

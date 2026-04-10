@@ -14,24 +14,35 @@ import andrews.pandoras_creatures.registry.entity.PCEntityBootstrap;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.registry.entity.PCEntitySpawnRules;
 import andrews.pandoras_creatures.registry.entity.PCEntityTypeFactory;
+import andrews.pandoras_creatures.world.biome.PCBiomeSpawnCatalog;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-public final class PCFabricEntities {
-    private static final int ACIDIC_ARCHVINE_REQUIRED_AIR_DEPTH = 8;
+import java.util.List;
+import java.util.function.Predicate;
 
+public final class PCFabricEntities {
     // Fabric does not need a custom data fixer name for mod entities here; using null avoids noisy
     // "No data fixer registered" messages during bootstrap for ids owned by the mod.
     public static final EntityType<AcidicArchvineEntity> ACIDIC_ARCHVINE = register(PCEntityIds.ACIDIC_ARCHVINE, PCEntityBootstrap.acidicArchvineType().build(null));
@@ -76,7 +87,7 @@ public final class PCFabricEntities {
                         level.getBlockState(pos).isAir(),
                         level.getBlockState(pos.above()).isAir(),
                         PCEntitySpawnRules.hasValidAcidicArchvineCeiling(level, pos),
-                        PCEntitySpawnRules.hasConsecutiveAirBelow(level, pos, ACIDIC_ARCHVINE_REQUIRED_AIR_DEPTH)
+                        PCEntitySpawnRules.hasConsecutiveAirBelow(level, pos, PCEntitySpawnRules.acidicArchvineRequiredAirDepth())
                 )
         );
 
@@ -113,10 +124,41 @@ public final class PCFabricEntities {
                         level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)
                 )
         );
+
+        registerBiomeSpawns();
     }
 
     private static boolean isBiome(LevelAccessor level, BlockPos pos, net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome> biome) {
         return level.getBiome(pos).is(biome);
+    }
+
+    private static void registerBiomeSpawns() {
+        for (PCBiomeSpawnCatalog.SpawnDefinition definition : PCBiomeSpawnCatalog.definitions()) {
+            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(definition.entityTypeId()))
+                    .orElseThrow(() -> new IllegalStateException("Unknown Fabric entity id for biome spawn: " + definition.entityTypeId()));
+            BiomeModifications.addSpawn(
+                    toBiomeSelector(definition.biomes()),
+                    entityType.getCategory(),
+                    entityType,
+                    definition.weight(),
+                    definition.minCount(),
+                    definition.maxCount()
+            );
+        }
+    }
+
+    private static Predicate<BiomeSelectionContext> toBiomeSelector(List<String> biomeSelectors) {
+        if (biomeSelectors.size() == 1 && biomeSelectors.getFirst().startsWith("#")) {
+            String selector = biomeSelectors.getFirst().substring(1);
+            TagKey<Biome> tag = TagKey.create(Registries.BIOME, ResourceLocation.parse(selector));
+            return BiomeSelectors.tag(tag);
+        }
+
+        List<ResourceKey<Biome>> biomeKeys = biomeSelectors.stream()
+                .map(ResourceLocation::parse)
+                .map(id -> ResourceKey.create(Registries.BIOME, id))
+                .toList();
+        return BiomeSelectors.includeByKey(biomeKeys);
     }
 
     private static <T extends Entity> EntityType<T> register(String id, EntityType<T> entityType) {

@@ -3,6 +3,7 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.fabricmc.net/' }
+        maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = 'https://maven.neoforged.net/releases' }
     }
 }
@@ -14,4 +15,5 @@ plugins {
 rootProject.name = 'pandoras_creatures'
 include 'common'
 include 'fabric'
+include 'forge'
 include 'neoforge'

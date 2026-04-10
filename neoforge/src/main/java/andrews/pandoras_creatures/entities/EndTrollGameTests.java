@@ -1,10 +1,12 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
+import andrews.pandoras_creatures.advancement.PCAdvancements;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollPunchAnimation;
 import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollAttackGoal;
 import andrews.pandoras_creatures.registry.PCEntities;
 import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -133,6 +136,15 @@ public final class EndTrollGameTests {
         helper.assertTrue(endTroll.isEntityStanding(), "End Troll should become standing after transform animation completes");
         helper.assertTrue(endTroll.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION),
                 "End Troll should return to the blank animation after transform completes");
+        helper.succeed();
+    }
+
+    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
+    public static void liberationAdvancementIsLoaded(GameTestHelper helper) {
+        AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements()
+                .get(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCAdvancements.FREE_THE_END_TROLL));
+
+        helper.assertTrue(advancement != null, "End Troll liberation advancement should be present in the loaded advancement tree");
         helper.succeed();
     }
 

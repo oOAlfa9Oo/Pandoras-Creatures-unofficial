@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.registry.item;
 
 import andrews.pandoras_creatures.content.item.ItemCrabBucket;
 import andrews.pandoras_creatures.content.item.EndTrollBoxItem;
+import andrews.pandoras_creatures.content.item.ItemArachnonHammer;
 import andrews.pandoras_creatures.content.item.ItemPlantHat;
 import andrews.pandoras_creatures.content.item.ItemSeahorseBucket;
 import andrews.pandoras_creatures.content.item.PCSpawnEggItem;
@@ -46,6 +47,7 @@ public final class PCItemBootstrap {
         registerSingleStackItem(registeredItems, registrar, PCItemIds.BUFFLON_SMALL_STORAGE);
         registerSingleStackItem(registeredItems, registrar, PCItemIds.BUFFLON_LARGE_STORAGE);
         registerBasicItem(registeredItems, registrar, PCItemIds.END_TROLL_SKIN);
+        registerCustomItem(registeredItems, registrar, PCItemIds.ARACHNON_HAMMER, ItemArachnonHammer::new);
         registerCustomItem(registeredItems, registrar, PCItemIds.PLANT_HAT, ItemPlantHat::new);
 
         return Collections.unmodifiableMap(registeredItems);
@@ -90,9 +92,16 @@ public final class PCItemBootstrap {
     public static <H extends Supplier<? extends Item>> Map<String, H> registerPortableSpawnEggItems(
             SharedRegistryRegistrar<Item, H> registrar,
             Function<String, Supplier<? extends EntityType<?>>> entityTypeLookup) {
+        return registerPortableSpawnEggItems(registrar, entityTypeLookup, portableSpawnEggPalettes());
+    }
+
+    public static <H extends Supplier<? extends Item>> Map<String, H> registerPortableSpawnEggItems(
+            SharedRegistryRegistrar<Item, H> registrar,
+            Function<String, Supplier<? extends EntityType<?>>> entityTypeLookup,
+            Iterable<PCSpawnEggPalette> palettes) {
         LinkedHashMap<String, H> registeredItems = new LinkedHashMap<>();
 
-        for (PCSpawnEggPalette palette : portableSpawnEggPalettes()) {
+        for (PCSpawnEggPalette palette : palettes) {
             Supplier<? extends EntityType<?>> entityTypeSupplier = entityTypeLookup.apply(palette.entityName());
             if (entityTypeSupplier == null) {
                 throw new IllegalArgumentException("No entity type supplier available for spawn egg: " + palette.entityName());

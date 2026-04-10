@@ -4,6 +4,7 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineAttackState;
 import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineDataKeys;
 import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvinePlacementRules;
+import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineSpawnRules;
 import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.goals.acidic_archvine.TargetUnderneathGoal;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
@@ -144,7 +145,41 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
             this.setPos(this.getX(), this.getY() + yOffset, this.getZ());
         }
 
+        if (spawnData instanceof AcidicArchvineSpawnData archvineSpawnData && archvineSpawnData.allowCompanionSpawn()) {
+            this.trySpawnCompanion(level, difficulty, reason);
+            return archvineSpawnData.withCompanionSpawnDisabled();
+        }
+
+        if (spawnData == null) {
+            AcidicArchvineSpawnData newSpawnData = new AcidicArchvineSpawnData(true);
+            this.trySpawnCompanion(level, difficulty, reason);
+            return newSpawnData.withCompanionSpawnDisabled();
+        }
+
         return spawnData;
+    }
+
+    private void trySpawnCompanion(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason) {
+        if (!AcidicArchvineSpawnRules.shouldAttemptCompanion(reason)) {
+            return;
+        }
+        if (this.random.nextFloat() > AcidicArchvineSpawnRules.companionChance(difficulty.getDifficulty())) {
+            return;
+        }
+
+        for (int attempt = 0; attempt < AcidicArchvineSpawnRules.companionAttempts(difficulty.getDifficulty()); attempt++) {
+            BlockPos candidatePos = AcidicArchvineSpawnRules.randomNearbyPosition(this.blockPosition(), this.random);
+            if (!AcidicArchvineSpawnRules.isValidCompanionSpawn(level, candidatePos)) {
+                continue;
+            }
+
+            AcidicArchvineEntity companion = new AcidicArchvineEntity(level.getLevel(), candidatePos.getX() + 0.5D, candidatePos.getY(), candidatePos.getZ() + 0.5D);
+            companion.finalizeSpawn(level, level.getCurrentDifficultyAt(candidatePos), reason, AcidicArchvineSpawnData.noCompanionSpawn());
+            if (!level.addFreshEntity(companion)) {
+                continue;
+            }
+            return;
+        }
     }
 
     private int resolveArchvineType(ServerLevelAccessor level) {
@@ -221,5 +256,15 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     public void setAttackState(AcidicArchvineAttackState state) {
         this.attackState = state;
+    }
+
+    private record AcidicArchvineSpawnData(boolean allowCompanionSpawn) implements SpawnGroupData {
+        private static AcidicArchvineSpawnData noCompanionSpawn() {
+            return new AcidicArchvineSpawnData(false);
+        }
+
+        private AcidicArchvineSpawnData withCompanionSpawnDisabled() {
+            return noCompanionSpawn();
+        }
     }
 }

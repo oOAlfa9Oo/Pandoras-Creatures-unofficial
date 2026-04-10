@@ -23,7 +23,8 @@ La regla general es:
 ## Estado actual por host
 
 - `neoforge/` es el host de referencia y hoy conserva el wiring funcional completo del mod
-- `fabric/` esta abierto como segundo loader y ya compila/arranca con bootstrap minimo, pero todavia no registra contenido ni networking del mod
+- `fabric/` ya funciona como segundo loader con contenido, cliente, worldgen y parte fuerte del runtime del mod portados sobre `common`
+- `forge/` ya esta abierto como tercer loader con bootstrap minimo y frontera de plataforma inicial, pero todavia no registra contenido ni networking reales del mod
 
 ## Contratos actuales
 
@@ -165,6 +166,21 @@ Resultado esperado:
 
 - `neoforge`, `fabric` y un futuro `forge` pueden compartir exactamente la misma semantica de animacion
 - los bugs de animacion no vuelven a depender de una implementacion escondida en un loader concreto
+
+### `platform/forge` en fase de bootstrap
+
+El tercer host ya existe, pero arranca con adapters deliberadamente pequenos para no duplicar wiring demasiado pronto.
+
+Uso esperado:
+
+- inicializar `PandorasCreaturesCommon` desde `forge`
+- fijar desde el primer corte la misma forma de acceso a `registry`, `network`, `menus`, `entities` y `sidedHooks`
+- permitir que el siguiente lote de trabajo de `Forge` reutilice la misma frontera ya estabilizada en `NeoForge` y `Fabric`
+
+Nota:
+
+- en esta etapa los bridges de `forge` pueden lanzar `UnsupportedOperationException` en rutas aun no portadas
+- eso es intencional mientras el host todavia no registra contenido activo ni payloads reales
 
 ### `SidedHooks`
 

@@ -1,0 +1,17 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": [
+    "minecraft:ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:deep_ocean",
+    "minecraft:deep_lukewarm_ocean"
+  ],
+  "spawners": [
+    {
+      "type": "pandoras_creatures:seahorse",
+      "maxCount": 3,
+      "minCount": 2,
+      "weight": 10
+    }
+  ]
+}

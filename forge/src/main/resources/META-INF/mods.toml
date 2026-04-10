@@ -1,0 +1,36 @@
+modLoader="javafml"
+loaderVersion="${forge_loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/andrew0030/Pandoras-Creatures/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name} (Forge)"
+displayURL="https://github.com/andrew0030/Pandoras-Creatures"
+credits="andrew0030 - Original Author | Unofficial Forge 1.21.1 multiloader port"
+authors="${mod_authors}"
+description='''
+Unofficial Forge 1.21.1 multiloader port of Pandoras Creatures.
+
+Original project by andrew0030.
+Official issue tracker:
+https://github.com/andrew0030/Pandoras-Creatures/issues
+
+This loader module currently boots the shared common core and prepares
+the project for the staged Forge port.
+'''
+
+[[dependencies.${mod_id}]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

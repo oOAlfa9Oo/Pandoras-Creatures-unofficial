@@ -8,7 +8,7 @@ import net.minecraft.world.phys.Vec3;
 public final class AcidicArchvineTargetingRules {
     public static final int BITE_COOLDOWN_TICKS = 20;
     private static final double PULL_SPEED = 0.3D;
-    private static final double HORIZONTAL_TARGET_RANGE = 10.0D;
+    private static final double HORIZONTAL_TARGET_RANGE = 50.0D;
     private static final double PULL_DISTANCE = 1.0D;
     private static final double TELEPORT_CAPTURE_DISTANCE = 0.55D;
     private static final double CLOSE_CAPTURE_DISTANCE = 1.5D;

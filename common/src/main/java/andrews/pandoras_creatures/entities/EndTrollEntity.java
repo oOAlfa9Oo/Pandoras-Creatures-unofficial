@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
+import andrews.pandoras_creatures.advancement.PCAdvancements;
 import andrews.pandoras_creatures.entities.bases.AnimatedCreatureEntity;
 import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollBehaviorRules;
@@ -51,8 +52,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class EndTrollEntity extends AnimatedMonsterEntity {
     private static final EntityDataAccessor<Boolean> IS_STANDING = SynchedEntityData.defineId(EndTrollEntity.class, EntityDataSerializers.BOOLEAN);
@@ -70,6 +74,8 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
 
     private int shootCooldown = EndTrollBehaviorRules.DEFAULT_SHOOT_COOLDOWN;
     private int screamCooldown = EndTrollBehaviorRules.DEFAULT_SCREAM_COOLDOWN;
+    @Nullable
+    private UUID liberationPlayerId;
 
     public EndTrollEntity(EntityType<? extends EndTrollEntity> type, Level level) {
         super(type, level);
@@ -227,6 +233,7 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
         if (animation == TRANSFORM_ANIMATION) {
             this.setEntityStanding(true);
             refreshDimensions();
+            awardLiberationAdvancement();
         }
 
         if (animation == SCREAM_ANIMATION) {
@@ -261,6 +268,7 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
         if (entity instanceof AbstractArrow) {
             return false;
         }
+        rememberLiberationPlayer(source);
         return super.hurt(source, amount);
     }
 
@@ -461,5 +469,47 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
         if ((!hostileDifficulty || !hasValidTarget) && this.hasEncounterState()) {
             this.resetEncounterState();
         }
+    }
+
+    private void rememberLiberationPlayer(DamageSource source) {
+        if (this.isEntityStanding()) {
+            return;
+        }
+
+        Entity attacker = source.getEntity();
+        if (attacker instanceof ServerPlayer serverPlayer) {
+            this.liberationPlayerId = serverPlayer.getUUID();
+        }
+    }
+
+    private void awardLiberationAdvancement() {
+        if (this.level().isClientSide()) {
+            return;
+        }
+
+        ServerPlayer player = resolveLiberationPlayer();
+        if (player != null) {
+            PCAdvancements.award(player, PCAdvancements.FREE_THE_END_TROLL);
+        }
+
+        this.liberationPlayerId = null;
+    }
+
+    @Nullable
+    private ServerPlayer resolveLiberationPlayer() {
+        if (this.level() instanceof ServerLevel serverLevel) {
+            if (this.liberationPlayerId != null) {
+                ServerPlayer storedPlayer = serverLevel.getServer().getPlayerList().getPlayer(this.liberationPlayerId);
+                if (storedPlayer != null) {
+                    return storedPlayer;
+                }
+            }
+
+            if (this.getTarget() instanceof ServerPlayer targetPlayer) {
+                return targetPlayer;
+            }
+        }
+
+        return null;
     }
 }

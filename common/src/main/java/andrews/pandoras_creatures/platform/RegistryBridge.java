@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -32,6 +33,8 @@ public interface RegistryBridge {
     <T extends BlockEntity> BlockEntityType<T> blockEntityType(String path);
 
     <T extends AbstractContainerMenu> MenuType<T> menuType(String path);
+
+    <T extends net.minecraft.world.item.crafting.Recipe<?>> RecipeSerializer<T> recipeSerializer(String path);
 
     SoundEvent sound(String path);
 

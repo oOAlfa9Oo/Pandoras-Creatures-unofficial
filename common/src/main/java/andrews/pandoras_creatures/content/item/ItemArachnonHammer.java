@@ -6,8 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
@@ -20,9 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.List;
 
@@ -32,7 +30,6 @@ public class ItemArachnonHammer extends PickaxeItem {
                 .attributes(createAttributes(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F)));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
@@ -92,44 +89,28 @@ public class ItemArachnonHammer extends PickaxeItem {
         return super.mineBlock(stack, level, state, pos, entity);
     }
 
-    /**
-     * Used to check if the blockIn can be broken by this tool
-     */
     public boolean canHarvestBlock(Level level, BlockPos position, BlockState blockIn) {
         BlockEntity blockEntity = level.getBlockEntity(position);
-
-        // Makes sure the Block has no Tile Entity
         if (blockEntity != null) {
             return false;
         }
-        // Makes sure the Block isn't unbreakable
         if (blockIn.getDestroySpeed(level, position) == -1) {
             return false;
         }
-        // Check if this tool is correct for the block
         return this.isCorrectToolForDrops(new ItemStack(this), blockIn);
     }
 
-    /**
-     * Used to "mine" a block
-     */
     private void processHarvest(Level level, BlockPos pos, BlockState state, ItemStack stack, Player player) {
-        // Break the block
         level.destroyBlock(pos, false);
         if (!player.isCreative() && level instanceof ServerLevel serverLevel) {
-            // Drop items
             for (ItemStack itemStack : Block.getDrops(state, serverLevel, pos, null, player, stack)) {
                 ItemEntity item = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, itemStack);
                 level.addFreshEntity(item);
             }
-            // Drop experience
             state.spawnAfterBreak(serverLevel, pos, stack, true);
         }
     }
 
-    /**
-     * Used to get the side of the block that got harvested
-     */
     private Direction getBlockSideHit(Player player) {
         HitResult raycast = rayTraceFromPlayer(player.level(), player, ClipContext.Fluid.NONE);
         if (!player.level().isClientSide() && raycast.getType() == HitResult.Type.BLOCK) {
@@ -140,9 +121,6 @@ public class ItemArachnonHammer extends PickaxeItem {
         }
     }
 
-    /**
-     * Casts a ray from the player towards the harvested Block
-     */
     private HitResult rayTraceFromPlayer(Level level, Player player, ClipContext.Fluid fluidMode) {
         float pitch = player.getXRot();
         float yaw = player.getYRot();
@@ -153,8 +131,7 @@ public class ItemArachnonHammer extends PickaxeItem {
         float f5 = (float) Math.sin(-pitch * ((float) Math.PI / 180F));
         float f6 = f3 * f4;
         float f7 = f2 * f4;
-        double reach = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
-        reach = reach * 2;
+        double reach = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) * 2;
         Vec3 endVec = eyePos.add(f6 * reach, f5 * reach, f7 * reach);
         return level.clip(new ClipContext(eyePos, endVec, ClipContext.Block.OUTLINE, fluidMode, player));
     }

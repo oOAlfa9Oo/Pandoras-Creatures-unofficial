@@ -1,0 +1,133 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+version = rootProject.version
+group = rootProject.group
+
+base {
+    archivesName = "${mod_id}-forge"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets {
+    main {
+        java.srcDirs = [
+                project.file('src/main/java'),
+                rootProject.layout.projectDirectory.dir('common/src/main/java').asFile
+        ]
+        resources.srcDirs = [
+                project.file('src/main/resources'),
+                project.file('src/generated/resources'),
+                rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile,
+                rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile
+        ]
+    }
+    test {
+        java.srcDirs = [project.file('src/test/java')]
+        resources.srcDirs = [project.file('src/test/resources')]
+    }
+}
+
+sourceSets.main.output.resourcesDir = tasks.named('compileJava', JavaCompile).get().destinationDirectory.get().asFile
+
+tasks.named('processResources', ProcessResources).configure {
+    destinationDir = tasks.named('compileJava', JavaCompile).get().destinationDirectory.get().asFile
+}
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
+
+    runs {
+        configureEach {
+            workingDirectory = file("run/${name}")
+        }
+
+        client
+
+        server {
+            args '--nogui'
+        }
+
+        gameTestServer
+
+        data {
+            workingDirectory = file('run/data')
+            args '--mod', mod_id, '--all',
+                    '--output', file('src/generated/resources').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath,
+                    '--existing', rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile.absolutePath,
+                    '--existing', rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        name = 'Forge'
+        url = 'https://maven.minecraftforge.net/'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    testImplementation platform('org.junit:junit-bom:5.14.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version        : minecraft_version,
+            minecraft_version_range  : minecraft_version_range,
+            forge_version            : forge_version,
+            forge_version_range      : forge_version_range,
+            forge_loader_version_range: forge_loader_version_range,
+            mod_id                   : mod_id,
+            mod_name                 : mod_name,
+            mod_license              : mod_license,
+            mod_version              : mod_version,
+            mod_authors              : mod_authors,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${rootProject.projectDir}/repo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

@@ -71,7 +71,7 @@ public final class PCEntityBootstrap {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 20.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
-                .add(Attributes.FOLLOW_RANGE, 36.0D);
+                .add(Attributes.FOLLOW_RANGE, 50.0D);
     }
 
     public static AttributeSupplier.Builder crabAttributes() {

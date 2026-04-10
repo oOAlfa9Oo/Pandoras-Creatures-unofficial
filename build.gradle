@@ -84,31 +84,31 @@ tasks.register('verifyArchitecture') {
 }
 
 tasks.named('clean') {
-    dependsOn ':common:clean', ':fabric:clean', ':neoforge:clean'
+    dependsOn ':common:clean', ':fabric:clean', ':forge:clean', ':neoforge:clean'
 }
 
 tasks.named('assemble') {
-    dependsOn ':common:assemble', ':fabric:assemble', ':neoforge:assemble'
+    dependsOn ':common:assemble', ':fabric:assemble', ':forge:assemble', ':neoforge:assemble'
 }
 
 tasks.named('check') {
-    dependsOn ':common:test', ':fabric:test', ':neoforge:test', 'verifyArchitecture'
+    dependsOn ':common:test', ':fabric:test', ':forge:test', ':neoforge:test', 'verifyArchitecture'
 }
 
 tasks.named('build') {
-    dependsOn ':common:build', ':fabric:build', ':neoforge:build'
+    dependsOn ':common:build', ':fabric:build', ':forge:build', ':neoforge:build'
 }
 
 tasks.register('compileJava') {
     group = 'build'
-    description = 'Compiles common, Fabric and NeoForge Java sources from the workspace root.'
-    dependsOn ':common:compileJava', ':fabric:compileJava', ':neoforge:compileJava'
+    description = 'Compiles common, Fabric, Forge and NeoForge Java sources from the workspace root.'
+    dependsOn ':common:compileJava', ':fabric:compileJava', ':forge:compileJava', ':neoforge:compileJava'
 }
 
 tasks.register('test') {
     group = 'verification'
-    description = 'Runs unit tests for common, Fabric and NeoForge from the workspace root.'
-    dependsOn 'verifyArchitecture', ':common:test', ':fabric:test', ':neoforge:test'
+    description = 'Runs unit tests for common, Fabric, Forge and NeoForge from the workspace root.'
+    dependsOn 'verifyArchitecture', ':common:test', ':fabric:test', ':forge:test', ':neoforge:test'
 }
 
 tasks.register('runClient') {
@@ -123,6 +123,12 @@ tasks.register('runFabricClient') {
     dependsOn ':fabric:runClient'
 }
 
+tasks.register('runForgeClient') {
+    group = 'moddev'
+    description = 'Runs the Forge development client from the workspace root.'
+    dependsOn ':forge:runClient'
+}
+
 tasks.register('runServer') {
     group = 'moddev'
     description = 'Runs the NeoForge dedicated server from the workspace root.'
@@ -133,6 +139,12 @@ tasks.register('runFabricServer') {
     group = 'moddev'
     description = 'Runs the Fabric dedicated server from the workspace root.'
     dependsOn ':fabric:runServer'
+}
+
+tasks.register('runForgeServer') {
+    group = 'moddev'
+    description = 'Runs the Forge dedicated server from the workspace root.'
+    dependsOn ':forge:runServer'
 }
 
 tasks.register('runGameTestServer') {

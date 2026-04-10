@@ -1,8 +1,9 @@
 package andrews.pandoras_creatures.crafting;
 
+import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
-import andrews.pandoras_creatures.registry.PCRecipeSerializers;
 import andrews.pandoras_creatures.registry.PCTags;
+import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,10 +21,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-/**
- * Custom shapeless recipe for re-coloring End Troll Boxes with dyes.
- * Only one end troll box and one dye item are allowed as ingredients.
- */
 public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
     private final String ourGroup;
     private final CraftingBookCategory ourCategory;
@@ -44,7 +41,6 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
         boolean dyeItemPresent = false;
         DyeColor colorItem = null;
 
-        // First pass: find the dye color
         for (int i = 0; i < input.size(); i++) {
             final ItemStack slotStack = input.getItem(i);
             if (!slotStack.isEmpty() && slotStack.getItem() instanceof DyeItem dyeItem) {
@@ -56,7 +52,6 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
             }
         }
 
-        // Second pass: find the end troll box and return the re-colored version
         for (int i = 0; i < input.size(); i++) {
             final ItemStack slotStack = input.getItem(i);
             if (!slotStack.isEmpty() && slotStack.is(PCTags.Items.END_TROLL_BOXES)) {
@@ -73,7 +68,7 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return PCRecipeSerializers.END_TROLL_BOX_COLORING_RECIPE.get();
+        return PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX_COLORING);
     }
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxColoringRecipe> {

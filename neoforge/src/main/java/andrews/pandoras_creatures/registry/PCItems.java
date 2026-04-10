@@ -1,7 +1,6 @@
 package andrews.pandoras_creatures.registry;
 
 import andrews.pandoras_creatures.content.item.EndTrollBoxItem;
-import andrews.pandoras_creatures.content.item.ItemArachnonHammer;
 import andrews.pandoras_creatures.content.item.PCSpawnEggItem;
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
@@ -82,7 +81,7 @@ public final class PCItems {
     public static final DeferredHolder<Item, Item> END_TROLL_SKIN = sharedItem(PCItemIds.END_TROLL_SKIN);
 
     // Custom Items
-    public static final DeferredHolder<Item, ItemArachnonHammer> ARACHNON_HAMMER = registerCustomItem(PCItemIds.ARACHNON_HAMMER, ItemArachnonHammer::new);
+    public static final DeferredHolder<Item, Item> ARACHNON_HAMMER = sharedItem(PCItemIds.ARACHNON_HAMMER);
 
     public static final DeferredHolder<Item, ? extends Item> CRAB_BUCKET = sharedBucketItem(PCItemIds.CRAB_BUCKET);
 

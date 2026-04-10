@@ -1,19 +1,15 @@
 package andrews.pandoras_creatures.registry.entity;
 
 import andrews.pandoras_creatures.registry.PCEntities;
-import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.SpawnPlacementTypes;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
 public final class PCEntitySpawnPlacements {
-    private static final int ACIDIC_ARCHVINE_REQUIRED_AIR_DEPTH = 8;
-
     private PCEntitySpawnPlacements() {
     }
 
@@ -58,14 +54,14 @@ public final class PCEntitySpawnPlacements {
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnAcidicArchvine(
                                 level.getDifficulty() != Difficulty.PEACEFUL,
-                                isJungleArchvineBiome(level, pos),
-                                isNetherArchvineBiome(level, pos),
+                                PCEntitySpawnRules.isJungleArchvineBiome(level, pos),
+                                PCEntitySpawnRules.isNetherArchvineBiome(level, pos),
                                 pos.getY(),
                                 level.getBlockState(pos).isAir(),
                                 level.getBlockState(pos.above()).isAir(),
-                                hasValidAcidicArchvineCeiling(level, pos),
-                                hasConsecutiveAirBelow(level, pos, ACIDIC_ARCHVINE_REQUIRED_AIR_DEPTH)
-                        ),
+                        PCEntitySpawnRules.hasValidAcidicArchvineCeiling(level, pos),
+                        PCEntitySpawnRules.hasConsecutiveAirBelow(level, pos, PCEntitySpawnRules.acidicArchvineRequiredAirDepth())
+                ),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         event.register(PCEntities.BUFFLON.get(),
@@ -83,28 +79,4 @@ public final class PCEntitySpawnPlacements {
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
-    private static boolean isJungleArchvineBiome(LevelAccessor level, BlockPos pos) {
-        return level.getBiome(pos).is(Biomes.JUNGLE)
-                || level.getBiome(pos).is(Biomes.BAMBOO_JUNGLE)
-                || level.getBiome(pos).is(Biomes.SPARSE_JUNGLE);
-    }
-
-    private static boolean isNetherArchvineBiome(LevelAccessor level, BlockPos pos) {
-        return level.getBiome(pos).is(Biomes.NETHER_WASTES)
-                || level.getBiome(pos).is(Biomes.CRIMSON_FOREST);
-    }
-
-    private static boolean hasValidAcidicArchvineCeiling(LevelAccessor level, BlockPos pos) {
-        return level.getBlockState(pos.above(2)).is(Blocks.JUNGLE_LEAVES)
-                || level.getBlockState(pos.above(2)).is(Blocks.NETHERRACK);
-    }
-
-    private static boolean hasConsecutiveAirBelow(LevelAccessor level, BlockPos pos, int depth) {
-        for (int i = 0; i < depth; i++) {
-            if (!level.getBlockState(pos.below(i)).isAir()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

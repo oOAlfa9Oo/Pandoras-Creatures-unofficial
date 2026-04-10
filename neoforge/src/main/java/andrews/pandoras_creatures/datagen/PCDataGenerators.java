@@ -39,7 +39,7 @@ public final class PCDataGenerators {
         event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCLootModifierDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output));
+        event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCConfiguredFeatureDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCPlacedFeatureDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCTemplatePoolDataProvider(sharedWorldgenOutput));

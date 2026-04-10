@@ -1,8 +1,9 @@
 package andrews.pandoras_creatures.crafting;
 
+import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
-import andrews.pandoras_creatures.registry.PCRecipeSerializers;
 import andrews.pandoras_creatures.registry.PCTags;
+import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,11 +21,6 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 
-/**
- * Custom shaped recipe for crafting the End Troll Box.
- * When a shulker box is used as the central ingredient, the resulting box
- * inherits the shulker's color.
- */
 public class EndTrollBoxRecipe extends ShapedRecipe {
     private final String ourGroup;
     private final CraftingBookCategory ourCategory;
@@ -64,7 +60,7 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return PCRecipeSerializers.END_TROLL_BOX_RECIPE.get();
+        return PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX);
     }
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxRecipe> {
