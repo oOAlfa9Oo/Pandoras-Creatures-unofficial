@@ -113,7 +113,8 @@ tasks.register('verifyMultiversionDocs') {
                 'MULTIVERSION_PORTING_CHECKLIST.md',
                 'MULTIVERSION_TECHNICAL_MATRIX.md',
                 'MULTIVERSION_BRANCH_PLAYBOOK.md',
-                'RELEASE_1.21.1_FREEZE.md'
+                'RELEASE_1.21.1_FREEZE.md',
+                'RELEASE_26.1_BRINGUP.md'
         ]
 
         def missingDocs = requiredDocs.findAll { !layout.projectDirectory.file(it).asFile.exists() }

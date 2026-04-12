@@ -21,6 +21,7 @@ La regla principal es trabajar por **versiones ancla**, no por cada release meno
 La matriz tecnica detallada vive en `MULTIVERSION_TECHNICAL_MATRIX.md`.
 El procedimiento para abrir ramas vive en `MULTIVERSION_BRANCH_PLAYBOOK.md`.
 El freeze documentado de la familia actual vive en `RELEASE_1.21.1_FREEZE.md`.
+El bring-up de la familia `26.1` vive en `RELEASE_26.1_BRINGUP.md`.
 
 ## Politica de ramas
 
