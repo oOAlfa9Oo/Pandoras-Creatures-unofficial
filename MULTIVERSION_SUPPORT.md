@@ -22,6 +22,7 @@ La matriz tecnica detallada vive en `MULTIVERSION_TECHNICAL_MATRIX.md`.
 El procedimiento para abrir ramas vive en `MULTIVERSION_BRANCH_PLAYBOOK.md`.
 El freeze documentado de la familia actual vive en `RELEASE_1.21.1_FREEZE.md`.
 El bring-up de la familia `26.1` vive en `RELEASE_26.1_BRINGUP.md`.
+La auditoria inicial de compilacion Fabric 26.1 vive en `FABRIC_26.1_COMPILE_AUDIT.md`.
 
 ## Politica de ramas
 

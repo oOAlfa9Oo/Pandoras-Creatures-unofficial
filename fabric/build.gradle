@@ -3,39 +3,51 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version "${fabric_loom_version}"
+    id 'net.fabricmc.fabric-loom' version "${fabric_loom_version}"
 }
 
 version = rootProject.version
 group = rootProject.group
 evaluationDependsOn(':common')
 def commonMainSourceSet = project(':common').sourceSets.main
+def fabricOnly = providers.gradleProperty('fabricOnly')
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
 
 base {
     archivesName = "${mod_id}-fabric-${minecraft_version}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets {
     main {
-        java.srcDirs = [project.file('src/main/java')]
+        java.srcDirs = fabricOnly
+                ? [project.file('src/main/java'), rootProject.layout.projectDirectory.dir('common/src/main/java').asFile]
+                : [project.file('src/main/java')]
         resources.srcDirs = [project.file('src/main/resources')] + commonMainSourceSet.resources.srcDirs
-        compileClasspath += commonMainSourceSet.output
-        runtimeClasspath += commonMainSourceSet.output
+        if (!fabricOnly) {
+            compileClasspath += commonMainSourceSet.output
+            runtimeClasspath += commonMainSourceSet.output
+        }
     }
     test {
         java.srcDirs = [project.file('src/test/java')]
         resources.srcDirs = [project.file('src/test/resources')]
-        compileClasspath += commonMainSourceSet.output
-        runtimeClasspath += commonMainSourceSet.output
+        if (!fabricOnly) {
+            compileClasspath += commonMainSourceSet.output
+            runtimeClasspath += commonMainSourceSet.output
+        }
     }
 }
 
 loom {
     mods {
         register(mod_id) {
-            sourceSet commonMainSourceSet
+            if (!fabricOnly) {
+                sourceSet commonMainSourceSet
+            }
             sourceSet sourceSets.main
         }
     }
@@ -64,11 +76,12 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 
-    implementation project(':common')
+    if (!fabricOnly) {
+        implementation project(':common')
+    }
 
     testImplementation platform('org.junit:junit-bom:5.14.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -77,7 +90,9 @@ dependencies {
 
 tasks.named('jar', Jar).configure {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(project(':common').sourceSets.main.output)
+    if (!fabricOnly) {
+        from(project(':common').sourceSets.main.output)
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {

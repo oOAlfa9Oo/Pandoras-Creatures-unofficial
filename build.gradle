@@ -7,6 +7,8 @@ plugins {
 version = mod_version
 group = mod_group_id
 
+def loaderProjectNames = ['fabric', 'forge', 'neoforge'].findAll { findProject(":${it}") != null }
+
 def commonSourceRoots = [
         layout.projectDirectory.dir('common/src/main/java').asFile,
         layout.projectDirectory.dir('common/src/test/java').asFile
@@ -88,11 +90,9 @@ tasks.register('verifyArtifactNaming') {
     description = 'Verifies that loader jars include the loader and Minecraft version in their archive base name.'
 
     doLast {
-        def expectedArchives = [
-                fabric  : "${mod_id}-fabric-${minecraft_version}",
-                forge   : "${mod_id}-forge-${minecraft_version}",
-                neoforge: "${mod_id}-neoforge-${minecraft_version}"
-        ]
+        def expectedArchives = loaderProjectNames.collectEntries { projectName ->
+            [(projectName): "${mod_id}-${projectName}-${minecraft_version}"]
+        }
 
         expectedArchives.each { projectName, expectedArchive ->
             def actualArchive = project(":${projectName}").base.archivesName.get()
@@ -114,7 +114,8 @@ tasks.register('verifyMultiversionDocs') {
                 'MULTIVERSION_TECHNICAL_MATRIX.md',
                 'MULTIVERSION_BRANCH_PLAYBOOK.md',
                 'RELEASE_1.21.1_FREEZE.md',
-                'RELEASE_26.1_BRINGUP.md'
+                'RELEASE_26.1_BRINGUP.md',
+                'FABRIC_26.1_COMPILE_AUDIT.md'
         ]
 
         def missingDocs = requiredDocs.findAll { !layout.projectDirectory.file(it).asFile.exists() }
@@ -125,37 +126,45 @@ tasks.register('verifyMultiversionDocs') {
 }
 
 tasks.named('clean') {
-    dependsOn ':common:clean', ':fabric:clean', ':forge:clean', ':neoforge:clean'
+    dependsOn ':common:clean'
+    loaderProjectNames.each { dependsOn ":${it}:clean" }
 }
 
 tasks.named('assemble') {
-    dependsOn ':common:assemble', ':fabric:assemble', ':forge:assemble', ':neoforge:assemble'
+    dependsOn ':common:assemble'
+    loaderProjectNames.each { dependsOn ":${it}:assemble" }
 }
 
 tasks.named('check') {
-    dependsOn ':common:test', ':fabric:test', ':forge:test', ':neoforge:test', 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs'
+    dependsOn ':common:test', 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs'
+    loaderProjectNames.each { dependsOn ":${it}:test" }
 }
 
 tasks.named('build') {
-    dependsOn ':common:build', ':fabric:build', ':forge:build', ':neoforge:build'
+    dependsOn ':common:build'
+    loaderProjectNames.each { dependsOn ":${it}:build" }
 }
 
 tasks.register('compileJava') {
     group = 'build'
-    description = 'Compiles common, Fabric, Forge and NeoForge Java sources from the workspace root.'
-    dependsOn ':common:compileJava', ':fabric:compileJava', ':forge:compileJava', ':neoforge:compileJava'
+    description = 'Compiles common and enabled loader Java sources from the workspace root.'
+    dependsOn ':common:compileJava'
+    loaderProjectNames.each { dependsOn ":${it}:compileJava" }
 }
 
 tasks.register('test') {
     group = 'verification'
-    description = 'Runs unit tests for common, Fabric, Forge and NeoForge from the workspace root.'
-    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', ':common:test', ':fabric:test', ':forge:test', ':neoforge:test'
+    description = 'Runs unit tests for common and enabled loaders from the workspace root.'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', ':common:test'
+    loaderProjectNames.each { dependsOn ":${it}:test" }
 }
 
-tasks.register('runClient') {
-    group = 'moddev'
-    description = 'Runs the NeoForge development client from the workspace root.'
-    dependsOn ':neoforge:runClient'
+if (findProject(':neoforge') != null) {
+    tasks.register('runClient') {
+        group = 'moddev'
+        description = 'Runs the NeoForge development client from the workspace root.'
+        dependsOn ':neoforge:runClient'
+    }
 }
 
 tasks.register('runFabricClient') {
@@ -164,16 +173,20 @@ tasks.register('runFabricClient') {
     dependsOn ':fabric:runClient'
 }
 
-tasks.register('runForgeClient') {
-    group = 'moddev'
-    description = 'Runs the Forge development client from the workspace root.'
-    dependsOn ':forge:runClient'
+if (findProject(':forge') != null) {
+    tasks.register('runForgeClient') {
+        group = 'moddev'
+        description = 'Runs the Forge development client from the workspace root.'
+        dependsOn ':forge:runClient'
+    }
 }
 
-tasks.register('runServer') {
-    group = 'moddev'
-    description = 'Runs the NeoForge dedicated server from the workspace root.'
-    dependsOn ':neoforge:runServer'
+if (findProject(':neoforge') != null) {
+    tasks.register('runServer') {
+        group = 'moddev'
+        description = 'Runs the NeoForge dedicated server from the workspace root.'
+        dependsOn ':neoforge:runServer'
+    }
 }
 
 tasks.register('runFabricServer') {
@@ -182,28 +195,34 @@ tasks.register('runFabricServer') {
     dependsOn ':fabric:runServer'
 }
 
-tasks.register('runForgeServer') {
-    group = 'moddev'
-    description = 'Runs the Forge dedicated server from the workspace root.'
-    dependsOn ':forge:runServer'
+if (findProject(':forge') != null) {
+    tasks.register('runForgeServer') {
+        group = 'moddev'
+        description = 'Runs the Forge dedicated server from the workspace root.'
+        dependsOn ':forge:runServer'
+    }
 }
 
-tasks.register('runGameTestServer') {
-    group = 'verification'
-    description = 'Runs the NeoForge GameTest server from the workspace root.'
-    dependsOn ':neoforge:runGameTestServer'
+if (findProject(':neoforge') != null) {
+    tasks.register('runGameTestServer') {
+        group = 'verification'
+        description = 'Runs the NeoForge GameTest server from the workspace root.'
+        dependsOn ':neoforge:runGameTestServer'
+    }
 }
 
-tasks.register('runData') {
-    group = 'moddev'
-    description = 'Runs NeoForge data generation from the workspace root.'
-    dependsOn ':neoforge:runData'
+if (findProject(':neoforge') != null) {
+    tasks.register('runData') {
+        group = 'moddev'
+        description = 'Runs NeoForge data generation from the workspace root.'
+        dependsOn ':neoforge:runData'
+    }
 }
 
 tasks.register('buildLoaderJars') {
     group = 'build'
-    description = 'Builds distributable jars for all loaders in the current Minecraft family.'
-    dependsOn ':fabric:build', ':forge:build', ':neoforge:build'
+    description = 'Builds distributable jars for all enabled loaders in the current Minecraft family.'
+    loaderProjectNames.each { dependsOn ":${it}:build" }
 }
 
 tasks.register('validateCurrentFamily') {

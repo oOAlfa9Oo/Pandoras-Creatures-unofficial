@@ -9,11 +9,19 @@ pluginManagement {
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
 rootProject.name = 'pandoras_creatures'
 include 'common'
 include 'fabric'
-include 'forge'
-include 'neoforge'
+
+def fabricOnly = providers.gradleProperty('fabricOnly')
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
+
+if (!fabricOnly) {
+    include 'forge'
+    include 'neoforge'
+}
