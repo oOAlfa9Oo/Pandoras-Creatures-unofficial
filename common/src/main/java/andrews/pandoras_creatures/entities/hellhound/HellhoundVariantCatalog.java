@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.entities.hellhound;
 
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 
 public final class HellhoundVariantCatalog {
@@ -28,7 +28,7 @@ public final class HellhoundVariantCatalog {
         return "textures/entity/hellhound/hellhound_" + normalizeType(typeId) + ".png";
     }
 
-    public static ResourceLocation texturePath(int typeId) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, texturePathString(typeId));
+    public static Identifier texturePath(int typeId) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, texturePathString(typeId));
     }
 }

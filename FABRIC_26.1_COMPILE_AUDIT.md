@@ -54,6 +54,51 @@ La primera compilacion real produce errores de port 26.1. Los grupos principales
 - Faltan dependencias o reemplazos para anotaciones:
   - `javax.annotation.Nullable`
 
+## Segundo corte aplicado
+
+Se aplico un primer lote de migracion mecanica confirmado contra el jar local de Minecraft `26.1` generado por Loom:
+
+- `ResourceLocation` -> `Identifier`
+- `MobSpawnType` -> `EntitySpawnReason`
+- `GameRules` -> `net.minecraft.world.level.gamerules.GameRules`
+- constantes de gamerule:
+  - `RULE_DOMOBLOOT` -> `MOB_DROPS`
+  - `RULE_SHOWDEATHMESSAGES` -> `SHOW_DEATH_MESSAGES`
+  - `RULE_MOBGRIEFING` -> `MOB_GRIEFING`
+- `RenderType` -> `net.minecraft.client.renderer.rendertype.RenderType`
+- renombres simples de paquetes:
+  - `IronGolem` -> `animal.golem`
+  - `AbstractArrow` -> `projectile.arrow`
+  - `ContainerListener` -> `world.inventory`
+  - `Cat` -> `animal.feline`
+  - `Wolf` -> `animal.wolf`
+  - `AbstractHorse` -> `animal.equine`
+  - `WaterAnimal` -> `animal.fish`
+  - `Util` -> `net.minecraft.util.Util`
+  - `ArmorMaterial` -> `world.item.equipment.ArmorMaterial`
+  - `Tier` -> `ToolMaterial`
+- Fabric menu API:
+  - `ExtendedScreenHandlerFactory` -> `ExtendedMenuProvider`
+  - `ExtendedScreenHandlerType` -> `ExtendedMenuType`
+- Model layer registry:
+  - `EntityModelLayerRegistry` -> `ModelLayerRegistry`
+- `fabric` agrega `compileOnly 'com.google.code.findbugs:jsr305:3.0.2'` para mantener `javax.annotation.Nullable` sin runtime dependency.
+
+Despues de este corte el build sigue fallando, pero los errores avanzaron hacia cambios arquitectonicos de `26.1`:
+
+- renderers de entidad y block entity ahora requieren `RenderState`.
+- `GuiGraphics` ya no existe como en `1.21.1`; la GUI migro a un pipeline nuevo de `GuiGraphicsExtractor`/`GuiRenderer`.
+- `BlockEntityWithoutLevelRenderer`, `RenderStateShard`, `PickaxeItem`, `ArmorItem`, `Saddleable` y parte de item/equipment requieren rediseño o adapters por familia.
+- Fabric 26.1 ya no expone algunas APIs cliente antiguas como `BuiltinItemRendererRegistry`, `ColorProviderRegistry` y `BlockRenderLayerMap` en el mismo paquete/forma.
+
+Conclusion del segundo corte: el port `26.1` no debe tratarse como una migracion mecanica completa. Debe dividirse en sub-spikes:
+
+1. gameplay/server common sin cliente.
+2. items/equipment/materials.
+3. menus/networking Fabric.
+4. renderers con `RenderState`.
+5. GUI/screens.
+
 ## Orden recomendado para el siguiente corte
 
 1. Crear una tabla de renombres 26.1 para imports de Minecraft usados por `common`.

@@ -20,7 +20,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -131,7 +131,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         this.setArchvineType(resolveArchvineType(level));
 
@@ -159,7 +159,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
         return spawnData;
     }
 
-    private void trySpawnCompanion(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason) {
+    private void trySpawnCompanion(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason) {
         if (!AcidicArchvineSpawnRules.shouldAttemptCompanion(reason)) {
             return;
         }

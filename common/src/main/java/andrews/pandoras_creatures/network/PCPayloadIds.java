@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.network;
 
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ public final class PCPayloadIds {
     private PCPayloadIds() {
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     public static List<String> allPaths() {

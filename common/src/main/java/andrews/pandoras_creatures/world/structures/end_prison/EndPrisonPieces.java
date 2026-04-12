@@ -5,7 +5,7 @@ import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -32,7 +32,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 
 public class EndPrisonPieces {
 
-    private static final ResourceLocation SHIP_TEMPLATE =
+    private static final Identifier SHIP_TEMPLATE =
             PCStructureIds.id(PCStructureIds.END_PRISON_SHIP_TEMPLATE);
 
     public static void addPieces(StructureTemplateManager templateManager, BlockPos pos, Rotation rotation, StructurePiecesBuilder builder, RandomSource random) {

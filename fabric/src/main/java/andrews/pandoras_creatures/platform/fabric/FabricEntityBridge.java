@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 
 final class FabricEntityBridge implements EntityBridge {
     static final FabricEntityBridge INSTANCE = new FabricEntityBridge();
@@ -45,6 +45,6 @@ final class FabricEntityBridge implements EntityBridge {
 
     @Override
     public boolean canEntityGrief(Entity entity) {
-        return entity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        return entity.level().getGameRules().get(GameRules.MOB_GRIEFING);
     }
 }

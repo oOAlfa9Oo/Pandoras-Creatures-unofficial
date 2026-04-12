@@ -6,7 +6,7 @@ import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.item.PCSpawnEggPalette;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.ItemLike;
 
@@ -50,7 +50,7 @@ public final class PCCreativeTabEntries {
     }
 
     private static void acceptItem(CreativeModeTab.Output output, String itemId) {
-        ResourceLocation id = PandorasCreaturesCommon.platform().registry().id(itemId);
+        Identifier id = PandorasCreaturesCommon.platform().registry().id(itemId);
         if (BuiltInRegistries.ITEM.containsKey(id)) {
             ItemLike item = PandorasCreaturesCommon.platform().registry().item(itemId);
             output.accept(item);
@@ -58,7 +58,7 @@ public final class PCCreativeTabEntries {
     }
 
     private static void acceptBlock(CreativeModeTab.Output output, String blockId) {
-        ResourceLocation id = PandorasCreaturesCommon.platform().registry().id(blockId);
+        Identifier id = PandorasCreaturesCommon.platform().registry().id(blockId);
         if (BuiltInRegistries.BLOCK.containsKey(id)) {
             ItemLike block = PandorasCreaturesCommon.platform().registry().block(blockId);
             output.accept(block);

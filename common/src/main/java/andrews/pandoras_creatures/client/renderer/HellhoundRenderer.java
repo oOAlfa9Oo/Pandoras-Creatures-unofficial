@@ -7,7 +7,7 @@ import andrews.pandoras_creatures.entities.HellhoundEntity;
 import andrews.pandoras_creatures.entities.hellhound.HellhoundVariantCatalog;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class HellhoundRenderer extends MobRenderer<HellhoundEntity, HellhoundModel<HellhoundEntity>> {
 
@@ -17,7 +17,7 @@ public class HellhoundRenderer extends MobRenderer<HellhoundEntity, HellhoundMod
     }
 
     @Override
-    public ResourceLocation getTextureLocation(HellhoundEntity entity) {
+    public Identifier getTextureLocation(HellhoundEntity entity) {
         return HellhoundVariantCatalog.texturePath(entity.getHellhoundType());
     }
 }

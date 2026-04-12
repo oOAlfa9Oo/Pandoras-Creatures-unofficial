@@ -8,20 +8,20 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, AcidicArchvineModel<AcidicArchvineEntity>> {
-    private static final ResourceLocation TONGUE_1 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
-    private static final ResourceLocation TONGUE_2 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
-    private static final ResourceLocation TONGUE_3 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
+    private static final Identifier TONGUE_1 = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
+    private static final Identifier TONGUE_2 = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
+    private static final Identifier TONGUE_3 = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
     private final RenderType TONGUE_RENDER_TYPE_1 = RenderType.entityCutoutNoCull(TONGUE_1);
     private final RenderType TONGUE_RENDER_TYPE_2 = RenderType.entityCutoutNoCull(TONGUE_2);
     private final RenderType TONGUE_RENDER_TYPE_3 = RenderType.entityCutoutNoCull(TONGUE_3);
@@ -31,8 +31,8 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AcidicArchvineEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
+    public Identifier getTextureLocation(AcidicArchvineEntity entity) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
     }
 
     private RenderType getEntityTongueRenderType(AcidicArchvineEntity entity) {

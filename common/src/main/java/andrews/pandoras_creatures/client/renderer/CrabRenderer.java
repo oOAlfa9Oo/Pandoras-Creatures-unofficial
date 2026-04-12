@@ -7,7 +7,7 @@ import andrews.pandoras_creatures.entities.crab.CrabVariantCatalog;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CrabRenderer extends MobRenderer<CrabEntity, CrabModel<CrabEntity>> {
     public CrabRenderer(EntityRendererProvider.Context context) {
@@ -15,7 +15,7 @@ public class CrabRenderer extends MobRenderer<CrabEntity, CrabModel<CrabEntity>>
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CrabEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, CrabVariantCatalog.texturePath(entity.getCrabType()));
+    public Identifier getTextureLocation(CrabEntity entity) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, CrabVariantCatalog.texturePath(entity.getCrabType()));
     }
 }

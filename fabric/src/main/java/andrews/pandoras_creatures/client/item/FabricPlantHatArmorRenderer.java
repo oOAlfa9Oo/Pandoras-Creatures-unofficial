@@ -7,11 +7,11 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public final class FabricPlantHatArmorRenderer {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/models/armor/plant_hat.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/armor/plant_hat.png");
     private static PlantHatModel model;
     private static boolean initialized;
 

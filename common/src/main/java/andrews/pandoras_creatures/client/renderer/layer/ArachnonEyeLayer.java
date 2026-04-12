@@ -7,14 +7,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ArachnonEyeLayer<E extends ArachnonEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation ARACHNON_EYE_LAYER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, ArachnonVisualRules.eyeTexturePathString());
+    private static final Identifier ARACHNON_EYE_LAYER = Identifier.fromNamespaceAndPath(Reference.MODID, ArachnonVisualRules.eyeTexturePathString());
 
     public ArachnonEyeLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);

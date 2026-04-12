@@ -6,7 +6,7 @@ import andrews.pandoras_creatures.entities.BufflonEntity;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BufflonRenderer extends MobRenderer<BufflonEntity, BufflonModel<BufflonEntity>> {
 
@@ -15,7 +15,7 @@ public class BufflonRenderer extends MobRenderer<BufflonEntity, BufflonModel<Buf
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BufflonEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/bufflon/bufflon_" + entity.getBufflonType() + ".png");
+    public Identifier getTextureLocation(BufflonEntity entity) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, "textures/entity/bufflon/bufflon_" + entity.getBufflonType() + ".png");
     }
 }

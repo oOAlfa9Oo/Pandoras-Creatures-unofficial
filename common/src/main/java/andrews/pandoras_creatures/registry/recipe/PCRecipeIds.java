@@ -2,7 +2,7 @@ package andrews.pandoras_creatures.registry.recipe;
 
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -21,8 +21,8 @@ public final class PCRecipeIds {
         return List.of(END_TROLL_BOX, END_TROLL_BOX_COLORING);
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     public static String qualified(String path) {

@@ -1,6 +1,6 @@
 package andrews.pandoras_creatures.platform;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -20,8 +20,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 public interface RegistryBridge {
     String namespace();
 
-    default ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(namespace(), path);
+    default Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(namespace(), path);
     }
 
     Item item(String path);

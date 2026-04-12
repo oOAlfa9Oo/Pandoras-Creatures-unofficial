@@ -9,7 +9,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
@@ -59,8 +59,8 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     protected static final VoxelShape EAST_AABB = Block.box(0.0D, 1.0D, 1.0D, 14.0D, 15.0D, 15.0D);
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final DirectionProperty FACING = DirectionalBlock.FACING;
-    public static final ResourceLocation CONTENTS = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "contents");
+    public static final EnumProperty<Direction> FACING = DirectionalBlock.FACING;
+    public static final Identifier CONTENTS = Identifier.fromNamespaceAndPath(Reference.MODID, "contents");
 
     @Nullable
     private final DyeColor color;

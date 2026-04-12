@@ -7,7 +7,7 @@ import andrews.pandoras_creatures.entities.seahorse.SeahorseVisualRules;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SeahorseRenderer extends MobRenderer<SeahorseEntity, SeahorseModel<SeahorseEntity>> {
     public SeahorseRenderer(EntityRendererProvider.Context context) {
@@ -15,8 +15,8 @@ public class SeahorseRenderer extends MobRenderer<SeahorseEntity, SeahorseModel<
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SeahorseEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(
+    public Identifier getTextureLocation(SeahorseEntity entity) {
+        return Identifier.fromNamespaceAndPath(
                 Reference.MODID,
                 SeahorseVisualRules.texturePath(entity.getSeahorseType(), entity.getName().getString())
         );

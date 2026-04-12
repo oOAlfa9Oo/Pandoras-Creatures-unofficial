@@ -3,12 +3,12 @@ package andrews.pandoras_creatures.content.material;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 public final class PCToolMaterials {
-    public static final Tier ARACHNON_MATERIAL = new Tier() {
+    public static final ToolMaterial ARACHNON_MATERIAL = new ToolMaterial() {
         @Override
         public int getUses() {
             return 2000;

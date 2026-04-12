@@ -3,15 +3,15 @@ package andrews.pandoras_creatures.content.material;
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.EnumMap;
@@ -39,10 +39,10 @@ public class PCArmorMaterials {
                                                    int enchantability, Holder<SoundEvent> equipSound,
                                                    float toughness, float knockbackResistance,
                                                    Supplier<Ingredient> repairIngredient) {
-        List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name)));
+        List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(Identifier.fromNamespaceAndPath(Reference.MODID, name)));
 
         return Registry.registerForHolder(BuiltInRegistries.ARMOR_MATERIAL,
-                ResourceLocation.fromNamespaceAndPath(Reference.MODID, name),
+                Identifier.fromNamespaceAndPath(Reference.MODID, name),
                 new ArmorMaterial(defense, enchantability, equipSound, repairIngredient, layers, toughness, knockbackResistance));
     }
 

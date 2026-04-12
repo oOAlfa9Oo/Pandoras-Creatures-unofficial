@@ -11,10 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -26,8 +26,8 @@ public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
     private static PCItemRenderer instance;
     private EndTrollBoxModel endTrollBoxModel;
 
-    public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
-    public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
+    public static final Identifier DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
+    public static final List<Identifier> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
             .map(PCEndTrollBoxPalette::textureId)
             .collect(ImmutableList.toImmutableList());
 
@@ -68,7 +68,7 @@ public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
                                    int packedLight, int packedOverlay) {
         Item item = stack.getItem();
         DyeColor color = getColorFromItem(item);
-        ResourceLocation texture = color == null ? DEFAULT_END_TROLL_BOX_TEXTURE : END_TROLL_BOX_TEXTURES.get(color.getId());
+        Identifier texture = color == null ? DEFAULT_END_TROLL_BOX_TEXTURE : END_TROLL_BOX_TEXTURES.get(color.getId());
 
         poseStack.pushPose();
 

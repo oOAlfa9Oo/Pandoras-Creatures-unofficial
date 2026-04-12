@@ -6,7 +6,7 @@ import net.minecraft.world.item.DyeColor;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -27,13 +27,13 @@ public final class PCFabricBlocks {
 
         registeredBlocks = PCBlockBootstrap.registerSimpleBlocks((id, factory) -> {
             Block block = factory.get();
-            Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), block);
+            Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(Reference.MODID, id), block);
             return () -> block;
         });
 
         registeredEndTrollBoxBlocks = PCEndTrollBoxBootstrap.registerBlocks((id, factory) -> {
             Block block = factory.get();
-            Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), block);
+            Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(Reference.MODID, id), block);
             return () -> block;
         });
     }

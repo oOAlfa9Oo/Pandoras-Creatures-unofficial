@@ -3,7 +3,7 @@ package andrews.pandoras_creatures.platform.fabric;
 import andrews.pandoras_creatures.entities.bufflon.BufflonAccess;
 import andrews.pandoras_creatures.menu.BufflonMenu;
 import andrews.pandoras_creatures.platform.MenuBridge;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +24,7 @@ final class FabricMenuBridge implements MenuBridge {
             return;
         }
 
-        player.openMenu(new ExtendedScreenHandlerFactory<Integer>() {
+        player.openMenu(new ExtendedMenuProvider<Integer>() {
             @Override
             public Integer getScreenOpeningData(ServerPlayer currentPlayer) {
                 return bufflon.getBufflonId();

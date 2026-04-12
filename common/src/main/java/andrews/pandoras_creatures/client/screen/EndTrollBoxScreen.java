@@ -5,11 +5,11 @@ import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class EndTrollBoxScreen extends AbstractContainerScreen<EndTrollBoxMenu> {
-    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/containers/end_troll_box.png");
+    private static final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/containers/end_troll_box.png");
 
     public EndTrollBoxScreen(EndTrollBoxMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);

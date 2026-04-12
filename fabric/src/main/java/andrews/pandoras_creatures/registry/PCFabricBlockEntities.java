@@ -5,7 +5,7 @@ import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public final class PCFabricBlockEntities {
@@ -24,7 +24,7 @@ public final class PCFabricBlockEntities {
 
         END_TROLL_BOX = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE,
-                ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockEntityIds.END_TROLL_BOX),
+                Identifier.fromNamespaceAndPath(Reference.MODID, PCBlockEntityIds.END_TROLL_BOX),
                 BlockEntityType.Builder.of(EndTrollBoxBlockEntity::new, PCFabricBlocks.getEndTrollBoxBlockArray()).build(null)
         );
     }

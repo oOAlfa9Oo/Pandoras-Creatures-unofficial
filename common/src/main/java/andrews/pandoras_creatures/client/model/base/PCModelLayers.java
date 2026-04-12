@@ -3,7 +3,7 @@ package andrews.pandoras_creatures.client.model.base;
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Registry for all model layer locations used by this mod
@@ -25,10 +25,10 @@ public class PCModelLayers {
     public static final ModelLayerLocation PANDORIC_SHARD = createLocation(PCBlockIds.PANDORIC_SHARD);
 
     private static ModelLayerLocation createLocation(String name) {
-        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name), "main");
+        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, name), "main");
     }
 
     private static ModelLayerLocation createLocation(String name, String layer) {
-        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name), layer);
+        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(Reference.MODID, name), layer);
     }
 }

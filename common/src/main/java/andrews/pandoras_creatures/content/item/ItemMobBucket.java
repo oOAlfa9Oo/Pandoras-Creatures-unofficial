@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +48,7 @@ public class ItemMobBucket extends BucketItem {
      * Places the entity in the world, if it isn't null
      */
     private void placeEntity(ServerLevel level, ItemStack stack, BlockPos pos) {
-        Entity entity = this.entityType.get().spawn(level, stack, null, pos, MobSpawnType.BUCKET, true, false);
+        Entity entity = this.entityType.get().spawn(level, stack, null, pos, EntitySpawnReason.BUCKET, true, false);
 
         if (entity instanceof BucketableMobEntity bucketable) {
             bucketable.setFromBucket(true);

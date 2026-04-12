@@ -24,7 +24,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Difficulty;
@@ -134,7 +134,7 @@ public final class PCFabricEntities {
 
     private static void registerBiomeSpawns() {
         for (PCBiomeSpawnCatalog.SpawnDefinition definition : PCBiomeSpawnCatalog.definitions()) {
-            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(definition.entityTypeId()))
+            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.parse(definition.entityTypeId()))
                     .orElseThrow(() -> new IllegalStateException("Unknown Fabric entity id for biome spawn: " + definition.entityTypeId()));
             BiomeModifications.addSpawn(
                     toBiomeSelector(definition.biomes()),
@@ -150,12 +150,12 @@ public final class PCFabricEntities {
     private static Predicate<BiomeSelectionContext> toBiomeSelector(List<String> biomeSelectors) {
         if (biomeSelectors.size() == 1 && biomeSelectors.getFirst().startsWith("#")) {
             String selector = biomeSelectors.getFirst().substring(1);
-            TagKey<Biome> tag = TagKey.create(Registries.BIOME, ResourceLocation.parse(selector));
+            TagKey<Biome> tag = TagKey.create(Registries.BIOME, Identifier.parse(selector));
             return BiomeSelectors.tag(tag);
         }
 
         List<ResourceKey<Biome>> biomeKeys = biomeSelectors.stream()
-                .map(ResourceLocation::parse)
+                .map(Identifier::parse)
                 .map(id -> ResourceKey.create(Registries.BIOME, id))
                 .toList();
         return BiomeSelectors.includeByKey(biomeKeys);

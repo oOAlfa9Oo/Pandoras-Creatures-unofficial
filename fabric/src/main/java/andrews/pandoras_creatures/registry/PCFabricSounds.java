@@ -4,7 +4,7 @@ import andrews.pandoras_creatures.registry.sound.PCSoundBootstrap;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 import java.util.Map;
@@ -23,7 +23,7 @@ public final class PCFabricSounds {
 
         registeredSounds = PCSoundBootstrap.registerAll((id, factory) -> {
             SoundEvent soundEvent = factory.get();
-            Registry.register(BuiltInRegistries.SOUND_EVENT, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), soundEvent);
+            Registry.register(BuiltInRegistries.SOUND_EVENT, Identifier.fromNamespaceAndPath(Reference.MODID, id), soundEvent);
             return () -> soundEvent;
         });
     }

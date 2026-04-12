@@ -4,17 +4,17 @@ import andrews.pandoras_creatures.registry.entity.PCEntitySpawnRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 public final class AcidicArchvineSpawnRules {
     private AcidicArchvineSpawnRules() {
     }
 
-    public static boolean shouldAttemptCompanion(MobSpawnType spawnType) {
+    public static boolean shouldAttemptCompanion(EntitySpawnReason spawnType) {
         return AcidicArchvineSpawnTuning.shouldAttemptCompanion(
-                spawnType == MobSpawnType.NATURAL,
-                spawnType == MobSpawnType.CHUNK_GENERATION
+                spawnType == EntitySpawnReason.NATURAL,
+                spawnType == EntitySpawnReason.CHUNK_GENERATION
         );
     }
 

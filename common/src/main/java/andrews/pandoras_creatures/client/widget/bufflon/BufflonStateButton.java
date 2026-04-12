@@ -7,14 +7,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public class BufflonStateButton extends Button {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/buttons/bufflon_menu_buttons.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/buttons/bufflon_menu_buttons.png");
     private static final int BUTTON_WIDTH = 26;
     private static final int BUTTON_HEIGHT = 26;
     private static final int TEXTURE_U_SELECTED = 26;

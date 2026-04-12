@@ -8,7 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -136,7 +136,7 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements IA
     private void onPCDeathUpdate(int deathTime) {
         ++this.animationDeathTime;
         if (this.animationDeathTime == deathTime) {
-            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))) {
+            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().get(GameRules.MOB_DROPS))) {
                 int i = this.getBaseExperienceReward();
 
                 i = PandorasCreaturesCommon.platform().entities().getExperienceDrop(this, this.lastHurtByPlayer, i);

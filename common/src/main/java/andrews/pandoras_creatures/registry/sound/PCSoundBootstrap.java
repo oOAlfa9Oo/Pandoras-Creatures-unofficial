@@ -2,7 +2,7 @@ package andrews.pandoras_creatures.registry.sound;
 
 import andrews.pandoras_creatures.registry.bootstrap.SharedRegistryRegistrar;
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ public final class PCSoundBootstrap {
         LinkedHashMap<String, H> registeredSounds = new LinkedHashMap<>();
 
         for (String soundId : PCSoundCatalog.allSoundIds()) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Reference.MODID, soundId);
+            Identifier id = Identifier.fromNamespaceAndPath(Reference.MODID, soundId);
             H handle = registrar.register(soundId, () -> SoundEvent.createVariableRangeEvent(id));
             registeredSounds.put(soundId, handle);
         }

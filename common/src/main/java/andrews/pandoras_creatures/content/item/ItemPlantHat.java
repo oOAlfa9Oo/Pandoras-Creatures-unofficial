@@ -4,11 +4,11 @@ import andrews.pandoras_creatures.content.material.PCArmorMaterials;
 import andrews.pandoras_creatures.lang.PCLanguageKeys;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -29,7 +29,7 @@ public class ItemPlantHat extends ArmorItem {
         super.appendHoverText(stack, context, tooltip, flag);
     }
 
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/models/armor/plant_hat.png");
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/armor/plant_hat.png");
     }
 }

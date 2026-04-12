@@ -8,7 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -109,7 +109,7 @@ public abstract class AnimatedMonsterEntity extends AnimatedCreatureEntity imple
      * provided location, incorporating a check of the current light level at the
      * location.
      */
-    public static boolean checkMonsterSpawnRulesWithLight(EntityType<? extends Monster> type, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkMonsterSpawnRulesWithLight(EntityType<? extends Monster> type, ServerLevelAccessor level, EntitySpawnReason spawnType, BlockPos pos, RandomSource random) {
         return level.getDifficulty() != Difficulty.PEACEFUL && isValidLightLevel(level, pos, random) && checkMobSpawnRules(type, level, spawnType, pos, random);
     }
 
@@ -117,7 +117,7 @@ public abstract class AnimatedMonsterEntity extends AnimatedCreatureEntity imple
      * Static predicate for determining whether or not a monster can spawn at the
      * provided location.
      */
-    public static boolean checkMonsterSpawnRules(EntityType<? extends Monster> type, LevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkMonsterSpawnRules(EntityType<? extends Monster> type, LevelAccessor level, EntitySpawnReason spawnType, BlockPos pos, RandomSource random) {
         return level.getDifficulty() != Difficulty.PEACEFUL && checkMobSpawnRules(type, level, spawnType, pos, random);
     }
 

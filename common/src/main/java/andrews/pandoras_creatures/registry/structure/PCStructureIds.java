@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.registry.structure;
 
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -30,8 +30,8 @@ public final class PCStructureIds {
         );
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     public static String qualified(String path) {

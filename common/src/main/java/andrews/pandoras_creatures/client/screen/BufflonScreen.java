@@ -13,13 +13,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
-    private static final ResourceLocation BUFFLON_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/menus/bufflon_menu.png");
+    private static final Identifier BUFFLON_GUI_TEXTURES = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/menus/bufflon_menu.png");
 
     private final BufflonAccess bufflon;
     private final LivingEntity bufflonEntity;

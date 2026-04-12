@@ -10,11 +10,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -23,8 +23,8 @@ import java.util.List;
 public class EndTrollBoxBlockEntityRenderer implements BlockEntityRenderer<EndTrollBoxBlockEntity> {
     private final EndTrollBoxModel blockModel;
 
-    public static final ResourceLocation DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
-    public static final List<ResourceLocation> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
+    public static final Identifier DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
+    public static final List<Identifier> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
             .map(PCEndTrollBoxPalette::textureId)
             .collect(ImmutableList.toImmutableList());
 
@@ -46,7 +46,7 @@ public class EndTrollBoxBlockEntityRenderer implements BlockEntityRenderer<EndTr
         }
 
         DyeColor dyeColor = blockEntity.getColor();
-        ResourceLocation texture;
+        Identifier texture;
         if (dyeColor == null) {
             texture = DEFAULT_END_TROLL_BOX_TEXTURE;
         } else {

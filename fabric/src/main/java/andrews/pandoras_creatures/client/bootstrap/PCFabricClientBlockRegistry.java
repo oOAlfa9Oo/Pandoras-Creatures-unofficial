@@ -9,10 +9,10 @@ import andrews.pandoras_creatures.registry.PCFabricBlocks;
 import andrews.pandoras_creatures.registry.PCFabricItems;
 import andrews.pandoras_creatures.registry.block.PCBlockRenderLayers;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.Item;
 
 public final class PCFabricClientBlockRegistry {
@@ -31,7 +31,7 @@ public final class PCFabricClientBlockRegistry {
             BlockRenderLayerMap.INSTANCE.putBlock(PCFabricBlocks.getSimpleBlock(blockId), RenderType.cutout());
         }
 
-        EntityModelLayerRegistry.registerModelLayer(PCModelLayers.END_TROLL_BOX, EndTrollBoxModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(PCModelLayers.END_TROLL_BOX, EndTrollBoxModel::createBodyLayer);
         BlockEntityRenderers.register(PCFabricBlockEntities.END_TROLL_BOX, EndTrollBoxBlockEntityRenderer::new);
 
         for (Item item : PCFabricItems.getEndTrollBoxItems()) {

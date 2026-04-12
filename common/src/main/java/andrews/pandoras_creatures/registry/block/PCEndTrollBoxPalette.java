@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.registry.block;
 
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public final class PCEndTrollBoxPalette {
         return PCEndTrollBoxNaming.texturePath(color == null ? null : color.getName());
     }
 
-    public static ResourceLocation textureId(DyeColor color) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, texturePath(color));
+    public static Identifier textureId(DyeColor color) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, texturePath(color));
     }
 }

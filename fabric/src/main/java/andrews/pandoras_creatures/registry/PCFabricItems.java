@@ -4,7 +4,7 @@ import andrews.pandoras_creatures.registry.item.PCItemBootstrap;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import java.util.Map;
@@ -27,31 +27,31 @@ public final class PCFabricItems {
 
         registeredItems = PCItemBootstrap.registerCoreItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Reference.MODID, id), item);
             return () -> item;
         });
 
         registeredSimpleBlockItems = PCItemBootstrap.registerSimpleBlockItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Reference.MODID, id), item);
             return () -> item;
         }, id -> () -> PCFabricBlocks.getSimpleBlock(id));
 
         registeredEndTrollBoxItems = PCItemBootstrap.registerEndTrollBoxItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Reference.MODID, id), item);
             return () -> item;
         }, id -> () -> PCFabricBlocks.getEndTrollBox(andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette.colorForBlockName(id)));
 
         registeredBucketItems = PCItemBootstrap.registerAquaticBucketItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Reference.MODID, id), item);
             return () -> item;
         });
 
         registeredPortableSpawnEggItems = PCItemBootstrap.registerPortableSpawnEggItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Reference.MODID, id), item);
             return () -> item;
         }, entityId -> switch (entityId) {
             case "arachnon" -> () -> PCFabricEntities.ARACHNON;
