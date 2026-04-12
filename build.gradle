@@ -83,6 +83,46 @@ tasks.register('verifyArchitecture') {
     }
 }
 
+tasks.register('verifyArtifactNaming') {
+    group = 'verification'
+    description = 'Verifies that loader jars include the loader and Minecraft version in their archive base name.'
+
+    doLast {
+        def expectedArchives = [
+                fabric  : "${mod_id}-fabric-${minecraft_version}",
+                forge   : "${mod_id}-forge-${minecraft_version}",
+                neoforge: "${mod_id}-neoforge-${minecraft_version}"
+        ]
+
+        expectedArchives.each { projectName, expectedArchive ->
+            def actualArchive = project(":${projectName}").base.archivesName.get()
+            if (actualArchive != expectedArchive) {
+                throw new GradleException("Unexpected archive name for :${projectName}: expected '${expectedArchive}', got '${actualArchive}'")
+            }
+        }
+    }
+}
+
+tasks.register('verifyMultiversionDocs') {
+    group = 'verification'
+    description = 'Verifies that required multiversion planning documents are present.'
+
+    doLast {
+        def requiredDocs = [
+                'MULTIVERSION_SUPPORT.md',
+                'MULTIVERSION_PORTING_CHECKLIST.md',
+                'MULTIVERSION_TECHNICAL_MATRIX.md',
+                'MULTIVERSION_BRANCH_PLAYBOOK.md',
+                'RELEASE_1.21.1_FREEZE.md'
+        ]
+
+        def missingDocs = requiredDocs.findAll { !layout.projectDirectory.file(it).asFile.exists() }
+        if (!missingDocs.isEmpty()) {
+            throw new GradleException("Missing required multiversion docs:\n - " + missingDocs.join('\n - '))
+        }
+    }
+}
+
 tasks.named('clean') {
     dependsOn ':common:clean', ':fabric:clean', ':forge:clean', ':neoforge:clean'
 }
@@ -92,7 +132,7 @@ tasks.named('assemble') {
 }
 
 tasks.named('check') {
-    dependsOn ':common:test', ':fabric:test', ':forge:test', ':neoforge:test', 'verifyArchitecture'
+    dependsOn ':common:test', ':fabric:test', ':forge:test', ':neoforge:test', 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs'
 }
 
 tasks.named('build') {
@@ -108,7 +148,7 @@ tasks.register('compileJava') {
 tasks.register('test') {
     group = 'verification'
     description = 'Runs unit tests for common, Fabric, Forge and NeoForge from the workspace root.'
-    dependsOn 'verifyArchitecture', ':common:test', ':fabric:test', ':forge:test', ':neoforge:test'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', ':common:test', ':fabric:test', ':forge:test', ':neoforge:test'
 }
 
 tasks.register('runClient') {
@@ -157,4 +197,16 @@ tasks.register('runData') {
     group = 'moddev'
     description = 'Runs NeoForge data generation from the workspace root.'
     dependsOn ':neoforge:runData'
+}
+
+tasks.register('buildLoaderJars') {
+    group = 'build'
+    description = 'Builds distributable jars for all loaders in the current Minecraft family.'
+    dependsOn ':fabric:build', ':forge:build', ':neoforge:build'
+}
+
+tasks.register('validateCurrentFamily') {
+    group = 'verification'
+    description = 'Runs the minimum validation gate before freezing the current Minecraft family branch.'
+    dependsOn 'compileJava', 'test', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'buildLoaderJars'
 }

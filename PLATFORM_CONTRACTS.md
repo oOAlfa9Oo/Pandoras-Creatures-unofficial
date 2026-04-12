@@ -2,20 +2,21 @@
 
 ## Objetivo
 
-Este documento fija la frontera entre el nucleo compartido en `common/` y los adaptadores por loader como `neoforge/` y `fabric/`.
+Este documento fija la frontera entre el nucleo compartido en `common/` y los adaptadores por loader como `neoforge/`, `fabric/` y `forge/`.
 
 La regla general es:
 
 - `common/` contiene logica, contenido y contratos reutilizables
 - `neoforge/` contiene bootstrap, registro activo, eventos, payloads y adaptadores del loader
 - `fabric/` contiene bootstrap, descriptor del mod, runs de Loom y adaptadores del loader
+- `forge/` contiene bootstrap, registro activo, eventos, payloads y adaptadores del loader Forge
 
 ## Reglas base
 
 - Ninguna clase en `common/src/main/java` o `common/src/test/java` debe importar `net.neoforged`, `net.minecraftforge`, `net.fabricmc` o `cpw.mods`
 - Los recursos especificos de loader deben quedarse fuera de `common`
-- Los recursos compartidos del mod como `assets/pandoras_creatures/**` deben vivir en `common` para que `neoforge/` y `fabric/` consuman la misma fuente
-- Los recursos generados compartidos de cliente como `blockstates`, `models` y `lang` deben vivir en `common/src/generated/resources` para que ambos loaders consuman la misma salida de datagen
+- Los recursos compartidos del mod como `assets/pandoras_creatures/**` deben vivir en `common` para que `neoforge/`, `fabric/` y `forge/` consuman la misma fuente
+- Los recursos generados compartidos de cliente como `blockstates`, `models` y `lang` deben vivir en `common/src/generated/resources` para que todos los loaders consuman la misma salida de datagen
 - Todo recurso `data/.../neoforge` debe vivir en `neoforge/src/main/resources`
 - Los descriptores del loader como `META-INF/neoforge.mods.toml` deben vivir solo en el host correspondiente
 - El wiring activo del host debe quedar agrupado en paquetes de bootstrap del loader, no disperso por clases de dominio o entrypoints
@@ -24,7 +25,7 @@ La regla general es:
 
 - `neoforge/` es el host de referencia y hoy conserva el wiring funcional completo del mod
 - `fabric/` ya funciona como segundo loader con contenido, cliente, worldgen y parte fuerte del runtime del mod portados sobre `common`
-- `forge/` ya esta abierto como tercer loader con bootstrap minimo y frontera de plataforma inicial, pero todavia no registra contenido ni networking reales del mod
+- `forge/` ya funciona como tercer loader con contenido, cliente, networking, menus, structures y parte fuerte del runtime del mod portados sobre `common`
 
 ## Contratos actuales
 
@@ -104,7 +105,7 @@ Cuando un tipo de contenido tenga suficiente forma estable, el catalogo y su boo
 Uso esperado:
 
 - sonidos, ids y futuros registros simples
-- reutilizar el mismo orden y los mismos nombres en `neoforge` y `fabric`
+- reutilizar el mismo orden y los mismos nombres en `neoforge`, `fabric` y `forge`
 - convertir al host en consumidor del bootstrap compartido, no en duenio del listado de contenido
 - aplicar el mismo patron tambien a `BlockItem` simples cuando sus bloques ya esten compartidos entre loaders
 - aplicar el mismo patron tambien a primeros batches de entidades cuando su logica ya viva en `common`
@@ -112,7 +113,7 @@ Uso esperado:
 - cuando un `spawn egg` deje de ser especifico de un host, debe entrar al bootstrap portable compartido aunque la entidad no sea pasiva ni acuatica
 - cuando un renderer reutilizable requiera un helper cliente pequeno, ese helper debe migrar tambien a `common` o simplificarse a una ruta vanilla-compatible antes de abrir el siguiente loader
 - cuando un batch de entidades pase a `common`, sus `model layers`, modelos y renderers reutilizables deben migrar tambien fuera del host, dejando en cada loader solo el registro cliente
-- los predicates y helpers neutrales al loader de `spawn placement` tambien deben migrar a `common` cuando un batch nuevo necesite equivalencia real entre `neoforge` y `fabric`
+- los predicates y helpers neutrales al loader de `spawn placement` tambien deben migrar a `common` cuando un batch nuevo necesite equivalencia real entre `neoforge`, `fabric` y `forge`
 
 ### `Salida compartida de datagen cliente`
 
@@ -123,7 +124,7 @@ Uso esperado:
 - `lang`
 - `blockstates`
 - `models`
-- cualquier asset generado que deba entrar igual en `neoforge` y `fabric`
+- cualquier asset generado que deba entrar igual en `neoforge`, `fabric` y `forge`
 
 Nota:
 
@@ -164,23 +165,23 @@ Distribucion de responsabilidades:
 
 Resultado esperado:
 
-- `neoforge`, `fabric` y un futuro `forge` pueden compartir exactamente la misma semantica de animacion
+- `neoforge`, `fabric` y `forge` pueden compartir exactamente la misma semantica de animacion
 - los bugs de animacion no vuelven a depender de una implementacion escondida en un loader concreto
 
-### `platform/forge` en fase de bootstrap
+### `platform/forge`
 
-El tercer host ya existe, pero arranca con adapters deliberadamente pequenos para no duplicar wiring demasiado pronto.
+El tercer host ya existe y debe seguir funcionando como adapter delgado equivalente a `fabric` y `neoforge`.
 
 Uso esperado:
 
 - inicializar `PandorasCreaturesCommon` desde `forge`
 - fijar desde el primer corte la misma forma de acceso a `registry`, `network`, `menus`, `entities` y `sidedHooks`
-- permitir que el siguiente lote de trabajo de `Forge` reutilice la misma frontera ya estabilizada en `NeoForge` y `Fabric`
+- mantener el wiring de Forge concentrado en entrypoint, registros, eventos, payloads y cliente del host
 
 Nota:
 
-- en esta etapa los bridges de `forge` pueden lanzar `UnsupportedOperationException` en rutas aun no portadas
-- eso es intencional mientras el host todavia no registra contenido activo ni payloads reales
+- si aparece una ruta nueva aun no portada, debe documentarse y cerrarse antes de marcar una familia como lista
+- no se deben reintroducir reglas de dominio en el host `forge` si ya existe un contrato compartido en `common`
 
 ### `SidedHooks`
 
@@ -210,7 +211,7 @@ Resultado esperado:
 Nota:
 
 - el primer slice completo que usa esta ampliacion es `End Troll Box`
-- `neoforge` y `fabric` deben registrar la misma familia de ids y dejar que `common` consulte siempre por `PandorasCreaturesCommon.platform().registry()`
+- `neoforge`, `fabric` y `forge` deben registrar la misma familia de ids y dejar que `common` consulte siempre por `PandorasCreaturesCommon.platform().registry()`
 
 ## Que no debe volver a pasar a `common`
 

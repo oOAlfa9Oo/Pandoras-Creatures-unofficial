@@ -1,6 +1,6 @@
 # Pandoras Creatures Unofficial (NeoForge Port)
 
-This repository contains an **unofficial port** of *Pandoras Creatures* to NeoForge 1.21.1.
+This repository contains an **unofficial multiloader port** of *Pandoras Creatures* for Minecraft 1.21.1, with a documented path toward multiversion support.
 
 ---
 
@@ -24,9 +24,20 @@ If you encounter issues related to original functionality, please verify them ag
 ## Status
 
 * Type: Unofficial port
-* Target loader: NeoForge 1.21.1
-* Port line: 3.0
-* Goal: Preserve original mod behavior while updating it to modern NeoForge APIs
+* Target Minecraft version: 1.21.1
+* Target loaders: NeoForge, Fabric and Forge
+* Port line: 3.1 beta
+* Goal: Preserve original mod behavior while moving the project toward maintainable multiloader and multiversion support
+
+### Multiversion Roadmap
+
+The project uses version anchors instead of promising every minor release. The current roadmap is tracked in:
+
+* [MULTIVERSION_SUPPORT.md](./MULTIVERSION_SUPPORT.md)
+* [MULTIVERSION_PORTING_CHECKLIST.md](./MULTIVERSION_PORTING_CHECKLIST.md)
+* [MULTIVERSION_TECHNICAL_MATRIX.md](./MULTIVERSION_TECHNICAL_MATRIX.md)
+* [MULTIVERSION_BRANCH_PLAYBOOK.md](./MULTIVERSION_BRANCH_PLAYBOOK.md)
+* [RELEASE_1.21.1_FREEZE.md](./RELEASE_1.21.1_FREEZE.md)
 
 ---
 
@@ -49,7 +60,8 @@ This repository represents a port of the original mod to newer Minecraft version
 
 Changes include:
 
-* Migration to NeoForge 1.21.1
+* Migration to Minecraft 1.21.1
+* Multiloader split into `common`, `neoforge`, `fabric` and `forge`
 * Adaptation to updated modding APIs
 * Compatibility fixes for modern Minecraft versions
 * Internal refactoring where required

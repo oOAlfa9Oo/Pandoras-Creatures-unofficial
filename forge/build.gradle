@@ -10,7 +10,7 @@ version = rootProject.version
 group = rootProject.group
 
 base {
-    archivesName = "${mod_id}-forge"
+    archivesName = "${mod_id}-forge-${minecraft_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)

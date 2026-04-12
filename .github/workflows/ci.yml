@@ -6,11 +6,24 @@ on:
       - main
       - master
       - "codex/**"
+      - "release/**"
   pull_request:
 
 jobs:
-  build:
+  validation:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: root
+            command: ./gradlew validateCurrentFamily --console=plain
+          - name: fabric
+            command: ./gradlew :fabric:build --console=plain
+          - name: forge
+            command: ./gradlew :forge:build --console=plain
+          - name: neoforge
+            command: ./gradlew :neoforge:build --console=plain
 
     steps:
       - name: Checkout repository
@@ -28,5 +41,13 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
-      - name: Compile and run tests
-        run: ./gradlew compileJava test
+      - name: Run ${{ matrix.name }} validation
+        run: ${{ matrix.command }}
+
+      - name: Upload ${{ matrix.name }} artifacts
+        if: contains(matrix.name, 'fabric') || contains(matrix.name, 'forge') || contains(matrix.name, 'neoforge')
+        uses: actions/upload-artifact@v4
+        with:
+          name: pandoras-creatures-${{ matrix.name }}-${{ github.sha }}
+          path: ${{ matrix.name }}/build/libs/*.jar
+          if-no-files-found: error
