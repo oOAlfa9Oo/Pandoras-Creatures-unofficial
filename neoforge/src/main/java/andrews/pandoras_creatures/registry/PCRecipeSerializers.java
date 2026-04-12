@@ -14,10 +14,10 @@ public final class PCRecipeSerializers {
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, Reference.MODID);
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<EndTrollBoxRecipe>> END_TROLL_BOX_RECIPE =
-            RECIPE_SERIALIZERS.register(PCRecipeIds.END_TROLL_BOX, () -> new EndTrollBoxRecipe.Serializer());
+            RECIPE_SERIALIZERS.register(PCRecipeIds.END_TROLL_BOX, EndTrollBoxRecipe::serializer);
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<EndTrollBoxColoringRecipe>> END_TROLL_BOX_COLORING_RECIPE =
-            RECIPE_SERIALIZERS.register(PCRecipeIds.END_TROLL_BOX_COLORING, () -> new EndTrollBoxColoringRecipe.Serializer());
+            RECIPE_SERIALIZERS.register(PCRecipeIds.END_TROLL_BOX_COLORING, EndTrollBoxColoringRecipe::serializer);
 
     private PCRecipeSerializers() {
     }

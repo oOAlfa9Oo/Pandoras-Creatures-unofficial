@@ -1,50 +1,44 @@
 package andrews.pandoras_creatures.content.material;
 
-import andrews.pandoras_creatures.PandorasCreaturesCommon;
-import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.util.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class PCArmorMaterials {
+    private static final TagKey<Item> REPAIRS_PLANT_HAT = TagKey.create(
+            Registries.ITEM,
+            Identifier.fromNamespaceAndPath(Reference.MODID, "repairs_plant_hat")
+    );
+    private static final ResourceKey<EquipmentAsset> PLANT_HAT_ASSET = EquipmentAssets.createId(Reference.MODID + ":plant_hat");
+
     // Plant Hat: durability=30, defense=1, enchantability=15
-    public static final Holder<ArmorMaterial> PLANT_HAT = register("plant_hat",
-            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                map.put(ArmorItem.Type.BOOTS, 1);
-                map.put(ArmorItem.Type.LEGGINGS, 1);
-                map.put(ArmorItem.Type.CHESTPLATE, 1);
-                map.put(ArmorItem.Type.HELMET, 1);
-                map.put(ArmorItem.Type.BODY, 1);
+    public static final ArmorMaterial PLANT_HAT = new ArmorMaterial(
+            30,
+            Util.make(new EnumMap<>(ArmorType.class), map -> {
+                map.put(ArmorType.BOOTS, 1);
+                map.put(ArmorType.LEGGINGS, 1);
+                map.put(ArmorType.CHESTPLATE, 1);
+                map.put(ArmorType.HELMET, 1);
+                map.put(ArmorType.BODY, 1);
             }),
             15, // enchantability
             SoundEvents.ARMOR_EQUIP_LEATHER,
             0.0F, // toughness
             0.0F, // knockback resistance
-            () -> Ingredient.of(PandorasCreaturesCommon.platform().registry().item(PCItemIds.ACIDIC_ARCHVINE_TONGUE))
+            REPAIRS_PLANT_HAT,
+            PLANT_HAT_ASSET
     );
-
-    private static Holder<ArmorMaterial> register(String name, EnumMap<ArmorItem.Type, Integer> defense,
-                                                   int enchantability, Holder<SoundEvent> equipSound,
-                                                   float toughness, float knockbackResistance,
-                                                   Supplier<Ingredient> repairIngredient) {
-        List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(Identifier.fromNamespaceAndPath(Reference.MODID, name)));
-
-        return Registry.registerForHolder(BuiltInRegistries.ARMOR_MATERIAL,
-                Identifier.fromNamespaceAndPath(Reference.MODID, name),
-                new ArmorMaterial(defense, enchantability, equipSound, repairIngredient, layers, toughness, knockbackResistance));
-    }
 
     public static void init() {
         // Called to force static initialization

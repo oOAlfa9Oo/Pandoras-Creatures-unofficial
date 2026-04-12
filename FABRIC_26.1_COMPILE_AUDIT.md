@@ -99,6 +99,51 @@ Conclusion del segundo corte: el port `26.1` no debe tratarse como una migracion
 4. renderers con `RenderState`.
 5. GUI/screens.
 
+## Tercer corte aplicado
+
+Se aplico otro lote de migracion server/common y Fabric wiring:
+
+- `ItemArachnonHammer` deja de depender de `PickaxeItem`, que ya no existe como clase publica en `26.1`.
+  - Ahora extiende `Item`.
+  - Usa `new Item.Properties().pickaxe(PCToolMaterials.ARACHNON_MATERIAL, 0.0F, -3.0F)`.
+  - Mantiene su logica custom de minado 3x3.
+- `PCToolMaterials.ARACHNON_MATERIAL` migra al `record ToolMaterial`.
+  - Usa `ItemTags.DIAMOND_TOOL_MATERIALS` como material de reparacion.
+- `ItemPlantHat` deja de depender de `ArmorItem`, que ya no existe como clase publica en `26.1`.
+  - Ahora extiende `Item`.
+  - Usa `new Item.Properties().humanoidArmor(PCArmorMaterials.PLANT_HAT, ArmorType.HELMET)`.
+- `PCArmorMaterials.PLANT_HAT` migra al `record ArmorMaterial`.
+  - Usa `ArmorType` en lugar de `ArmorItem.Type`.
+  - Usa `EquipmentAssets.createId("pandoras_creatures:plant_hat")`.
+  - Agrega el tag `data/pandoras_creatures/tags/item/repairs_plant_hat.json`.
+- `BufflonEntity` deja de implementar `Saddleable`, porque esa interfaz ya no existe en el jar 26.1 inspeccionado.
+  - Los metodos propios `isSaddled`, `isSaddleable` y `equipSaddle` se conservan como API interna del mod.
+- `RecipeSerializer` deja de tratarse como interfaz.
+  - Las recetas de End Troll Box ahora exponen factories `serializer()` que crean `new RecipeSerializer<>(CODEC, STREAM_CODEC)`.
+  - Forge/NeoForge se ajustaron a esas factories para no depender de `new Serializer()`.
+- Fabric networking migra:
+  - `playS2C()` -> `clientboundPlay()`
+  - `playC2S()` -> `serverboundPlay()`
+- `FabricRegistryBridge` migra lookups de `Registry#get(id)` a `Registry#getValue(id)`.
+- `FabricEntityBridge` limita `GameRules.MOB_GRIEFING` a `ServerLevel#getGameRules()`.
+
+Despues de este corte el build sigue fallando, pero el frente de errores se concentro en:
+
+- renderer/GUI 26.1:
+  - `MobRenderer` y `EntityRenderer` requieren `RenderState`.
+  - `BlockEntityRenderer` requiere `BlockEntityRenderState`.
+  - `GuiGraphics` ya no existe como tipo de screen rendering.
+  - `BuiltinItemRendererRegistry`, `ColorProviderRegistry`, `BlockRenderLayerMap` ya no estan disponibles igual.
+  - `PlantHatModel` necesita migrar de `LivingEntity` a `HumanoidRenderState`.
+- Block entities/NBT:
+  - `BaseContainerBlockEntity` ahora carga/guarda con `ValueInput` y `ValueOutput`.
+  - `ContainerHelper` tambien migro a `ValueInput`/`ValueOutput`.
+  - `BlockEntityType.Builder` ya no esta disponible como antes.
+- entidades/daño/XP:
+  - `Entity#hurt` aparece como final en `26.1`.
+  - `LivingEntity#hurt` ahora devuelve `void` en la jerarquia observada.
+  - `lastHurtByPlayerTime`, `lastHurtByPlayer` y `getBaseExperienceReward()` cambiaron.
+
 ## Orden recomendado para el siguiente corte
 
 1. Crear una tabla de renombres 26.1 para imports de Minecraft usados por `common`.

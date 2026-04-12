@@ -2,34 +2,29 @@ package andrews.pandoras_creatures.content.item;
 
 import andrews.pandoras_creatures.content.material.PCArmorMaterials;
 import andrews.pandoras_creatures.lang.PCLanguageKeys;
-import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class ItemPlantHat extends ArmorItem {
+public class ItemPlantHat extends Item {
     private static final int ORIGINAL_DURABILITY = 30;
 
     public ItemPlantHat() {
-        super(PCArmorMaterials.PLANT_HAT, Type.HELMET, new Properties()
+        super(new Properties()
                 .stacksTo(1)
-                .durability(ORIGINAL_DURABILITY));
+                .durability(ORIGINAL_DURABILITY)
+                .humanoidArmor(PCArmorMaterials.PLANT_HAT, ArmorType.HELMET));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable(PCLanguageKeys.PLANT_HAT_TOOLTIP));
-        super.appendHoverText(stack, context, tooltip, flag);
-    }
-
-    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-        return Identifier.fromNamespaceAndPath(Reference.MODID, "textures/models/armor/plant_hat.png");
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable(PCLanguageKeys.PLANT_HAT_TOOLTIP));
+        super.appendHoverText(stack, context, display, tooltip, flag);
     }
 }

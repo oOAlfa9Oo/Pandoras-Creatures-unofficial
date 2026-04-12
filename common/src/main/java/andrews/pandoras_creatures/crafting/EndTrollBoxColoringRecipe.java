@@ -71,7 +71,11 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
         return PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX_COLORING);
     }
 
-    public static class Serializer implements RecipeSerializer<EndTrollBoxColoringRecipe> {
+    public static RecipeSerializer<EndTrollBoxColoringRecipe> serializer() {
+        return new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
+    }
+
+    public static final class Serializer {
         public static final MapCodec<EndTrollBoxColoringRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
                 instance.group(
                         Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.ourGroup),
@@ -112,14 +116,7 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
                         }
                 );
 
-        @Override
-        public MapCodec<EndTrollBoxColoringRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, EndTrollBoxColoringRecipe> streamCodec() {
-            return STREAM_CODEC;
+        private Serializer() {
         }
     }
 }

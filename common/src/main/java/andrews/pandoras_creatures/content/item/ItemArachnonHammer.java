@@ -10,9 +10,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,17 +24,18 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class ItemArachnonHammer extends PickaxeItem {
+public class ItemArachnonHammer extends Item {
     public ItemArachnonHammer() {
-        super(PCToolMaterials.ARACHNON_MATERIAL, new Properties()
-                .attributes(createAttributes(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F)));
+        super(new Properties()
+                .pickaxe(PCToolMaterials.ARACHNON_MATERIAL, 0.0F, -3.0F));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
-        super.appendHoverText(stack, context, tooltip, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
+        super.appendHoverText(stack, context, display, tooltip, flag);
     }
 
     @Override

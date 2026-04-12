@@ -46,7 +46,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -69,7 +68,7 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class BufflonEntity extends AnimatedCreatureEntity implements ContainerListener, Saddleable, BufflonAccess {
+public class BufflonEntity extends AnimatedCreatureEntity implements ContainerListener, BufflonAccess {
     private static final int FEEDING_COOLDOWN_TICKS = 10;
     private static final int TAMING_THINK_TIME_TICKS = 40;
     private static final int NATURAL_REGEN_CHANCE = 900;
@@ -627,7 +626,6 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         }
     }
 
-    @Override
     public boolean isSaddled() {
         return this.entityData.get(IS_SADDLED);
     }
@@ -636,12 +634,10 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         this.entityData.set(IS_SADDLED, value);
     }
 
-    @Override
     public boolean isSaddleable() {
         return this.isAlive() && !this.isBaby() && this.isTamed();
     }
 
-    @Override
     public void equipSaddle(ItemStack saddle, @Nullable net.minecraft.sounds.SoundSource source) {
         this.bufflonStorage.setItem(BufflonInventoryLayout.SADDLE_SLOT, saddle.copyWithCount(1));
         if (source != null) {

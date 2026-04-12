@@ -19,10 +19,10 @@ public final class FabricPayloadRegistrar {
         }
         initialized = true;
 
-        PayloadTypeRegistry.playS2C().register(AnimationPayload.TYPE, AnimationPayload.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(BufflonInventoryPayload.TYPE, BufflonInventoryPayload.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(BufflonSitPayload.TYPE, BufflonSitPayload.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(BufflonFollowPayload.TYPE, BufflonFollowPayload.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(BufflonCombatModePayload.TYPE, BufflonCombatModePayload.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(AnimationPayload.TYPE, AnimationPayload.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BufflonInventoryPayload.TYPE, BufflonInventoryPayload.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BufflonSitPayload.TYPE, BufflonSitPayload.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BufflonFollowPayload.TYPE, BufflonFollowPayload.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(BufflonCombatModePayload.TYPE, BufflonCombatModePayload.STREAM_CODEC);
     }
 }

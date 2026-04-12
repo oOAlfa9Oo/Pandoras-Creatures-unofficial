@@ -23,8 +23,8 @@ public final class PCForgeRecipeSerializers {
             return;
         }
 
-        register(event, PCRecipeIds.END_TROLL_BOX, new EndTrollBoxRecipe.Serializer());
-        register(event, PCRecipeIds.END_TROLL_BOX_COLORING, new EndTrollBoxColoringRecipe.Serializer());
+        register(event, PCRecipeIds.END_TROLL_BOX, EndTrollBoxRecipe.serializer());
+        register(event, PCRecipeIds.END_TROLL_BOX_COLORING, EndTrollBoxColoringRecipe.serializer());
     }
 
     private static <T extends RecipeSerializer<?>> void register(RegisterEvent event, String path, T serializer) {

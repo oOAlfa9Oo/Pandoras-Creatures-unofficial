@@ -63,7 +63,11 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
         return PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX);
     }
 
-    public static class Serializer implements RecipeSerializer<EndTrollBoxRecipe> {
+    public static RecipeSerializer<EndTrollBoxRecipe> serializer() {
+        return new RecipeSerializer<>(Serializer.CODEC, Serializer.STREAM_CODEC);
+    }
+
+    public static final class Serializer {
         public static final MapCodec<EndTrollBoxRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
                 instance.group(
                         Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.ourGroup),
@@ -82,14 +86,7 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
                         EndTrollBoxRecipe::new
                 );
 
-        @Override
-        public MapCodec<EndTrollBoxRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, EndTrollBoxRecipe> streamCodec() {
-            return STREAM_CODEC;
+        private Serializer() {
         }
     }
 }
