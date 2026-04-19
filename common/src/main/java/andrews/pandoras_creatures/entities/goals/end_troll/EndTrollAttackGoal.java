@@ -73,7 +73,7 @@ public class EndTrollAttackGoal extends Goal {
     public boolean canContinueToUse() {
         LivingEntity livingentity = this.attacker.getTarget();
         boolean hasValidTarget = EndTrollBehaviorRules.isValidCombatTarget(livingentity);
-        boolean withinRestriction = hasValidTarget && this.attacker.isWithinRestriction(livingentity.blockPosition());
+        boolean withinRestriction = hasValidTarget && this.attacker.isWithinHome(livingentity.blockPosition());
         boolean withinAttackReach = hasValidTarget
                 && this.attacker.distanceToSqr(livingentity.getX(), livingentity.getBoundingBox().minY, livingentity.getZ()) <= this.getAttackReachSqr(livingentity);
         return EndTrollBehaviorRules.shouldContinueMeleeAttack(

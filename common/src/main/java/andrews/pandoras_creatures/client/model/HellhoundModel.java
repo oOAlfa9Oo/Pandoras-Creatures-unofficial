@@ -514,16 +514,4 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
         swing(tail_1, 0.4F * globalSpeed, 0.1F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        float hellhoundScale = HellhoundVisualRules.renderScale(entity.getHellhoundType());
-        float yOffset = HellhoundVisualRules.renderYOffset(entity.getHellhoundType());
-        if (hellhoundScale != 1.0F || yOffset != 0.0F) {
-            poseStack.translate(0, yOffset, 0);
-            poseStack.scale(hellhoundScale, hellhoundScale, hellhoundScale);
-        }
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, color);
-        poseStack.popPose();
-    }
 }

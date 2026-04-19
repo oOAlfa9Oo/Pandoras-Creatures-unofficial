@@ -8,14 +8,14 @@ import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 
 public final class PCForgeEntitySpawnPlacements {
     private PCForgeEntitySpawnPlacements() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeEntitySpawnPlacements::registerAll);
+    public static void register(BusGroup modEventBus) {
+        SpawnPlacementRegisterEvent.BUS.addListener(PCForgeEntitySpawnPlacements::registerAll);
     }
 
     public static void registerAll(SpawnPlacementRegisterEvent event) {

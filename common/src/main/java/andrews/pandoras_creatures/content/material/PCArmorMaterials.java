@@ -20,7 +20,10 @@ public class PCArmorMaterials {
             Registries.ITEM,
             Identifier.fromNamespaceAndPath(Reference.MODID, "repairs_plant_hat")
     );
-    private static final ResourceKey<EquipmentAsset> PLANT_HAT_ASSET = EquipmentAssets.createId(Reference.MODID + ":plant_hat");
+    private static final ResourceKey<EquipmentAsset> PLANT_HAT_ASSET = ResourceKey.create(
+            EquipmentAssets.ROOT_ID,
+            Identifier.fromNamespaceAndPath(Reference.MODID, "plant_hat")
+    );
 
     // Plant Hat: durability=30, defense=1, enchantability=15
     public static final ArmorMaterial PLANT_HAT = new ArmorMaterial(

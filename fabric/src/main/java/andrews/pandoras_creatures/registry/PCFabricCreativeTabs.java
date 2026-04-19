@@ -30,7 +30,7 @@ public final class PCFabricCreativeTabs {
                 CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
                         .title(Component.translatable(PCCreativeTabIds.PANDORAS_CREATURES_TRANSLATION_KEY))
                         .icon(() -> new ItemStack(PCFabricItems.getItem(andrews.pandoras_creatures.registry.item.PCItemIds.BUFFLON_SADDLE)))
-                        .displayItems((parameters, output) -> PCCreativeTabEntries.populatePandorasCreaturesTab(output))
+                        .displayItems((parameters, output) -> PCCreativeTabEntries.populatePandorasCreaturesTab(output::accept))
                         .build()
         );
     }

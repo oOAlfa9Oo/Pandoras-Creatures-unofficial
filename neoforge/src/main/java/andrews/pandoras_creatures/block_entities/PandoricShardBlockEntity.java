@@ -10,6 +10,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 
@@ -42,15 +44,15 @@ public class PandoricShardBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        this.saveToNBT(tag);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        this.saveToTag(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.loadFromNBT(tag);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.loadFromTag(input);
     }
 
     private CompoundTag saveToNBT(CompoundTag compound) {
@@ -62,9 +64,21 @@ public class PandoricShardBlockEntity extends BlockEntity {
     }
 
     private void loadFromNBT(CompoundTag compound) {
-        CompoundTag shardNBT = compound.getCompound("PandoricShardValues");
-        shardSize = shardNBT.getInt("ShardSize");
-        shardVariant = shardNBT.getInt("ShardVariant");
+        CompoundTag shardNBT = compound.getCompound("PandoricShardValues").orElse(new CompoundTag());
+        shardSize = shardNBT.getInt("ShardSize").orElse(0);
+        shardVariant = shardNBT.getInt("ShardVariant").orElse(0);
+    }
+
+    private void saveToTag(ValueOutput output) {
+        ValueOutput shardOutput = output.child("PandoricShardValues");
+        shardOutput.putInt("ShardSize", this.getShardSize());
+        shardOutput.putInt("ShardVariant", this.getShardVariant());
+    }
+
+    private void loadFromTag(ValueInput input) {
+        ValueInput shardInput = input.childOrEmpty("PandoricShardValues");
+        shardSize = shardInput.getIntOr("ShardSize", 0);
+        shardVariant = shardInput.getIntOr("ShardVariant", 0);
     }
 
     public int getShardSize() {

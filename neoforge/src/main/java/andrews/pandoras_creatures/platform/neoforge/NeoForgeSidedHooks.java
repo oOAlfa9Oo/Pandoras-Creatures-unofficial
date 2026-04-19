@@ -11,6 +11,6 @@ final class NeoForgeSidedHooks implements SidedHooks {
 
     @Override
     public boolean isClientEnvironment() {
-        return FMLEnvironment.dist.isClient();
+        return FMLEnvironment.getDist().isClient();
     }
 }

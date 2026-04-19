@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.entities.goals.bufflon;
 
+import net.minecraft.server.level.ServerLevel;
 import andrews.pandoras_creatures.entities.BufflonEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -20,7 +21,9 @@ public class BufflonNonTamedTargetGoal<T extends LivingEntity> extends NearestAt
     @Override
     public boolean canContinueToUse() {
         if (this.targetConditions != null) {
-            return !this.mob.isVehicle() && this.targetConditions.test(this.mob, this.target);
+            return !this.mob.isVehicle()
+                    && this.mob.level() instanceof ServerLevel serverLevel
+                    && this.targetConditions.test(serverLevel, this.mob, this.target);
         }
         return super.canContinueToUse();
     }

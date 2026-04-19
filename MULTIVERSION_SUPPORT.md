@@ -16,7 +16,7 @@ La regla principal es trabajar por **versiones ancla**, no por cada release meno
 | 1.20.1 | `release/1.20.1` | Objetivo | Objetivo | No aplica | Pendiente |
 | 1.20.6 | `release/1.20.6` | Objetivo | Objetivo | Objetivo | Pendiente |
 | 1.21.1 | `release/1.21.1` | Objetivo | Objetivo | Objetivo | En progreso |
-| 26.1 | `release/26.1` | Objetivo | Objetivo | Experimental | Pendiente |
+| 26.1 | `release/26.1` | Build validado; server preflight llega hasta EULA local | Build + datagen + GameTest smoke validado | Build + GameTests validado, experimental | Bring-up automatizado completo; pendiente validacion visual/manual |
 
 La matriz tecnica detallada vive en `MULTIVERSION_TECHNICAL_MATRIX.md`.
 El procedimiento para abrir ramas vive en `MULTIVERSION_BRANCH_PLAYBOOK.md`.
@@ -81,6 +81,13 @@ Una rama de familia queda lista cuando:
 - los assets especiales no muestran texturas faltantes
 - la rama declara sus loaders soportados y riesgos conocidos
 
+Si un loader objetivo queda bloqueado por tooling externo del ecosistema, la familia puede cerrarse como soporte parcial siempre que:
+
+- el bloqueo quede reproducido con comando exacto y error principal
+- el loader bloqueado quede declarado como no publicable para esa familia
+- los loaders publicables pasen sus gates de build/runtime definidos
+- la matriz tecnica y el documento de release indiquen explicitamente el riesgo
+
 ## Artefactos
 
 Los jars distribuibles deben usar:
@@ -94,3 +101,9 @@ Ejemplo para la familia actual:
 - `pandoras_creatures-fabric-1.21.1-3.1.0-beta.jar`
 - `pandoras_creatures-forge-1.21.1-3.1.0-beta.jar`
 - `pandoras_creatures-neoforge-1.21.1-3.1.0-beta.jar`
+
+Ejemplo para `26.1`:
+
+- `pandoras_creatures-fabric-26.1-3.1.0-beta.jar`
+- `pandoras_creatures-forge-26.1-3.1.0-beta.jar`
+- `pandoras_creatures-neoforge-26.1-3.1.0-beta.jar`

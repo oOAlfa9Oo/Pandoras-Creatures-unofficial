@@ -17,7 +17,6 @@ import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -47,6 +46,8 @@ import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -84,7 +85,7 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     public EndTrollEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.END_TROLL), level);
         // Step height is now handled via Attributes.STEP_HEIGHT
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -115,17 +116,17 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putBoolean(EndTrollDataKeys.IS_STANDING, this.isEntityStanding());
-        compound.putBoolean(EndTrollDataKeys.HAS_SCREAMED, this.hasScreamed());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean(EndTrollDataKeys.IS_STANDING, this.isEntityStanding());
+        output.putBoolean(EndTrollDataKeys.HAS_SCREAMED, this.hasScreamed());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setEntityStanding(compound.getBoolean(EndTrollDataKeys.IS_STANDING));
-        this.setHasScreamed(compound.getBoolean(EndTrollDataKeys.HAS_SCREAMED));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setEntityStanding(input.getBooleanOr(EndTrollDataKeys.IS_STANDING, false));
+        this.setHasScreamed(input.getBooleanOr(EndTrollDataKeys.HAS_SCREAMED, false));
     }
 
     @Override
@@ -247,9 +248,9 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel serverLevel) {
         this.xpReward = 100;
-        return super.getBaseExperienceReward();
+        return super.getBaseExperienceReward(serverLevel);
     }
 
     @Override
@@ -263,13 +264,13 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
         Entity entity = source.getDirectEntity();
         if (entity instanceof AbstractArrow) {
             return false;
         }
         rememberLiberationPlayer(source);
-        return super.hurt(source, amount);
+        return super.hurtServer(serverLevel, source, amount);
     }
 
     /**
@@ -277,7 +278,7 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
      */
     public boolean performPunchAttack(Entity target, boolean doublePunch) {
         int randomBonus = this.random.nextInt(doublePunch ? 7 : 4);
-        return target.hurt(this.damageSources().mobAttack(this),
+        return target.hurtOrSimulate(this.damageSources().mobAttack(this),
                 (float) EndTrollBehaviorRules.getPunchDamage(doublePunch, randomBonus));
     }
 

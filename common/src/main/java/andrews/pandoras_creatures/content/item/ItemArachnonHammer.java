@@ -28,7 +28,11 @@ import java.util.function.Consumer;
 
 public class ItemArachnonHammer extends Item {
     public ItemArachnonHammer() {
-        super(new Properties()
+        this(new Properties());
+    }
+
+    public ItemArachnonHammer(Properties properties) {
+        super(properties
                 .pickaxe(PCToolMaterials.ARACHNON_MATERIAL, 0.0F, -3.0F));
     }
 

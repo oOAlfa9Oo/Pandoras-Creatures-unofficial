@@ -5,17 +5,17 @@ import andrews.pandoras_creatures.crafting.EndTrollBoxRecipe;
 import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.RegisterEvent;
 
 public final class PCForgeRecipeSerializers {
     private PCForgeRecipeSerializers() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeRecipeSerializers::registerRecipeSerializers);
+    public static void register(BusGroup modEventBus) {
+        RegisterEvent.getBus(modEventBus).addListener(PCForgeRecipeSerializers::registerRecipeSerializers);
     }
 
     private static void registerRecipeSerializers(RegisterEvent event) {
@@ -29,6 +29,6 @@ public final class PCForgeRecipeSerializers {
 
     private static <T extends RecipeSerializer<?>> void register(RegisterEvent event, String path, T serializer) {
         event.register(Registries.RECIPE_SERIALIZER, helper ->
-                helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, path), serializer));
+                helper.register(Identifier.fromNamespaceAndPath(Reference.MODID, path), serializer));
     }
 }

@@ -18,6 +18,6 @@ public class PCCreativeTabs {
             CREATIVE_TABS.register(PCCreativeTabIds.PANDORAS_CREATURES, () -> CreativeModeTab.builder()
                     .title(Component.translatable(PCCreativeTabIds.PANDORAS_CREATURES_TRANSLATION_KEY))
                     .icon(() -> new ItemStack(PCItems.BUFFLON_SADDLE.get()))
-                    .displayItems((parameters, output) -> PCCreativeTabEntries.populatePandorasCreaturesTab(output))
+                    .displayItems((parameters, output) -> PCCreativeTabEntries.populatePandorasCreaturesTab(output::accept))
                     .build());
 }

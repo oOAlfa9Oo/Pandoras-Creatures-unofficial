@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.HitResult;
@@ -46,7 +49,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     public AcidicArchvineEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.ACIDIC_ARCHVINE), level);
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -71,15 +74,15 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt(AcidicArchvineDataKeys.ARCHVINE_TYPE, this.getArchvineType());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt(AcidicArchvineDataKeys.ARCHVINE_TYPE, this.getArchvineType());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setArchvineType(compound.getInt(AcidicArchvineDataKeys.ARCHVINE_TYPE));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setArchvineType(input.getIntOr(AcidicArchvineDataKeys.ARCHVINE_TYPE, AcidicArchvinePlacementRules.DEFAULT_ARCHVINE_TYPE));
     }
 
     public void setTargetedEntity(int entityId) {
@@ -116,9 +119,9 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity target) {
         float damage = (float) (4 + this.random.nextInt(3));
-        return target.hurt(this.damageSources().mobAttack(this), damage);
+        return target.hurtOrSimulate(this.damageSources().mobAttack(this), damage);
     }
 
     @Override
@@ -140,7 +143,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
         boolean upperCeiling = isSupportedCeiling(level.getBlockState(pos.above(2)));
         double yOffset = AcidicArchvinePlacementRules.resolveSpawnYOffset(immediateCeiling, upperCeiling);
         if (Double.isNaN(yOffset)) {
-            this.hurt(this.damageSources().cramming(), Float.MAX_VALUE);
+            this.hurtOrSimulate(this.damageSources().cramming(), Float.MAX_VALUE);
         } else if (yOffset != 0.0D) {
             this.setPos(this.getX(), this.getY() + yOffset, this.getZ());
         }
@@ -184,7 +187,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     private int resolveArchvineType(ServerLevelAccessor level) {
         var biome = level.getBiome(this.blockPosition());
-        String biomeName = biome.unwrapKey().map(key -> key.location().toString()).orElse("");
+        String biomeName = biome.unwrapKey().map(key -> key.identifier().toString()).orElse("");
         return AcidicArchvinePlacementRules.resolveBiomeType(biomeName);
     }
 

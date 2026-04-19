@@ -6,7 +6,9 @@ import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineAttackS
 import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineTargetingRules;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -42,7 +44,7 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
         this.targetClass = target;
         this.targetChance = chance;
         this.setFlags(EnumSet.of(Goal.Flag.TARGET));
-        this.targetEntitySelector = TargetingConditions.forCombat().range(this.getFollowDistance()).selector(predicate);
+        this.targetEntitySelector = TargetingConditions.forCombat().range(this.getFollowDistance()).selector((candidate, serverLevel) -> predicate == null || predicate.test(candidate));
     }
 
     @Override
@@ -60,14 +62,21 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
     }
 
     protected void findNearestTarget() {
-        this.nearestTarget = this.mob.level().getNearestEntity(
-                this.mob.level().getEntitiesOfClass(this.targetClass, this.getTargetableArea(this.getFollowDistance()), e -> true),
-                this.targetEntitySelector,
-                this.mob,
-                this.mob.getX(),
-                this.mob.getEyeY(),
-                this.mob.getZ()
-        );
+        this.nearestTarget = null;
+        if (!(this.mob.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        double nearestDistance = Double.MAX_VALUE;
+        for (T candidate : serverLevel.getEntitiesOfClass(this.targetClass, this.getTargetableArea(this.getFollowDistance()), e -> true)) {
+            if (this.targetEntitySelector.test(serverLevel, this.mob, candidate)) {
+                double distance = candidate.distanceToSqr(this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+                if (distance < nearestDistance) {
+                    this.nearestTarget = candidate;
+                    nearestDistance = distance;
+                }
+            }
+        }
     }
 
     @Override
@@ -128,25 +137,27 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
             if (AcidicArchvineTargetingRules.shouldPullTarget(dist)) {
                 Vec3 pull = AcidicArchvineTargetingRules.createPullVector(this.mob.position(), this.nearestTarget.position());
                 this.nearestTarget.setDeltaMovement(this.nearestTarget.getDeltaMovement().add(pull));
-                this.nearestTarget.hasImpulse = true;
+        this.nearestTarget.hurtMarked = true;
             } else {
                 if (AcidicArchvineTargetingRules.shouldTeleportTarget(dist)) {
                     this.mob.level().broadcastEntityEvent(this.mob, AcidicArchvineAttackState.CHEWING.entityEventId());
                     this.acidicArchvine.setAttackState(AcidicArchvineAttackState.CHEWING);
                     if (this.nearestTarget instanceof ServerPlayer serverPlayer) {
                         serverPlayer.teleportTo(
-                                serverPlayer.serverLevel(),
+                                serverPlayer.level(),
                                 this.mob.getX(),
                                 this.mob.getY() - 0.5,
                                 this.mob.getZ(),
+                                java.util.Set.of(),
                                 serverPlayer.getYRot(),
-                                serverPlayer.getXRot()
+                                serverPlayer.getXRot(),
+                                false
                         );
                     } else {
                         this.nearestTarget.teleportTo(this.mob.getX(), this.mob.getY() - 0.5, this.mob.getZ());
                     }
                     this.nearestTarget.setDeltaMovement(0, 0, 0);
-                    this.nearestTarget.hasImpulse = true;
+        this.nearestTarget.hurtMarked = true;
                     if (this.nearestTarget instanceof ServerPlayer serverPlayer) {
                         serverPlayer.getAbilities().mayfly = true;
                         serverPlayer.onUpdateAbilities();
@@ -154,7 +165,9 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
                 }
 
                 if (this.biteCooldown <= 0) {
-                    this.mob.doHurtTarget(this.nearestTarget);
+                    if (this.mob.level() instanceof ServerLevel serverLevel) {
+                        this.mob.doHurtTarget(serverLevel, this.nearestTarget);
+                    }
                     this.mob.playSound(PandorasCreaturesCommon.platform().registry().sound(PCSoundCatalog.ACIDIC_ARCHVINE_ATTACK), 1.0F, 1.0F);
                     this.biteCooldown = AcidicArchvineTargetingRules.BITE_COOLDOWN_TICKS;
                 }
@@ -169,6 +182,6 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
 
     private boolean isProtectedByPlantHat(@Nullable LivingEntity target) {
         return target instanceof Player player
-                && AcidicArchvineTargetingRules.isProtectedByPlantHat(player.getInventory().armor.get(3).is(PandorasCreaturesCommon.platform().registry().item(PCItemIds.PLANT_HAT)));
+                && AcidicArchvineTargetingRules.isProtectedByPlantHat(player.getItemBySlot(EquipmentSlot.HEAD).is(PandorasCreaturesCommon.platform().registry().item(PCItemIds.PLANT_HAT)));
     }
 }

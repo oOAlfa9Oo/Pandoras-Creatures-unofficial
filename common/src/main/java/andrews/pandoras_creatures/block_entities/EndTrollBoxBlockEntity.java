@@ -7,15 +7,14 @@ import andrews.pandoras_creatures.menu.EndTrollBoxMenu;
 import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -25,6 +24,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
@@ -109,26 +110,26 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
     }
 
     @Override
-    public void startOpen(Player player) {
-        if (!player.isSpectator()) {
+    public void startOpen(ContainerUser player) {
+        if (player.getLivingEntity() == null || !player.getLivingEntity().isSpectator()) {
             if (this.openCount < 0) {
                 this.openCount = 0;
             }
             ++this.openCount;
             this.level.blockEvent(this.worldPosition, this.getBlockState().getBlock(), 1, this.openCount);
             if (this.openCount == 1) {
-                this.level.playSound(null, this.worldPosition, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+                this.level.playSound(null, this.worldPosition, SoundEvents.SHULKER_BOX_OPEN, SoundSource.BLOCKS, 0.5F, this.level.getRandom().nextFloat() * 0.1F + 0.9F);
             }
         }
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (!player.isSpectator()) {
+    public void stopOpen(ContainerUser player) {
+        if (player.getLivingEntity() == null || !player.getLivingEntity().isSpectator()) {
             --this.openCount;
             this.level.blockEvent(this.worldPosition, this.getBlockState().getBlock(), 1, this.openCount);
             if (this.openCount <= 0) {
-                this.level.playSound(null, this.worldPosition, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+                this.level.playSound(null, this.worldPosition, SoundEvents.SHULKER_BOX_CLOSE, SoundSource.BLOCKS, 0.5F, this.level.getRandom().nextFloat() * 0.1F + 0.9F);
             }
         }
     }
@@ -143,29 +144,28 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.loadFromTag(tag, registries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.loadFromTag(input);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        this.saveToTag(tag, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        this.saveToTag(output);
     }
 
-    public void loadFromTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void loadFromTag(ValueInput input) {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(tag) && tag.contains("Items")) {
-            ContainerHelper.loadAllItems(tag, this.items, registries);
+        if (!this.tryLoadLootTable(input)) {
+            ContainerHelper.loadAllItems(input, this.items);
         }
     }
 
-    public CompoundTag saveToTag(CompoundTag tag, HolderLookup.Provider registries) {
-        if (!this.trySaveLootTable(tag)) {
-            ContainerHelper.saveAllItems(tag, this.items, false, registries);
+    public void saveToTag(ValueOutput output) {
+        if (!this.trySaveLootTable(output)) {
+            ContainerHelper.saveAllItems(output, this.items, false);
         }
-        return tag;
     }
 
     @Override

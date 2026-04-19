@@ -7,6 +7,8 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 
@@ -31,7 +33,20 @@ public final class FabricPlantHatArmorRenderer {
 
             PlantHatModel armorModel = getModel();
             armorModel.prepareForRender(entity, contextModel);
-            ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, TEXTURE);
+            ArmorRenderer.submitTransformCopyingModel(
+                    contextModel,
+                    entity,
+                    armorModel,
+                    entity,
+                    true,
+                    vertexConsumers,
+                    matrices,
+                    RenderTypes.armorCutoutNoCull(TEXTURE),
+                    light,
+                    OverlayTexture.NO_OVERLAY,
+                    -1,
+                    null
+            );
         }, PCFabricItems.getItem(PCItemIds.PLANT_HAT));
     }
 

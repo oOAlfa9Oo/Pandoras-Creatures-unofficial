@@ -3,7 +3,8 @@ package andrews.pandoras_creatures.client.item;
 import andrews.pandoras_creatures.client.model.PlantHatModel;
 import andrews.pandoras_creatures.client.model.base.PCModelLayers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -17,13 +18,10 @@ public final class PlantHatClientItemExtensions implements IClientItemExtensions
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack,
-                                                  EquipmentSlot slot, HumanoidModel<?> original) {
+    public Model getHumanoidArmorModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, Model original) {
         if (model == null) {
             model = new PlantHatModel(Minecraft.getInstance().getEntityModels().bakeLayer(PCModelLayers.PLANT_HAT));
         }
-        model.prepareForRender(entity, original);
         return model;
     }
 }

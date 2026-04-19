@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +31,7 @@ public class ItemMobBucket extends BucketItem {
      * Called when the buckets content gets placed
      */
     @Override
-    public void checkExtraContent(@Nullable Player player, Level level, ItemStack stack, BlockPos pos) {
+    public void checkExtraContent(@Nullable LivingEntity player, Level level, ItemStack stack, BlockPos pos) {
         if (!level.isClientSide()) {
             this.placeEntity((ServerLevel) level, stack, pos);
         }
@@ -40,7 +41,7 @@ public class ItemMobBucket extends BucketItem {
      * The sound the item plays when using it
      */
     @Override
-    protected void playEmptySound(@Nullable Player player, LevelAccessor level, BlockPos pos) {
+    protected void playEmptySound(@Nullable LivingEntity player, LevelAccessor level, BlockPos pos) {
         level.playSound(player, pos, SoundEvents.BUCKET_EMPTY_FISH, SoundSource.NEUTRAL, 1.0F, 1.0F);
     }
 

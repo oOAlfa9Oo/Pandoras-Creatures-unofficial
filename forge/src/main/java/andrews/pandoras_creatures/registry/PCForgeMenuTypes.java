@@ -5,11 +5,11 @@ import andrews.pandoras_creatures.menu.EndTrollBoxMenu;
 import andrews.pandoras_creatures.menu.PCMenuIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -19,8 +19,8 @@ public final class PCForgeMenuTypes {
     private PCForgeMenuTypes() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeMenuTypes::registerMenuTypes);
+    public static void register(BusGroup modEventBus) {
+        RegisterEvent.getBus(modEventBus).addListener(PCForgeMenuTypes::registerMenuTypes);
     }
 
     public static MenuType<BufflonMenu> bufflon() {
@@ -33,8 +33,8 @@ public final class PCForgeMenuTypes {
 
     @SuppressWarnings("unchecked")
     private static <T extends net.minecraft.world.inventory.AbstractContainerMenu> MenuType<T> menuType(String id) {
-        ResourceLocation menuId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        MenuType<?> value = BuiltInRegistries.MENU.get(menuId);
+        Identifier menuId = Identifier.fromNamespaceAndPath(Reference.MODID, id);
+        MenuType<?> value = BuiltInRegistries.MENU.getValue(menuId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge menu type id: " + menuId);
         }
@@ -49,11 +49,11 @@ public final class PCForgeMenuTypes {
         registered = true;
         event.register(ForgeRegistries.Keys.MENU_TYPES, helper -> {
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCMenuIds.BUFFLON),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCMenuIds.BUFFLON),
                     IForgeMenuType.create((windowId, inventory, data) -> new BufflonMenu(windowId, inventory, data.readInt()))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCMenuIds.END_TROLL_BOX),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCMenuIds.END_TROLL_BOX),
                     new MenuType<>(EndTrollBoxMenu::new, FeatureFlags.DEFAULT_FLAGS)
             );
         });

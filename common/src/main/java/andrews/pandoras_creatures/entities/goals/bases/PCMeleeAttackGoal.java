@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities.goals.bases;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -73,7 +74,7 @@ public class PCMeleeAttackGoal extends Goal {
             return false;
         } else if (!this.longMemory) {
             return !this.attacker.getNavigation().isDone();
-        } else if (!this.attacker.isWithinRestriction(livingentity.blockPosition())) {
+        } else if (!this.attacker.isWithinHome(livingentity.blockPosition())) {
             return false;
         } else {
             return !(livingentity instanceof Player) || !livingentity.isSpectator() && !((Player) livingentity).isCreative();
@@ -147,7 +148,9 @@ public class PCMeleeAttackGoal extends Goal {
         if (distToEnemySqr <= d0 && this.attackTick <= 0) {
             this.resetAttackCooldown();
             this.attacker.swing(InteractionHand.MAIN_HAND);
-            this.attacker.doHurtTarget(enemy);
+            if (this.attacker.level() instanceof ServerLevel serverLevel) {
+                this.attacker.doHurtTarget(serverLevel, enemy);
+            }
         }
     }
 

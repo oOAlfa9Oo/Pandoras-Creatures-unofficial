@@ -252,6 +252,7 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
         // Acid blob
         this.acid_blob_holder = root.getChild("acid_blob_holder");
         this.acid_blob = this.acid_blob_holder.getChild("acid_blob");
+        this.acid_blob_holder.visible = false;
 
         // Register animated parts
         registerAllAnimatedParts();
@@ -638,21 +639,7 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
         return LayerDefinition.create(meshdefinition, 256, 128);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        poseStack.translate(0, 1.5F, 0);
-        poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-
-        this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.tongue_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-
-        poseStack.popPose();
-    }
-
-    @Override
     public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount, float partialTick) {
-        super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
         this.partialTicks = partialTick;
     }
 

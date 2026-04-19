@@ -1,15 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "pandoras_creatures:horsetail"
-    },
-    {
-      "item": "pandoras_creatures:dhania"
-    },
-    {
-      "item": "pandoras_creatures:hill_bloom"
-    }
+    "pandoras_creatures:horsetail",
+    "pandoras_creatures:dhania",
+    "pandoras_creatures:hill_bloom"
   ],
   "result": {
     "count": 3,

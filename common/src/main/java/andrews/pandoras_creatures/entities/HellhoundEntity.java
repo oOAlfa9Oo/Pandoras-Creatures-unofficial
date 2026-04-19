@@ -13,7 +13,6 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -39,6 +38,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
@@ -53,7 +54,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
 
     public HellhoundEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.HELLHOUND), level);
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -82,15 +83,15 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt(HellhoundDataKeys.TYPE_TAG, this.getHellhoundType());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt(HellhoundDataKeys.TYPE_TAG, this.getHellhoundType());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setHellhoundType(compound.getInt(HellhoundDataKeys.TYPE_TAG));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setHellhoundType(input.getIntOr(HellhoundDataKeys.TYPE_TAG, HellhoundVariantCatalog.DEFAULT_TYPE));
     }
 
     @Nullable
@@ -106,7 +107,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
         super.dropCustomDeathLoot(level, source, recentlyHit);
         int coalDropCount = HellhoundCombatRules.coalDropCount(this.getHellhoundType(), this.random);
         if (coalDropCount > 0) {
-            this.spawnAtLocation(new ItemStack(Items.COAL, coalDropCount));
+            this.spawnAtLocation(level, new ItemStack(Items.COAL, coalDropCount));
         }
     }
 
@@ -144,9 +145,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity target) {
         int hellhoundType = this.getHellhoundType();
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) HellhoundCombatRules.attackDamage(hellhoundType, this.random));
+        boolean flag = target.hurtOrSimulate(this.damageSources().mobAttack(this), (float) HellhoundCombatRules.attackDamage(hellhoundType, this.random));
         if (flag && HellhoundCombatRules.appliesWither(hellhoundType) && target instanceof LivingEntity living) {
             int witherDuration = HellhoundCombatRules.witherDurationTicks(hellhoundType);
             if (witherDuration > 0) {
@@ -157,9 +158,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel serverLevel) {
         this.xpReward = (int) ((float) this.xpReward * 2.0F);
-        return super.getBaseExperienceReward();
+        return super.getBaseExperienceReward(serverLevel);
     }
 
     @Override

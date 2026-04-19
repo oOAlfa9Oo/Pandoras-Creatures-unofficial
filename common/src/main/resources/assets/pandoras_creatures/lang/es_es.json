@@ -1,0 +1,21 @@
+{
+  "block.pandoras_creatures.end_troll_box": "Caja del End Troll",
+  "block.pandoras_creatures.white_end_troll_box": "Caja blanca del End Troll",
+  "block.pandoras_creatures.orange_end_troll_box": "Caja naranja del End Troll",
+  "block.pandoras_creatures.magenta_end_troll_box": "Caja magenta del End Troll",
+  "block.pandoras_creatures.light_blue_end_troll_box": "Caja celeste del End Troll",
+  "block.pandoras_creatures.yellow_end_troll_box": "Caja amarilla del End Troll",
+  "block.pandoras_creatures.lime_end_troll_box": "Caja lima del End Troll",
+  "block.pandoras_creatures.pink_end_troll_box": "Caja rosa del End Troll",
+  "block.pandoras_creatures.gray_end_troll_box": "Caja gris del End Troll",
+  "block.pandoras_creatures.light_gray_end_troll_box": "Caja gris claro del End Troll",
+  "block.pandoras_creatures.cyan_end_troll_box": "Caja cian del End Troll",
+  "block.pandoras_creatures.purple_end_troll_box": "Caja purpura del End Troll",
+  "block.pandoras_creatures.blue_end_troll_box": "Caja azul del End Troll",
+  "block.pandoras_creatures.brown_end_troll_box": "Caja marron del End Troll",
+  "block.pandoras_creatures.green_end_troll_box": "Caja verde del End Troll",
+  "block.pandoras_creatures.red_end_troll_box": "Caja roja del End Troll",
+  "block.pandoras_creatures.black_end_troll_box": "Caja negra del End Troll",
+  "block.pandoras_creatures.end_troll_box.tooltip": "y %d mas...",
+  "container.pandoras_creatures.end_troll_box": "Caja del End Troll"
+}

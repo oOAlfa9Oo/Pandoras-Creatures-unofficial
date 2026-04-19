@@ -3,7 +3,7 @@ package andrews.pandoras_creatures.forge.platform;
 import andrews.pandoras_creatures.platform.RegistryBridge;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -78,8 +78,8 @@ final class ForgeRegistryBridge implements RegistryBridge {
     }
 
     private <T> T resolve(net.minecraft.core.Registry<T> registry, String type, String path) {
-        ResourceLocation id = id(path);
-        T value = registry.get(id);
+        Identifier id = Identifier.fromNamespaceAndPath(Reference.MODID, path);
+        T value = registry.getValue(id);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge " + type + " id: " + id);
         }

@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities.bases;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -52,7 +53,6 @@ public abstract class AnimatedMonsterEntity extends AnimatedCreatureEntity imple
         }
     }
 
-    @Override
     protected boolean shouldDespawnInPeaceful() {
         return true;
     }
@@ -82,8 +82,8 @@ public abstract class AnimatedMonsterEntity extends AnimatedCreatureEntity imple
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        return this.isInvulnerableTo(source) ? false : super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        return this.isInvulnerableTo(serverLevel, source) ? false : super.hurtServer(serverLevel, source, amount);
     }
 
     @Override
@@ -122,11 +122,11 @@ public abstract class AnimatedMonsterEntity extends AnimatedCreatureEntity imple
     }
 
     @Override
-    protected boolean shouldDropLoot() {
+    protected boolean shouldDropLoot(ServerLevel serverLevel) {
         return true;
     }
 
-    public boolean isPreventingPlayerRest(Player player) {
+    public boolean isPreventingPlayerRest(ServerLevel serverLevel, Player player) {
         return true;
     }
 

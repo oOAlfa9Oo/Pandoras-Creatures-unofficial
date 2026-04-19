@@ -4,8 +4,8 @@
 		"0": "pandoras_creatures:item/crystal",
 		"1": "pandoras_creatures:item/grip",
 		"2": "pandoras_creatures:item/metal_parts",
-		"3": "block/stone",
-		"4": "block/diamond_block",
+		"3": "pandoras_creatures:item/metal_parts",
+		"4": "pandoras_creatures:item/crystal",
 		"particle": "pandoras_creatures:item/metal_parts"
 	},
 	"elements": [

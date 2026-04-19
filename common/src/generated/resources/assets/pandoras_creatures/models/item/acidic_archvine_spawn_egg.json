@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:item/template_spawn_egg"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "pandoras_creatures:item/acidic_archvine_spawn_egg"
+  }
 }

@@ -19,14 +19,13 @@ import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import andrews.pandoras_creatures.util.animation.Animation;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -34,7 +33,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
-import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -60,15 +58,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.UUID;
 
-public class BufflonEntity extends AnimatedCreatureEntity implements ContainerListener, BufflonAccess {
+public class BufflonEntity extends AnimatedCreatureEntity implements BufflonAccess {
     private static final int FEEDING_COOLDOWN_TICKS = 10;
     private static final int TAMING_THINK_TIME_TICKS = 40;
     private static final int NATURAL_REGEN_CHANCE = 900;
@@ -85,7 +84,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     private static final EntityDataAccessor<Integer> BUFFLON_TYPE = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.INT);
     // Stores whether or not the Bufflon is tamed and the UUID of the owner
     private static final EntityDataAccessor<Byte> TAMED = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Optional<UUID>> OWNER_UNIQUE_ID = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<String> OWNER_UNIQUE_ID = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.STRING);
     // Store the information of the attachments
     private static final EntityDataAccessor<Boolean> IS_SADDLED = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> BACK_ATTACHMENT_TYPE = SynchedEntityData.defineId(BufflonEntity.class, EntityDataSerializers.INT);
@@ -115,7 +114,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     public BufflonEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.BUFFLON), level);
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -141,7 +140,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         super.defineSynchedData(builder);
         builder.define(BUFFLON_TYPE, 0);
         builder.define(TAMED, (byte) 0);
-        builder.define(OWNER_UNIQUE_ID, Optional.empty());
+        builder.define(OWNER_UNIQUE_ID, "");
         builder.define(IS_SADDLED, false);
         builder.define(BACK_ATTACHMENT_TYPE, 0);
         builder.define(IS_SITTING, false);
@@ -154,17 +153,17 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        savePersistentState(compound);
-        saveInventory(compound);
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        savePersistentState(output);
+        saveInventory(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        loadPersistentState(compound);
-        loadInventory(compound);
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        loadPersistentState(input);
+        loadInventory(input);
         this.updateBufflonSlots();
     }
 
@@ -184,8 +183,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public int getBaseExperienceReward() {
-        return 1 + this.level().random.nextInt(3);
+    protected int getBaseExperienceReward(ServerLevel serverLevel) {
+        return 1 + this.random.nextInt(3);
     }
 
     @Override
@@ -204,15 +203,15 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         switch (action) {
             case HANDLE_HERB_BUNDLE -> {
                 handleHerbBundleInteraction(player, itemstack);
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
             case OPEN_EQUIPMENT_MENU -> {
                 this.openGUI(player);
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
             case HANDLE_EMPTY_HAND -> {
                 handleEmptyHandInteraction(player);
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
             }
             case PASS_TO_SUPER -> {
                 return super.mobInteract(player, hand);
@@ -223,8 +222,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity target) {
+        boolean flag = target.hurtOrSimulate(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
         // The attack sound
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                 PandorasCreaturesCommon.platform().registry().sound(PCSoundCatalog.BUFFLON_ATTACK),
@@ -256,8 +255,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
      * Called when the entity is attacked.
      */
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(serverLevel, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -267,7 +266,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
             amount = BufflonCombatRules.getAdjustedIncomingDamage(entity, amount);
 
-            return super.hurt(source, amount);
+            return super.hurtServer(serverLevel, source, amount);
         }
     }
 
@@ -387,9 +386,14 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     protected void initBufflonStorage() {
         SimpleContainer inventory = this.bufflonStorage;
-        this.bufflonStorage = new SimpleContainer(this.getInventorySize());
+        this.bufflonStorage = new SimpleContainer(this.getInventorySize()) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                BufflonEntity.this.onBufflonInventoryChanged();
+            }
+        };
         if (inventory != null) {
-            inventory.removeListener(this);
             int i = Math.min(inventory.getContainerSize(), this.bufflonStorage.getContainerSize());
 
             for (int j = 0; j < i; ++j) {
@@ -399,7 +403,6 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
                 }
             }
         }
-        this.bufflonStorage.addListener(this);
         this.updateBufflonSlots();
     }
 
@@ -435,11 +438,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         }
     }
 
-    /**
-     * Called by Container listener.
-     */
-    @Override
-    public void containerChanged(Container container) {
+    private void onBufflonInventoryChanged() {
         boolean flagIsSaddled = this.isSaddled();
         boolean flagHasBackAttachment = this.hasBackAttachment();
 
@@ -447,22 +446,22 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
         // The Bufflon Saddle Sound
         if (this.tickCount > 20 && !flagIsSaddled && this.isSaddled()) {
-            this.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
+            this.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
         }
         // The Bufflon Back Attachments Sound
         if (this.tickCount > 20 && !flagHasBackAttachment && this.hasBackAttachment()) {
-            this.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
+            this.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
         }
     }
 
     @Override
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel serverLevel) {
+        super.dropEquipment(serverLevel);
         if (this.bufflonStorage != null) {
             for (int i = 0; i < this.bufflonStorage.getContainerSize(); ++i) {
                 ItemStack itemstack = this.bufflonStorage.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    this.spawnAtLocation(itemstack);
+                    this.spawnAtLocation(serverLevel, itemstack);
                 }
             }
         }
@@ -483,7 +482,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
                     this.yBodyRot = this.getYRot();
                     this.yHeadRot = this.yBodyRot;
 
-                    if (this.isControlledByLocalInstance() && this.isSaddled()) {
+                    if (this.isEffectiveAi() && this.isSaddled()) {
                         float f = livingentity.xxa * 0.5F;
                         float f1 = livingentity.zza;
                         if (f1 <= 0.0F) {
@@ -641,7 +640,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     public void equipSaddle(ItemStack saddle, @Nullable net.minecraft.sounds.SoundSource source) {
         this.bufflonStorage.setItem(BufflonInventoryLayout.SADDLE_SLOT, saddle.copyWithCount(1));
         if (source != null) {
-            this.level().playSound(null, this, SoundEvents.HORSE_SADDLE, source, 0.5F, 1.0F);
+            this.level().playSound(null, this, SoundEvents.HORSE_SADDLE.value(), source, 0.5F, 1.0F);
         }
     }
 
@@ -693,11 +692,19 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     @Nullable
     public UUID getOwnerId() {
-        return this.entityData.get(OWNER_UNIQUE_ID).orElse(null);
+        String ownerId = this.entityData.get(OWNER_UNIQUE_ID);
+        if (ownerId == null || ownerId.isBlank()) {
+            return null;
+        }
+        try {
+            return UUID.fromString(ownerId);
+        } catch (IllegalArgumentException exception) {
+            return null;
+        }
     }
 
     public void setOwnerId(@Nullable UUID uuid) {
-        this.entityData.set(OWNER_UNIQUE_ID, Optional.ofNullable(uuid));
+        this.entityData.set(OWNER_UNIQUE_ID, uuid == null ? "" : uuid.toString());
     }
 
     public void setTamedBy(Player player) {
@@ -823,18 +830,18 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public boolean isAlliedTo(Entity entity) {
+    protected boolean considersEntityAsAlly(Entity entity) {
         if (BufflonOwnership.isAlliedTo(this.isTamed(), this.getOwner(), entity)) {
             return true;
         }
-        return super.isAlliedTo(entity);
+        return super.considersEntityAsAlly(entity);
     }
 
     @Override
     public void die(DamageSource cause) {
         ServerPlayer deathRecipient = BufflonOwnership.getDeathMessageRecipient(
                 !this.level().isClientSide(),
-                this.level().getGameRules().get(GameRules.SHOW_DEATH_MESSAGES),
+                this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.SHOW_DEATH_MESSAGES),
                 this.getOwner()
         );
         if (deathRecipient != null) {
@@ -920,58 +927,55 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         this.setBackAttachment(BufflonBackAttachmentItems.getType(attachmentStack).getId());
     }
 
-    private void savePersistentState(CompoundTag compound) {
-        compound.putInt(BufflonDataKeys.BUFFLON_TYPE, this.getBufflonType());
-        compound.putBoolean(BufflonDataKeys.IS_SADDLED, this.isSaddled());
-        compound.putBoolean(BufflonDataKeys.IS_SITTING, this.isSitting());
-        compound.putBoolean(BufflonDataKeys.IS_FOLLOWING, this.isFollowingOwner());
-        compound.putBoolean(BufflonDataKeys.IS_IN_COMBAT_MODE, this.isInCombatMode());
-        compound.putInt(BufflonDataKeys.BACK_ATTACHMENT_TYPE, this.getBackAttachmentType());
+    private void savePersistentState(ValueOutput output) {
+        output.putInt(BufflonDataKeys.BUFFLON_TYPE, this.getBufflonType());
+        output.putBoolean(BufflonDataKeys.IS_SADDLED, this.isSaddled());
+        output.putBoolean(BufflonDataKeys.IS_SITTING, this.isSitting());
+        output.putBoolean(BufflonDataKeys.IS_FOLLOWING, this.isFollowingOwner());
+        output.putBoolean(BufflonDataKeys.IS_IN_COMBAT_MODE, this.isInCombatMode());
+        output.putInt(BufflonDataKeys.BACK_ATTACHMENT_TYPE, this.getBackAttachmentType());
 
         if (this.getOwnerId() != null) {
-            compound.putUUID(BufflonDataKeys.OWNER_UUID, this.getOwnerId());
+            output.store(BufflonDataKeys.OWNER_UUID, UUIDUtil.CODEC, this.getOwnerId());
         }
     }
 
-    private void saveInventory(CompoundTag compound) {
+    private void saveInventory(ValueOutput output) {
         if (!this.isTamed()) {
             return;
         }
 
-        ListTag items = new ListTag();
+        ValueOutput.ValueOutputList items = output.childrenList(BufflonDataKeys.ITEMS);
         for (int slotIndex = 0; slotIndex < this.bufflonStorage.getContainerSize(); ++slotIndex) {
             ItemStack itemStack = this.bufflonStorage.getItem(slotIndex);
             if (!itemStack.isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putByte(BufflonDataKeys.SLOT, (byte) slotIndex);
-                items.add(itemStack.save(this.registryAccess(), itemTag));
+                ValueOutput itemOutput = items.addChild();
+                itemOutput.putByte(BufflonDataKeys.SLOT, (byte) slotIndex);
+                itemOutput.store("Item", ItemStack.CODEC, itemStack);
             }
         }
-        compound.put(BufflonDataKeys.ITEMS, items);
     }
 
-    private void loadPersistentState(CompoundTag compound) {
-        this.setBufflonType(compound.getInt(BufflonDataKeys.BUFFLON_TYPE));
-        this.setSaddled(compound.getBoolean(BufflonDataKeys.IS_SADDLED));
-        setOrderedToSitFromTag(compound.getBoolean(BufflonDataKeys.IS_SITTING));
-        this.setFollowingOwner(compound.getBoolean(BufflonDataKeys.IS_FOLLOWING));
-        this.setIsInCombatMode(compound.getBoolean(BufflonDataKeys.IS_IN_COMBAT_MODE));
-        this.setBackAttachment(compound.getInt(BufflonDataKeys.BACK_ATTACHMENT_TYPE));
-        restoreOwner(compound);
+    private void loadPersistentState(ValueInput input) {
+        this.setBufflonType(input.getIntOr(BufflonDataKeys.BUFFLON_TYPE, 0));
+        this.setSaddled(input.getBooleanOr(BufflonDataKeys.IS_SADDLED, false));
+        setOrderedToSitFromTag(input.getBooleanOr(BufflonDataKeys.IS_SITTING, false));
+        this.setFollowingOwner(input.getBooleanOr(BufflonDataKeys.IS_FOLLOWING, false));
+        this.setIsInCombatMode(input.getBooleanOr(BufflonDataKeys.IS_IN_COMBAT_MODE, false));
+        this.setBackAttachment(input.getIntOr(BufflonDataKeys.BACK_ATTACHMENT_TYPE, 0));
+        restoreOwner(input);
     }
 
-    private void loadInventory(CompoundTag compound) {
+    private void loadInventory(ValueInput input) {
         if (!this.isTamed()) {
             return;
         }
 
-        ListTag listtag = compound.getList(BufflonDataKeys.ITEMS, Tag.TAG_COMPOUND);
         this.initBufflonStorage();
-        for (int i = 0; i < listtag.size(); ++i) {
-            CompoundTag compoundtag = listtag.getCompound(i);
-            int slot = compoundtag.getByte(BufflonDataKeys.SLOT) & 255;
+        for (ValueInput itemInput : input.childrenListOrEmpty(BufflonDataKeys.ITEMS)) {
+            int slot = itemInput.getByteOr(BufflonDataKeys.SLOT, (byte) 0) & 255;
             if (slot >= 0 && slot < this.bufflonStorage.getContainerSize()) {
-                this.bufflonStorage.setItem(slot, ItemStack.parse(this.registryAccess(), compoundtag).orElse(ItemStack.EMPTY));
+                this.bufflonStorage.setItem(slot, itemInput.read("Item", ItemStack.CODEC).orElse(ItemStack.EMPTY));
             }
         }
     }
@@ -983,18 +987,16 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         this.setSitting(shouldSit);
     }
 
-    private void restoreOwner(CompoundTag compound) {
-        if (!compound.hasUUID(BufflonDataKeys.OWNER_UUID)) {
-            return;
-        }
-
-        UUID uuid = compound.getUUID(BufflonDataKeys.OWNER_UUID);
-        try {
-            this.setOwnerId(uuid);
-            this.setTamed(true);
-        } catch (Throwable throwable) {
-            this.setTamed(false);
-        }
+    private void restoreOwner(ValueInput input) {
+        input.read(BufflonDataKeys.OWNER_UUID, UUIDUtil.CODEC).ifPresentOrElse(uuid -> {
+            try {
+                this.setOwnerId(uuid);
+                this.setTamed(true);
+            } catch (Throwable throwable) {
+                this.setTamed(false);
+            }
+        }, () -> {
+        });
     }
 
     private void performOwnedInteraction(Player player) {

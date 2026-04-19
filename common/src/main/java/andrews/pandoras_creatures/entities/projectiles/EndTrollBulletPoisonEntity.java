@@ -10,10 +10,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3f;
 
 public class EndTrollBulletPoisonEntity extends AbstractEndTrollBulletEntity {
-    private static final DustParticleOptions GREEN_PARTICLE = new DustParticleOptions(new Vector3f(0, 1, 0), 1.0F);
+    private static final DustParticleOptions GREEN_PARTICLE = new DustParticleOptions(0x00FF00, 1.0F);
 
     public EndTrollBulletPoisonEntity(EntityType<? extends EndTrollBulletPoisonEntity> type, Level level) {
         super(type, level);

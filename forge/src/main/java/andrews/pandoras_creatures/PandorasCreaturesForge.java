@@ -15,10 +15,10 @@ import andrews.pandoras_creatures.forge.registry.PCForgeStructures;
 import andrews.pandoras_creatures.forge.registry.entity.PCForgeEntitySpawnPlacements;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 public final class PandorasCreaturesForge {
     public static final Logger LOGGER = LoggerFactory.getLogger(Reference.MODID);
 
-    public PandorasCreaturesForge() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public PandorasCreaturesForge(FMLJavaModLoadingContext context) {
+        BusGroup modEventBus = context.getModBusGroup();
 
         PandorasCreaturesCommon.initialize(ForgePlatformServices.INSTANCE);
         PCForgeNetwork.initialize();
@@ -41,14 +41,17 @@ public final class PandorasCreaturesForge {
         PCForgeRecipeSerializers.register(modEventBus);
         PCForgeCreativeTabs.register(modEventBus);
         PCForgeStructures.register(modEventBus);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> registerClient(modEventBus));
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            registerClient(modEventBus);
+        }
         LOGGER.info("Pandoras Creatures Forge bootstrap initialized");
     }
 
-    private static void registerClient(IEventBus modEventBus) {
+    private static void registerClient(BusGroup modEventBus) {
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientBlockRegistry.register(modEventBus);
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientEntityRegistry.register(modEventBus);
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientItemColorRegistry.register(modEventBus);
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientScreenRegistry.register(modEventBus);
+        andrews.pandoras_creatures.forge.client.bootstrap.PCForgeSpecialModelRegistry.registerAll();
     }
 }

@@ -7,14 +7,15 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.item.PCSpawnEggPalette;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.ItemLike;
+
+import java.util.function.Consumer;
 
 public final class PCCreativeTabEntries {
     private PCCreativeTabEntries() {
     }
 
-    public static void populatePandorasCreaturesTab(CreativeModeTab.Output output) {
+    public static void populatePandorasCreaturesTab(Consumer<ItemLike> output) {
         acceptItem(output, PCItemIds.CRAB_MEAT);
         acceptItem(output, PCItemIds.CRAB_MEAT_COOKED);
         acceptItem(output, PCItemIds.SEAHORSE);
@@ -49,7 +50,7 @@ public final class PCCreativeTabEntries {
         }
     }
 
-    private static void acceptItem(CreativeModeTab.Output output, String itemId) {
+    private static void acceptItem(Consumer<ItemLike> output, String itemId) {
         Identifier id = PandorasCreaturesCommon.platform().registry().id(itemId);
         if (BuiltInRegistries.ITEM.containsKey(id)) {
             ItemLike item = PandorasCreaturesCommon.platform().registry().item(itemId);
@@ -57,7 +58,7 @@ public final class PCCreativeTabEntries {
         }
     }
 
-    private static void acceptBlock(CreativeModeTab.Output output, String blockId) {
+    private static void acceptBlock(Consumer<ItemLike> output, String blockId) {
         Identifier id = PandorasCreaturesCommon.platform().registry().id(blockId);
         if (BuiltInRegistries.BLOCK.containsKey(id)) {
             ItemLike block = PandorasCreaturesCommon.platform().registry().block(blockId);

@@ -1,24 +1,24 @@
 package andrews.pandoras_creatures.client;
 
-import andrews.pandoras_creatures.client.bootstrap.PCClientItemColorRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientItemExtensionsRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientModelLayerRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientRendererRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientScreenRegistry;
+import andrews.pandoras_creatures.client.bootstrap.PCClientSpecialModelRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 /**
  * Client-side setup for Pandoras Creatures mod.
  * Handles registration of entity renderers, model layers, and screens.
  */
-@EventBusSubscriber(modid = Reference.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
 public class PCClientSetup {
 
     /**
@@ -46,21 +46,16 @@ public class PCClientSetup {
     }
 
     /**
-     * Register item colors for spawn eggs.
-     * SpawnEggItem.getColor() returns RGB (24-bit) without alpha channel.
-     * We must OR with 0xFF000000 to set alpha=255, otherwise items appear fully transparent.
-     */
-    @SubscribeEvent
-    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        PCClientItemColorRegistry.registerAll(event);
-    }
-
-    /**
      * Register custom BEWLR for EndTrollBox items.
      * Replaces the deprecated Item.initializeClient() approach.
      */
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         PCClientItemExtensionsRegistry.registerAll(event);
+    }
+
+    @SubscribeEvent
+    public static void registerSpecialModels(RegisterSpecialModelRendererEvent event) {
+        PCClientSpecialModelRegistry.registerAll(event);
     }
 }

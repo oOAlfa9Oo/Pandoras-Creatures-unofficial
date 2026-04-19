@@ -40,6 +40,7 @@ Usar `git switch release/<minecraft>` solo cuando se vaya a trabajar especificam
 - los jars usan `pandoras_creatures-<loader>-<mc>-<mod>.jar`.
 - cliente y servidor arrancan en los loaders objetivo.
 - `Bufflon`, `End Troll Box`, `End Prison` y spawns naturales tienen validacion manual minima.
+- si un loader queda bloqueado por tooling externo, el release debe declarar soporte parcial y no publicar jar de ese loader.
 
 ## Comandos de validacion por familia actual
 
@@ -52,3 +53,14 @@ Usar `git switch release/<minecraft>` solo cuando se vaya a trabajar especificam
 `validateCurrentFamily` es el gate minimo antes de crear una rama `release/<minecraft>` desde el estado actual.
 
 Para la familia actual, revisar tambien `RELEASE_1.21.1_FREEZE.md`.
+
+## Validacion cuando un loader esta bloqueado
+
+No forzar una rama a fallar indefinidamente por un loader cuyo plugin no configura. En ese caso:
+
+- aislar los loaders publicables con flags como `-PfabricOnly=true` o `-PneoforgeOnly=true`
+- ejecutar sus builds y smokes runtime
+- documentar el comando que reproduce el bloqueo del loader afectado
+- mantener el loader bloqueado fuera de los artefactos publicables hasta que el tooling upstream cambie
+
+Para `26.1`, revisar `RELEASE_26.1_BRINGUP.md`.

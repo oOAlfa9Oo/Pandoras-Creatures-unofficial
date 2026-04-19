@@ -1,25 +1,13 @@
 package andrews.pandoras_creatures.forge.client.bootstrap;
 
-import andrews.pandoras_creatures.forge.registry.PCForgeBlocks;
-import andrews.pandoras_creatures.registry.block.PCBlockRenderLayers;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 
 public final class PCForgeClientBlockRegistry {
     private PCForgeClientBlockRegistry() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeClientBlockRegistry::onClientSetup);
-    }
-
-    private static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            for (String blockId : PCBlockRenderLayers.cutoutBlockIds()) {
-                ItemBlockRenderTypes.setRenderLayer(PCForgeBlocks.getSimpleBlock(blockId), RenderType.cutout());
-            }
-        });
+    public static void register(BusGroup modEventBus) {
+        // 26.1 no longer exposes the legacy ItemBlockRenderTypes hook.
+        // Plant transparency is handled by the generated block models/resources.
     }
 }

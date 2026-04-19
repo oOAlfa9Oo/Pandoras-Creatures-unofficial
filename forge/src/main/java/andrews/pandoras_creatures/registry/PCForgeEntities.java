@@ -14,11 +14,13 @@ import andrews.pandoras_creatures.registry.entity.PCEntityBootstrap;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -28,9 +30,9 @@ public final class PCForgeEntities {
     private PCForgeEntities() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeEntities::registerEntities);
-        modEventBus.addListener(PCForgeEntities::registerAttributes);
+    public static void register(BusGroup modEventBus) {
+        RegisterEvent.getBus(modEventBus).addListener(PCForgeEntities::registerEntities);
+        EntityAttributeCreationEvent.BUS.addListener(PCForgeEntities::registerAttributes);
     }
 
     public static EntityType<AcidicArchvineEntity> acidicArchvine() {
@@ -75,8 +77,8 @@ public final class PCForgeEntities {
 
     @SuppressWarnings("unchecked")
     private static <T extends net.minecraft.world.entity.Entity> EntityType<T> entityType(String id) {
-        ResourceLocation entityId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        EntityType<?> value = BuiltInRegistries.ENTITY_TYPE.get(entityId);
+        Identifier entityId = Identifier.fromNamespaceAndPath(Reference.MODID, id);
+        EntityType<?> value = BuiltInRegistries.ENTITY_TYPE.getValue(entityId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge entity type id: " + entityId);
         }
@@ -91,56 +93,60 @@ public final class PCForgeEntities {
         registered = true;
         event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE),
                     PCEntityBootstrap.acidicArchvineType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE).toString())
+                            .build(entityKey(PCEntityIds.ACIDIC_ARCHVINE))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ARACHNON),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ARACHNON),
                     PCEntityBootstrap.arachnonType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ARACHNON).toString())
+                            .build(entityKey(PCEntityIds.ARACHNON))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.CRAB),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.CRAB),
                     PCEntityBootstrap.crabType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.CRAB).toString())
+                            .build(entityKey(PCEntityIds.CRAB))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.BUFFLON),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.BUFFLON),
                     PCEntityBootstrap.bufflonType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.BUFFLON).toString())
+                            .build(entityKey(PCEntityIds.BUFFLON))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.SEAHORSE),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.SEAHORSE),
                     PCEntityBootstrap.seahorseType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.SEAHORSE).toString())
+                            .build(entityKey(PCEntityIds.SEAHORSE))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.HELLHOUND),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.HELLHOUND),
                     PCEntityBootstrap.hellhoundType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.HELLHOUND).toString())
+                            .build(entityKey(PCEntityIds.HELLHOUND))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL),
                     PCEntityBootstrap.endTrollType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL).toString())
+                            .build(entityKey(PCEntityIds.END_TROLL))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE),
                     PCEntityBootstrap.endTrollBulletDamageType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE).toString())
+                            .build(entityKey(PCEntityIds.END_TROLL_BULLET_DAMAGE))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON),
                     PCEntityBootstrap.endTrollBulletPoisonType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON).toString())
+                            .build(entityKey(PCEntityIds.END_TROLL_BULLET_POISON))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER),
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER),
                     PCEntityBootstrap.endTrollBulletWitherType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER).toString())
+                            .build(entityKey(PCEntityIds.END_TROLL_BULLET_WITHER))
             );
         });
+    }
+
+    private static ResourceKey<EntityType<?>> entityKey(String id) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Reference.MODID, id));
     }
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {

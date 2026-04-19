@@ -10,10 +10,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3f;
 
 public class EndTrollBulletWitherEntity extends AbstractEndTrollBulletEntity {
-    private static final DustParticleOptions BLACK_PARTICLE = new DustParticleOptions(new Vector3f(0, 0, 0), 1.0F);
+    private static final DustParticleOptions BLACK_PARTICLE = new DustParticleOptions(0x000000, 1.0F);
 
     public EndTrollBulletWitherEntity(EntityType<? extends EndTrollBulletWitherEntity> type, Level level) {
         super(type, level);

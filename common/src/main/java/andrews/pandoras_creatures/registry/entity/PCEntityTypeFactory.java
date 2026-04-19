@@ -1,7 +1,9 @@
 package andrews.pandoras_creatures.registry.entity;
 
 import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -36,7 +38,15 @@ public final class PCEntityTypeFactory {
     }
 
     public static String entityId(String name) {
-        return Identifier.fromNamespaceAndPath(Reference.MODID, name).toString();
+        return entityIdentifier(name).toString();
+    }
+
+    public static Identifier entityIdentifier(String name) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, name);
+    }
+
+    public static ResourceKey<EntityType<?>> entityKey(String name) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, entityIdentifier(name));
     }
 
     private static <T extends Entity> EntityType.Builder<T> configure(EntityType.Builder<T> builder,

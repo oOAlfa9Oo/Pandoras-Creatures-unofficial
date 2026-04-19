@@ -1,18 +1,16 @@
 package andrews.pandoras_creatures.client.model.tile;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 /**
  * EndTrollBoxModel - andrew0030
  * Migrated to 1.21.1 LayerDefinition system
  */
-public class EndTrollBoxModel extends Model {
+public class EndTrollBoxModel extends Model<Object> {
     public final ModelPart base;
     public final ModelPart bottom_front_left;
     public final ModelPart bottom_back_left;
@@ -34,7 +32,7 @@ public class EndTrollBoxModel extends Model {
     public final ModelPart decoration_back_right;
 
     public EndTrollBoxModel(ModelPart root) {
-        super(RenderType::entityCutoutNoCull);
+        super(root, RenderTypes::entityCutout);
         this.base = root.getChild("base");
         this.bottom_front_left = root.getChild("bottom_front_left");
         this.bottom_back_left = root.getChild("bottom_back_left");
@@ -144,27 +142,4 @@ public class EndTrollBoxModel extends Model {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        // This is called for simple rendering, but we handle complex rendering in the BEWLR
-        base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_front_left_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_top_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_top_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_front.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_back.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
 }

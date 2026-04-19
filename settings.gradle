@@ -14,14 +14,40 @@ plugins {
 
 rootProject.name = 'pandoras_creatures'
 include 'common'
-include 'fabric'
 
 def fabricOnly = providers.gradleProperty('fabricOnly')
         .map { it.toBoolean() }
         .orElse(false)
         .get()
 
-if (!fabricOnly) {
+def forgeOnly = providers.gradleProperty('forgeOnly')
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
+
+def neoforgeOnly = providers.gradleProperty('neoforgeOnly')
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
+
+def skipForge = providers.gradleProperty('skipForge')
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
+
+def skipNeoForge = providers.gradleProperty('skipNeoForge')
+        .map { it.toBoolean() }
+        .orElse(false)
+        .get()
+
+if (!forgeOnly && !neoforgeOnly) {
+    include 'fabric'
+}
+
+if (!fabricOnly && !neoforgeOnly && !skipForge) {
     include 'forge'
+}
+
+if (!fabricOnly && !forgeOnly && !skipNeoForge) {
     include 'neoforge'
 }

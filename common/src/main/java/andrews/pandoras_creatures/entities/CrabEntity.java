@@ -29,6 +29,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
@@ -45,7 +47,7 @@ public class CrabEntity extends BucketableMobEntity {
 
     public CrabEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.CRAB), level);
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -79,15 +81,15 @@ public class CrabEntity extends BucketableMobEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt(CrabDataKeys.CRAB_TYPE, this.getCrabType());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt(CrabDataKeys.CRAB_TYPE, this.getCrabType());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setCrabType(compound.getInt(CrabDataKeys.CRAB_TYPE));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setCrabType(input.getIntOr(CrabDataKeys.CRAB_TYPE, CrabVariantCatalog.DEFAULT_TYPE));
     }
 
     @Nullable
@@ -104,7 +106,7 @@ public class CrabEntity extends BucketableMobEntity {
     public void loadFromBucketTag(CompoundTag tag) {
         super.loadFromBucketTag(tag);
         if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG)) {
-            this.setCrabType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG));
+            this.setCrabType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG).orElse(CrabVariantCatalog.DEFAULT_TYPE));
         }
     }
 

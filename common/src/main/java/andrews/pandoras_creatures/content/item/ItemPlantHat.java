@@ -16,7 +16,11 @@ public class ItemPlantHat extends Item {
     private static final int ORIGINAL_DURABILITY = 30;
 
     public ItemPlantHat() {
-        super(new Properties()
+        this(new Properties());
+    }
+
+    public ItemPlantHat(Properties properties) {
+        super(properties
                 .stacksTo(1)
                 .durability(ORIGINAL_DURABILITY)
                 .humanoidArmor(PCArmorMaterials.PLANT_HAT, ArmorType.HELMET));

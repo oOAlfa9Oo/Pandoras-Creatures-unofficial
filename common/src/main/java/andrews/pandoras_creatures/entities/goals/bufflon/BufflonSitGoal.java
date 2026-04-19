@@ -24,7 +24,7 @@ public class BufflonSitGoal extends Goal {
     public boolean canUse() {
         if (!this.bufflonEntity.isTamed()) {
             return false;
-        } else if (this.bufflonEntity.isInWaterOrBubble()) {
+        } else if (this.bufflonEntity.isInWater()) {
             return false;
         } else if (!this.bufflonEntity.onGround()) {
             return false;

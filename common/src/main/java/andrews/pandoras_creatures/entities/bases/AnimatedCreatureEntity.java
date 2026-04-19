@@ -3,6 +3,7 @@ package andrews.pandoras_creatures.entities.bases;
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -52,11 +53,11 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements IA
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide() && this.getHurtAnimation() != null && this.isNoAnimationPlaying()) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.getHurtAnimation() != null && this.isNoAnimationPlaying()) {
             PandorasCreaturesCommon.platform().entities().syncAnimation(this, this.getHurtAnimation());
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(serverLevel, source, amount);
     }
 
     /**
@@ -136,10 +137,11 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements IA
     private void onPCDeathUpdate(int deathTime) {
         ++this.animationDeathTime;
         if (this.animationDeathTime == deathTime) {
-            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().get(GameRules.MOB_DROPS))) {
-                int i = this.getBaseExperienceReward();
+            if (this.level() instanceof ServerLevel serverLevel
+                    && (this.isAlwaysExperienceDropper() || this.getLastHurtByPlayerMemoryTime() > 0 && this.shouldDropExperience() && serverLevel.getGameRules().get(GameRules.MOB_DROPS))) {
+                int i = this.getBaseExperienceReward(serverLevel);
 
-                i = PandorasCreaturesCommon.platform().entities().getExperienceDrop(this, this.lastHurtByPlayer, i);
+                i = PandorasCreaturesCommon.platform().entities().getExperienceDrop(this, this.getLastHurtByPlayer(), i);
                 while (i > 0) {
                     int j = ExperienceOrb.getExperienceValue(i);
                     i -= j;

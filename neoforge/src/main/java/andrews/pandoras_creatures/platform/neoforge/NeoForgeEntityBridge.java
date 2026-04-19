@@ -8,6 +8,7 @@ import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -40,6 +41,6 @@ final class NeoForgeEntityBridge implements EntityBridge {
 
     @Override
     public boolean canEntityGrief(Entity entity) {
-        return EventHooks.canEntityGrief(entity.level(), entity);
+        return entity.level() instanceof ServerLevel serverLevel && EventHooks.canEntityGrief(serverLevel, entity);
     }
 }

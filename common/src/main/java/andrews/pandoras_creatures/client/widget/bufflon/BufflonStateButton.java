@@ -3,9 +3,10 @@ package andrews.pandoras_creatures.client.widget.bufflon;
 import andrews.pandoras_creatures.entities.bufflon.BufflonAccess;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +18,8 @@ public class BufflonStateButton extends Button {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/buttons/bufflon_menu_buttons.png");
     private static final int BUTTON_WIDTH = 26;
     private static final int BUTTON_HEIGHT = 26;
+    private static final int TEXTURE_WIDTH = 256;
+    private static final int TEXTURE_HEIGHT = 256;
     private static final int TEXTURE_U_SELECTED = 26;
     private static final int TEXTURE_U_DISABLED = 52;
 
@@ -34,7 +37,7 @@ public class BufflonStateButton extends Button {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         Player localPlayer = Minecraft.getInstance().player;
         this.active = localPlayer != null && this.bufflon.isBufflonOwnedBy(localPlayer);
 
@@ -45,6 +48,6 @@ public class BufflonStateButton extends Button {
             textureU = TEXTURE_U_SELECTED;
         }
 
-        guiGraphics.blit(TEXTURE, this.getX(), this.getY(), textureU, this.textureV, this.width, this.height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX(), this.getY(), textureU, this.textureV, this.width, this.height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 }

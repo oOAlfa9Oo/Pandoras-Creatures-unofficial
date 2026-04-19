@@ -178,6 +178,6 @@ public class Animator {
      */
     private static float getPartialTicks() {
         Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+        return minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
     }
 }

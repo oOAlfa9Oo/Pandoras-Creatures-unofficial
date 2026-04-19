@@ -266,16 +266,4 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
         swing(tail_8, 0.4F * globalSpeed, 0.05F * globalDegree, true, -0.6F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        float size = SeahorseVisualRules.renderScale(entity.getSeahorseSize());
-        poseStack.translate(0, SeahorseVisualRules.renderYOffset(entity.getSeahorseSize()), 0);
-        if (!this.entity.isInWater()) {
-            poseStack.translate(0, 0.3F, 0);
-        }
-        poseStack.scale(size, size, size);
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, color);
-        poseStack.popPose();
-    }
 }

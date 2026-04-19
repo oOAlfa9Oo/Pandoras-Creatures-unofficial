@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "pandoras_creatures:bufflon_beef"
-    }
+    "pandoras_creatures:bufflon_beef"
   ],
   "result": {
     "count": 2,

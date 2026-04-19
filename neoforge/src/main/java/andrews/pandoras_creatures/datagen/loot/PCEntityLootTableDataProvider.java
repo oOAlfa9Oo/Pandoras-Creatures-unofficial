@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
             )),
             new EntityLootDefinition(PCEntityIds.HELLHOUND, List.of(
                     new LootPoolDefinition("pool_hellhound_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(ResourceLocation.withDefaultNamespace("bone"), 1.0D, 3.0D, false, true, 0.0D, 1.0D))
+                            new ItemDropDefinition(Identifier.withDefaultNamespace("bone"), 1.0D, 3.0D, false, true, 0.0D, 1.0D))
             )),
             new EntityLootDefinition(PCEntityIds.SEAHORSE, List.of(
                     new LootPoolDefinition("pool_seahorse_1", 1.0D, 1.0D,
@@ -154,8 +154,8 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
         return count;
     }
 
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    private static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     private record EntityLootDefinition(String name, List<LootPoolDefinition> pools) {
@@ -164,7 +164,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     private record LootPoolDefinition(String name, double minRolls, double maxRolls, ItemDropDefinition drop) {
     }
 
-    private record ItemDropDefinition(ResourceLocation itemId, double minCount, double maxCount, boolean smeltWhenOnFire,
+    private record ItemDropDefinition(Identifier itemId, double minCount, double maxCount, boolean smeltWhenOnFire,
                                       boolean affectedByLooting, double lootingMin, double lootingMax) {
         private ItemDropDefinition(Item item, double minCount, double maxCount, boolean smeltWhenOnFire,
                                    boolean affectedByLooting, double lootingMin, double lootingMax) {
@@ -173,7 +173,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     }
 
     private static final class PCBlocksAndVanilla {
-        private static final ResourceLocation ARACHNON_CRYSTAL_ID = id(PCBlockIds.ARACHNON_CRYSTAL);
+        private static final Identifier ARACHNON_CRYSTAL_ID = id(PCBlockIds.ARACHNON_CRYSTAL);
 
         private PCBlocksAndVanilla() {
         }

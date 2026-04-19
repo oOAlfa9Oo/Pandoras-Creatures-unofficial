@@ -347,8 +347,4 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
         swing(ArmFrontRight, 1.0F * globalSpeed, 0.05F * globalDegree, false, 1.2F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.Body.render(poseStack, buffer, packedLight, packedOverlay, color);
-    }
 }

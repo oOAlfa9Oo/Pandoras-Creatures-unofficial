@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public final class PCLootModifierDataProvider implements DataProvider {
         for (LootModifierDefinition definition : DEFINITIONS) {
             futures.add(DataProvider.saveStable(cachedOutput, createLootModifier(definition), lootModifierPathProvider.json(id(definition.name()))));
         }
-        futures.add(DataProvider.saveStable(cachedOutput, createGlobalLootModifierList(), lootModifierPathProvider.json(ResourceLocation.fromNamespaceAndPath("neoforge", "global_loot_modifiers"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createGlobalLootModifierList(), lootModifierPathProvider.json(Identifier.fromNamespaceAndPath("neoforge", "global_loot_modifiers"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -67,8 +67,8 @@ public final class PCLootModifierDataProvider implements DataProvider {
         return root;
     }
 
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    private static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     private record LootModifierDefinition(String name, String targetLootTableId) {

@@ -15,8 +15,7 @@ import java.util.Map;
  * Base class for animated entity models in NeoForge 1.21.1
  * Adapted from the original PCEntityModel for the new model system
  */
-public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends EntityModel<E> {
-    protected final ModelPart root;
+public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends EntityModel<PCEntityRenderState<E>> {
     protected E entity;
     protected Animator animator = new Animator();
 
@@ -26,7 +25,7 @@ public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends 
     protected final List<ModelPart> animatedParts = Lists.newArrayList();
 
     public PCEntityModel(ModelPart root) {
-        this.root = root;
+        super(root);
     }
 
     /**
@@ -59,16 +58,18 @@ public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends 
     }
 
     @Override
+    public final void setupAnim(PCEntityRenderState<E> state) {
+        if (state.entity != null) {
+            this.setupAnim(state.entity, state.limbSwing, state.limbSwingAmount, state.ageInTicks, state.netHeadYaw, state.headPitch);
+        }
+    }
+
     public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.entity = entity;
         revertToDefaultBoxValues();
     }
 
     public void animateModel(E animatedEntity) {}
-
-    public ModelPart root() {
-        return this.root;
-    }
 
     // ===============================================================================
     // Animation helper methods

@@ -1,17 +1,16 @@
 package andrews.pandoras_creatures.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
-public class EndTrollBulletModel<T extends Entity> extends EntityModel<T> {
+public class EndTrollBulletModel extends EntityModel<EntityRenderState> {
     private final ModelPart renderer;
 
     public EndTrollBulletModel(ModelPart root) {
+        super(root);
         this.renderer = root.getChild("renderer");
     }
 
@@ -29,13 +28,8 @@ public class EndTrollBulletModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.renderer.yRot = netHeadYaw * ((float) Math.PI / 180F);
-        this.renderer.xRot = headPitch * ((float) Math.PI / 180F);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.renderer.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+    public void setupAnim(EntityRenderState state) {
+        this.renderer.yRot = state.ageInTicks * 0.25F;
+        this.renderer.xRot = state.ageInTicks * 0.15F;
     }
 }

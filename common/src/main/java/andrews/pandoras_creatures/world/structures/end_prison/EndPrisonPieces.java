@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +80,7 @@ public class EndPrisonPieces {
                     PandorasCreaturesCommon.platform().registry().structurePieceType(PCStructureIds.END_PRISON_PIECE),
                     tag,
                     templateManager,
-                    rl -> makeSettings(Rotation.valueOf(tag.getString("Rot")))
+                    rl -> makeSettings(Rotation.valueOf(tag.getString("Rot").orElse(Rotation.NONE.name())))
             );
         }
 
@@ -106,9 +107,9 @@ public class EndPrisonPieces {
                 }
             } else if (name.startsWith("Sentry")) {
                 if (level instanceof ServerLevel serverLevel) {
-                    Shulker shulker = EntityType.SHULKER.create(serverLevel);
+                    Shulker shulker = EntityType.SHULKER.create(serverLevel, EntitySpawnReason.STRUCTURE);
                     if (shulker != null) {
-                        shulker.moveTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
+                        shulker.snapTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
                         serverLevel.addFreshEntity(shulker);
                     }
                 }

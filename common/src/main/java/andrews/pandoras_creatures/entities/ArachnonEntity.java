@@ -9,6 +9,7 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,7 +37,7 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
 
     public ArachnonEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.ARACHNON), level);
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -61,9 +62,9 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel serverLevel) {
         this.xpReward = (int) ((float) this.xpReward * 5.0F);
-        return super.getBaseExperienceReward();
+        return super.getBaseExperienceReward(serverLevel);
     }
 
     @Override
@@ -73,10 +74,10 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity target) {
         this.attackTimer = ArachnonAttackRules.ATTACK_TIMER_TICKS;
         this.level().broadcastEntityEvent(this, ArachnonAttackRules.ATTACK_EVENT_ID);
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) ArachnonAttackRules.attackDamageFromRoll(this.random.nextInt(5)));
+        boolean flag = target.hurtOrSimulate(this.damageSources().mobAttack(this), (float) ArachnonAttackRules.attackDamageFromRoll(this.random.nextInt(5)));
         return flag;
     }
 

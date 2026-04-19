@@ -230,3 +230,40 @@ tasks.register('validateCurrentFamily') {
     description = 'Runs the minimum validation gate before freezing the current Minecraft family branch.'
     dependsOn 'compileJava', 'test', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'buildLoaderJars'
 }
+
+tasks.register('validatePublishable26_1') {
+    group = 'verification'
+    description = 'Validates the publishable 26.1 loaders across Fabric, Forge and NeoForge.'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs'
+
+    if (findProject(':fabric') != null) {
+        dependsOn ':fabric:jar'
+    }
+
+    if (findProject(':forge') != null) {
+        dependsOn ':forge:build', ':forge:runData', ':forge:runGameTestServer'
+    }
+
+    if (findProject(':neoforge') != null) {
+        dependsOn ':neoforge:build', ':neoforge:runData', ':neoforge:runGameTestServer'
+    }
+}
+
+tasks.register('collectPublishable26_1', Copy) {
+    group = 'distribution'
+    description = 'Collects the publishable 26.1 jars into build/publishable/26.1.'
+    dependsOn 'validatePublishable26_1'
+    into layout.buildDirectory.dir('publishable/26.1')
+
+    if (findProject(':fabric') != null) {
+        from(project(':fabric').tasks.named('jar', Jar).flatMap { it.archiveFile })
+    }
+
+    if (findProject(':forge') != null) {
+        from(project(':forge').tasks.named('jar', Jar).flatMap { it.archiveFile })
+    }
+
+    if (findProject(':neoforge') != null) {
+        from(project(':neoforge').tasks.named('jar', Jar).flatMap { it.archiveFile })
+    }
+}

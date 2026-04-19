@@ -1,7 +1,5 @@
 package andrews.pandoras_creatures.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,11 +8,10 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 
-public class PlantHatModel extends HumanoidModel<LivingEntity> {
+public class PlantHatModel extends HumanoidModel<HumanoidRenderState> {
     private static final float HP_BASE_Y = 0.7853981633974483F;
     private static final float HP2_BASE_Y = 2.356194490192345F;
 
@@ -22,8 +19,6 @@ public class PlantHatModel extends HumanoidModel<LivingEntity> {
     private final ModelPart hangingPlants;
     private final ModelPart hangingPlants1;
     private final ModelPart hangingPlants2;
-
-    private boolean armorStand;
 
     public PlantHatModel(ModelPart root) {
         super(root);
@@ -136,12 +131,13 @@ public class PlantHatModel extends HumanoidModel<LivingEntity> {
         return LayerDefinition.create(mesh, 128, 64);
     }
 
-    public void prepareForRender(LivingEntity entity, HumanoidModel<?> original) {
-        armorStand = entity instanceof ArmorStand;
-
+    public void prepareForRender(HumanoidRenderState state, HumanoidModel<HumanoidRenderState> original) {
         this.head.xRot = original.head.xRot;
         this.head.yRot = original.head.yRot;
         this.head.zRot = original.head.zRot;
+        this.hatBase.xRot = this.head.xRot;
+        this.hatBase.yRot = this.head.yRot;
+        this.hatBase.zRot = this.head.zRot;
 
         this.hangingPlants.yRot = HP_BASE_Y;
         this.hangingPlants.zRot = 0.0F;
@@ -150,9 +146,9 @@ public class PlantHatModel extends HumanoidModel<LivingEntity> {
         this.hangingPlants2.yRot = HP2_BASE_Y;
         this.hangingPlants2.zRot = 0.0F;
 
-        if (entity.getX() != entity.xOld || entity.getZ() != entity.zOld) {
-            float limbSwing = entity.walkAnimation.position();
-            float limbSwingAmount = entity.walkAnimation.speed();
+        if (state.walkAnimationSpeed > 0.0F) {
+            float limbSwing = state.walkAnimationPos;
+            float limbSwingAmount = state.walkAnimationSpeed;
 
             this.hangingPlants.zRot += calcRot(0.4F, 0.12F, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
             this.hangingPlants.yRot += calcRot(0.4F, 0.10F, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
@@ -161,20 +157,6 @@ public class PlantHatModel extends HumanoidModel<LivingEntity> {
             this.hangingPlants2.zRot += calcRot(0.4F, 0.02F, false, 0.0F, -0.1F, limbSwing, limbSwingAmount);
             this.hangingPlants2.yRot += calcRot(0.4F, 0.04F, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
         }
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        hatBase.xRot = this.head.xRot;
-        hatBase.yRot = this.head.yRot;
-        hatBase.zRot = this.head.zRot;
-
-        poseStack.pushPose();
-        if (armorStand) {
-            poseStack.translate(0.0F, 0.12F, 0.0F);
-        }
-        hatBase.render(poseStack, buffer, packedLight, packedOverlay, color);
-        poseStack.popPose();
     }
 
     private float calcRot(float speed, float degree, boolean invert, float delay, float weight, float limbSwing, float limbSwingAmount) {

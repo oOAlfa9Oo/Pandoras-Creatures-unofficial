@@ -12,8 +12,9 @@ import andrews.pandoras_creatures.entities.projectiles.EndTrollBulletPoisonEntit
 import andrews.pandoras_creatures.entities.projectiles.EndTrollBulletWitherEntity;
 import andrews.pandoras_creatures.registry.entity.PCEntityBootstrap;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
-import andrews.pandoras_creatures.registry.entity.PCEntityTypeFactory;
 import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -59,6 +60,7 @@ public class PCEntities {
             register(PCEntityIds.END_TROLL_BULLET_WITHER, PCEntityBootstrap::endTrollBulletWitherType);
 
     private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> register(String name, Supplier<EntityType.Builder<T>> builderSupplier) {
-        return ENTITY_TYPES.register(name, () -> builderSupplier.get().build(PCEntityTypeFactory.entityId(name)));
+        ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Reference.MODID, name));
+        return ENTITY_TYPES.register(name, () -> builderSupplier.get().build(key));
     }
 }

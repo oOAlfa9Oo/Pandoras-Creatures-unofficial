@@ -3,6 +3,7 @@ package andrews.pandoras_creatures.entities.goals.hellhound;
 import andrews.pandoras_creatures.entities.HellhoundEntity;
 import andrews.pandoras_creatures.entities.goals.bases.PCMeleeAttackGoal;
 import andrews.pandoras_creatures.entities.hellhound.HellhoundChargeState;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 
@@ -18,7 +19,9 @@ public class HellHoundAttack extends PCMeleeAttackGoal {
         double reach = this.getAttackReachSqr(enemy);
         if (distToEnemySqr <= reach && this.attackTick <= 0) {
             this.attackTick = 10;
-            this.attacker.doHurtTarget(enemy);
+            if (this.attacker.level() instanceof ServerLevel serverLevel) {
+                this.attacker.doHurtTarget(serverLevel, enemy);
+            }
         }
     }
 

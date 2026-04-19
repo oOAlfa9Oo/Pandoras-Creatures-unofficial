@@ -35,9 +35,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -52,7 +53,7 @@ public class SeahorseEntity extends BucketableMobEntity {
 
     public SeahorseEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.SEAHORSE), level);
-        this.moveTo(posX, posY, posZ);
+        this.setPos(posX, posY, posZ);
     }
 
     @Override
@@ -106,13 +107,13 @@ public class SeahorseEntity extends BucketableMobEntity {
                 for (int i = 0; i < 40; i++) {
                     RandomSource rand = this.random;
                     // Rainbow particles
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(148/255f, 0, 211/255f), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(75/255f, 0, 130/255f), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 0, 1), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 1, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 1, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 127/255f, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 0, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x9400D3, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x4B0082, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x0000FF, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x00FF00, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0xFFFF00, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0xFF7F00, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0xFF0000, 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
                 }
             }
         }
@@ -127,13 +128,13 @@ public class SeahorseEntity extends BucketableMobEntity {
                     RandomSource rand = this.random;
                     float unit = SeahorseVisualRules.rainbowParticleUnit(this.getBbHeight(), this.getSeahorseSize());
 
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(148/255f, 0, 211/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 7, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(75/255f, 0, 130/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 6, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 0, 1), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 5, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 1, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 4, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 1, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 3, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 127/255f, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 2, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 0, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x9400D3, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 7, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x4B0082, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 6, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x0000FF, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 5, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0x00FF00, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 4, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0xFFFF00, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 3, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0xFF7F00, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 2, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(0xFF0000, 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
                 }
             }
         }
@@ -144,7 +145,7 @@ public class SeahorseEntity extends BucketableMobEntity {
         if (!this.isInWater() && this.onGround() && this.verticalCollision) {
             this.setDeltaMovement(this.getDeltaMovement().add((this.random.nextFloat() * 2.0F - 1.0F) * 0.05F, 0.4D, (this.random.nextFloat() * 2.0F - 1.0F) * 0.05F));
             this.setOnGround(false);
-            this.hasImpulse = true;
+            this.hurtMarked = true;
             this.playSound(SoundEvents.COD_FLOP, this.getSoundVolume(), 1.2F);
         }
 
@@ -166,17 +167,17 @@ public class SeahorseEntity extends BucketableMobEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt(SeahorseDataKeys.SEAHORSE_TYPE, this.getSeahorseType());
-        compound.putInt(SeahorseDataKeys.SEAHORSE_SIZE, this.getSeahorseSize());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt(SeahorseDataKeys.SEAHORSE_TYPE, this.getSeahorseType());
+        output.putInt(SeahorseDataKeys.SEAHORSE_SIZE, this.getSeahorseSize());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setSeahorseType(compound.getInt(SeahorseDataKeys.SEAHORSE_TYPE));
-        this.setSeahorseSize(compound.getInt(SeahorseDataKeys.SEAHORSE_SIZE));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setSeahorseType(input.getIntOr(SeahorseDataKeys.SEAHORSE_TYPE, SeahorseVariantCatalog.DEFAULT_TYPE));
+        this.setSeahorseSize(input.getIntOr(SeahorseDataKeys.SEAHORSE_SIZE, SeahorseVariantCatalog.DEFAULT_SIZE));
     }
 
     @Nullable
@@ -194,11 +195,11 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     public void loadFromBucketTag(CompoundTag tag) {
         super.loadFromBucketTag(tag);
-        if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG, Tag.TAG_INT)) {
-            this.setSeahorseType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG)) {
+            this.setSeahorseType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG).orElse(SeahorseVariantCatalog.DEFAULT_TYPE));
         }
-        if (tag.contains(BucketEntityDataKeys.BUCKET_SIZE_TAG, Tag.TAG_INT)) {
-            this.setSeahorseSize(tag.getInt(BucketEntityDataKeys.BUCKET_SIZE_TAG));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_SIZE_TAG)) {
+            this.setSeahorseSize(tag.getInt(BucketEntityDataKeys.BUCKET_SIZE_TAG).orElse(SeahorseVariantCatalog.DEFAULT_SIZE));
         }
     }
 

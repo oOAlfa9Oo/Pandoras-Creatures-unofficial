@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT)
@@ -24,7 +24,7 @@ public final class ForgeRiderInventoryHandler {
         var localPlayer = Minecraft.getInstance().player;
         var bufflon = BufflonRiderInventoryRules.getMountedBufflon(localPlayer);
         if (bufflon != null) {
-            event.setCanceled(true);
+            event.setNewScreen(null);
             PandorasCreaturesCommon.platform().network().requestBufflonInventory(bufflon.getBufflonId());
         }
     }

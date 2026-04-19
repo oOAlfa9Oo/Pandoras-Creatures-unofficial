@@ -2,18 +2,19 @@ package andrews.pandoras_creatures.forge.registry;
 
 import andrews.pandoras_creatures.content.block.ArachnonCrystalBlock;
 import andrews.pandoras_creatures.content.block.PCPlantBlock;
+import andrews.pandoras_creatures.registry.block.PCBlockBootstrap;
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -27,13 +28,13 @@ public final class PCForgeBlocks {
     private PCForgeBlocks() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeBlocks::registerBlocks);
+    public static void register(BusGroup modEventBus) {
+        RegisterEvent.getBus(modEventBus).addListener(PCForgeBlocks::registerBlocks);
     }
 
     public static Block getSimpleBlock(String id) {
-        ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        Block value = BuiltInRegistries.BLOCK.get(blockId);
+        Identifier blockId = Identifier.fromNamespaceAndPath(Reference.MODID, id);
+        Block value = BuiltInRegistries.BLOCK.getValue(blockId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge block id: " + blockId);
         }
@@ -51,8 +52,8 @@ public final class PCForgeBlocks {
     }
 
     public static Block getEndTrollBox(@Nullable DyeColor color) {
-        ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEndTrollBoxBootstrap.blockId(color));
-        Block value = BuiltInRegistries.BLOCK.get(blockId);
+        Identifier blockId = Identifier.fromNamespaceAndPath(Reference.MODID, PCEndTrollBoxBootstrap.blockId(color));
+        Block value = BuiltInRegistries.BLOCK.getValue(blockId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge end troll box block id: " + blockId);
         }
@@ -82,40 +83,40 @@ public final class PCForgeBlocks {
         registered = true;
         event.register(ForgeRegistries.Keys.BLOCKS, helper -> {
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.ARACHNON_CRYSTAL),
-                    new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCBlockIds.ARACHNON_CRYSTAL),
+                    new ArachnonCrystalBlock(PCBlockBootstrap.properties(PCBlockIds.ARACHNON_CRYSTAL, BlockBehaviour.Properties.of()
                             .strength(1.5F, 6.0F)
                             .lightLevel(state -> 9)
                             .requiresCorrectToolForDrops()
-                            .noOcclusion())
+                            .noOcclusion()))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.HORSETAIL),
-                    new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                            .noCollission()
-                            .noOcclusion())
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCBlockIds.HORSETAIL),
+                    new PCPlantBlock(PCBlockBootstrap.properties(PCBlockIds.HORSETAIL, BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                            .noCollision()
+                            .noOcclusion()))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.DHANIA),
-                    new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                            .noCollission()
-                            .noOcclusion())
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCBlockIds.DHANIA),
+                    new PCPlantBlock(PCBlockBootstrap.properties(PCBlockIds.DHANIA, BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                            .noCollision()
+                            .noOcclusion()))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.HILL_BLOOM),
-                    new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                            .noCollission()
-                            .noOcclusion())
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCBlockIds.HILL_BLOOM),
+                    new PCPlantBlock(PCBlockBootstrap.properties(PCBlockIds.HILL_BLOOM, BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                            .noCollision()
+                            .noOcclusion()))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.PANDORIC_SHARD),
-                    new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
+                    Identifier.fromNamespaceAndPath(Reference.MODID, PCBlockIds.PANDORIC_SHARD),
+                    new Block(PCBlockBootstrap.properties(PCBlockIds.PANDORIC_SHARD, BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
                             .noOcclusion()
-                            .lightLevel(state -> 10))
+                            .lightLevel(state -> 10)))
             );
             PCEndTrollBoxBootstrap.registerBlocks((id, factory) -> {
                 Block block = factory.get();
-                helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), block);
+                helper.register(Identifier.fromNamespaceAndPath(Reference.MODID, id), block);
                 return () -> block;
             });
         });

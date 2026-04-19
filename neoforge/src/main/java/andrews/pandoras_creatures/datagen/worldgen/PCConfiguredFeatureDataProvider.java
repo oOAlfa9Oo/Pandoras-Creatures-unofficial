@@ -1,12 +1,11 @@
 package andrews.pandoras_creatures.datagen.worldgen;
 
 import andrews.pandoras_creatures.util.Reference;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,38 +40,23 @@ public final class PCConfiguredFeatureDataProvider implements DataProvider {
 
     private static JsonObject createFlowerFeature(FlowerConfiguredFeatureDefinition definition) {
         JsonObject root = new JsonObject();
-        root.addProperty("type", "minecraft:flower");
+        root.addProperty("type", "minecraft:simple_block");
 
         JsonObject config = new JsonObject();
-        config.addProperty("tries", 64);
-        config.addProperty("xz_spread", 6);
-        config.addProperty("y_spread", 2);
-
-        JsonObject featureHolder = new JsonObject();
-        JsonObject feature = new JsonObject();
-        feature.addProperty("type", "minecraft:simple_block");
-
-        JsonObject featureConfig = new JsonObject();
         JsonObject toPlace = new JsonObject();
         toPlace.addProperty("type", "minecraft:simple_state_provider");
 
         JsonObject state = new JsonObject();
         state.addProperty("Name", definition.blockId());
-        state.add("Properties", new JsonObject());
         toPlace.add("state", state);
 
-        featureConfig.add("to_place", toPlace);
-        feature.add("config", featureConfig);
-        featureHolder.add("feature", feature);
-        featureHolder.add("placement", new JsonArray());
-        config.add("feature", featureHolder);
-
+        config.add("to_place", toPlace);
         root.add("config", config);
         return root;
     }
 
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    private static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     private record FlowerConfiguredFeatureDefinition(String name, String blockId) {

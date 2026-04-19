@@ -6,7 +6,7 @@ import andrews.pandoras_creatures.network.payload.BufflonInventoryPayload;
 import andrews.pandoras_creatures.network.payload.BufflonSitPayload;
 import andrews.pandoras_creatures.platform.NetworkBridge;
 import andrews.pandoras_creatures.util.Reference;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 final class NeoForgeNetworkBridge implements NetworkBridge {
     static final NeoForgeNetworkBridge INSTANCE = new NeoForgeNetworkBridge();
@@ -21,21 +21,21 @@ final class NeoForgeNetworkBridge implements NetworkBridge {
 
     @Override
     public void requestBufflonInventory(int entityId) {
-        PacketDistributor.sendToServer(new BufflonInventoryPayload(entityId));
+        ClientPacketDistributor.sendToServer(new BufflonInventoryPayload(entityId));
     }
 
     @Override
     public void requestBufflonSit(int entityId, boolean shouldSit) {
-        PacketDistributor.sendToServer(new BufflonSitPayload(entityId, shouldSit));
+        ClientPacketDistributor.sendToServer(new BufflonSitPayload(entityId, shouldSit));
     }
 
     @Override
     public void requestBufflonFollow(int entityId, boolean shouldFollow) {
-        PacketDistributor.sendToServer(new BufflonFollowPayload(entityId, shouldFollow));
+        ClientPacketDistributor.sendToServer(new BufflonFollowPayload(entityId, shouldFollow));
     }
 
     @Override
     public void requestBufflonCombatMode(int entityId, boolean combatMode) {
-        PacketDistributor.sendToServer(new BufflonCombatModePayload(entityId, combatMode));
+        ClientPacketDistributor.sendToServer(new BufflonCombatModePayload(entityId, combatMode));
     }
 }

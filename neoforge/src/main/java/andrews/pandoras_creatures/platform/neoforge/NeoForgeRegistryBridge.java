@@ -29,50 +29,50 @@ final class NeoForgeRegistryBridge implements RegistryBridge {
 
     @Override
     public Item item(String path) {
-        return BuiltInRegistries.ITEM.get(id(path));
+        return BuiltInRegistries.ITEM.getValue(id(path));
     }
 
     @Override
     public Block block(String path) {
-        return BuiltInRegistries.BLOCK.get(id(path));
+        return BuiltInRegistries.BLOCK.getValue(id(path));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Entity> EntityType<T> entityType(String path) {
-        return (EntityType<T>) BuiltInRegistries.ENTITY_TYPE.get(id(path));
+        return (EntityType<T>) BuiltInRegistries.ENTITY_TYPE.getValue(id(path));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends BlockEntity> BlockEntityType<T> blockEntityType(String path) {
-        return (BlockEntityType<T>) BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id(path));
+        return (BlockEntityType<T>) BuiltInRegistries.BLOCK_ENTITY_TYPE.getValue(id(path));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends AbstractContainerMenu> MenuType<T> menuType(String path) {
-        return (MenuType<T>) BuiltInRegistries.MENU.get(id(path));
+        return (MenuType<T>) BuiltInRegistries.MENU.getValue(id(path));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends net.minecraft.world.item.crafting.Recipe<?>> RecipeSerializer<T> recipeSerializer(String path) {
-        return (RecipeSerializer<T>) BuiltInRegistries.RECIPE_SERIALIZER.get(id(path));
+        return (RecipeSerializer<T>) BuiltInRegistries.RECIPE_SERIALIZER.getValue(id(path));
     }
 
     @Override
     public SoundEvent sound(String path) {
-        return BuiltInRegistries.SOUND_EVENT.get(id(path));
+        return BuiltInRegistries.SOUND_EVENT.getValue(id(path));
     }
 
     @Override
     public StructureType<?> structureType(String path) {
-        return BuiltInRegistries.STRUCTURE_TYPE.get(id(path));
+        return BuiltInRegistries.STRUCTURE_TYPE.getValue(id(path));
     }
 
     @Override
     public StructurePieceType structurePieceType(String path) {
-        return BuiltInRegistries.STRUCTURE_PIECE.get(id(path));
+        return BuiltInRegistries.STRUCTURE_PIECE.getValue(id(path));
     }
 }

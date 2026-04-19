@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.42-beta'
+    id 'net.neoforged.moddev' version '2.0.141'
 }
 
 version = rootProject.version
@@ -14,7 +14,7 @@ base {
     archivesName = "${mod_id}-neoforge-${minecraft_version}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets {
     main {
@@ -38,14 +38,12 @@ neoForge {
         client {
             client()
             gameDirectory = rootProject.layout.projectDirectory.dir('run/client')
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         server {
             server()
             gameDirectory = rootProject.layout.projectDirectory.dir('run/server')
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         gameTestServer {
@@ -55,7 +53,7 @@ neoForge {
         }
 
         data {
-            data()
+            type = "serverData"
             gameDirectory = rootProject.layout.projectDirectory.dir('run/data')
             systemProperty 'pandoras_creatures.sharedGeneratedClientOutput',
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath

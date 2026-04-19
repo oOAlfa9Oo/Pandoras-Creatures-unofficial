@@ -6,12 +6,14 @@ import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -44,7 +46,7 @@ public final class PCRecipeDataProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
-        Map<ResourceLocation, JsonObject> recipes = new LinkedHashMap<>();
+        Map<Identifier, JsonObject> recipes = new LinkedHashMap<>();
         addCustomEndTrollBoxRecipes(recipes);
         addBasicCraftingRecipes(recipes);
         addCookingRecipes(recipes);
@@ -59,7 +61,7 @@ public final class PCRecipeDataProvider implements DataProvider {
         return "Pandoras Creatures Recipes";
     }
 
-    private static void addCustomEndTrollBoxRecipes(Map<ResourceLocation, JsonObject> recipes) {
+    private static void addCustomEndTrollBoxRecipes(Map<Identifier, JsonObject> recipes) {
         recipes.put(PCRecipeIds.id(PCRecipeIds.END_TROLL_BOX), createEndTrollBoxRecipe());
         PCEndTrollBoxPalette.orderedColors().forEach(color -> {
             String recipeName = PCEndTrollBoxPalette.blockName(color);
@@ -67,7 +69,7 @@ public final class PCRecipeDataProvider implements DataProvider {
         });
     }
 
-    private static void addBasicCraftingRecipes(Map<ResourceLocation, JsonObject> recipes) {
+    private static void addBasicCraftingRecipes(Map<Identifier, JsonObject> recipes) {
         recipes.put(id("herb_bundle"), createShapelessRecipe(PCItems.HERB_BUNDLE.get(), 3,
                 itemIngredient(PCBlocks.HORSETAIL.get()),
                 itemIngredient(PCBlocks.DHANIA.get()),
@@ -95,7 +97,7 @@ public final class PCRecipeDataProvider implements DataProvider {
                 )));
     }
 
-    private static void addCookingRecipes(Map<ResourceLocation, JsonObject> recipes) {
+    private static void addCookingRecipes(Map<Identifier, JsonObject> recipes) {
         for (CookingRecipeDefinition definition : COOKING_RECIPES) {
             recipes.put(id(definition.name()), createCookingRecipe(definition));
         }
@@ -127,11 +129,11 @@ public final class PCRecipeDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject createShapelessRecipe(ItemLike output, int count, JsonObject... ingredients) {
+    private static JsonObject createShapelessRecipe(ItemLike output, int count, JsonElement... ingredients) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:crafting_shapeless");
         JsonArray jsonIngredients = new JsonArray();
-        for (JsonObject ingredient : ingredients) {
+        for (JsonElement ingredient : ingredients) {
             jsonIngredients.add(ingredient);
         }
         root.add("ingredients", jsonIngredients);
@@ -139,7 +141,7 @@ public final class PCRecipeDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject createShapedRecipe(ItemLike output, List<String> pattern, Map<String, JsonObject> keys) {
+    private static JsonObject createShapedRecipe(ItemLike output, List<String> pattern, Map<String, JsonElement> keys) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:crafting_shaped");
         root.add("pattern", toJsonArray(pattern));
@@ -161,16 +163,12 @@ public final class PCRecipeDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject itemIngredient(ItemLike itemLike) {
-        JsonObject ingredient = new JsonObject();
-        ingredient.addProperty("item", itemId(itemLike.asItem()));
-        return ingredient;
+    private static JsonElement itemIngredient(ItemLike itemLike) {
+        return new JsonPrimitive(itemId(itemLike.asItem()));
     }
 
-    private static JsonObject tagIngredient(String tag) {
-        JsonObject ingredient = new JsonObject();
-        ingredient.addProperty("tag", tag);
-        return ingredient;
+    private static JsonElement tagIngredient(String tag) {
+        return new JsonPrimitive("#" + tag);
     }
 
     private static JsonArray toJsonArray(List<String> values) {
@@ -192,8 +190,8 @@ public final class PCRecipeDataProvider implements DataProvider {
         return BuiltInRegistries.ITEM.getKey(item).toString();
     }
 
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    private static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     private record CookingRecipeDefinition(String name, String type, Item ingredient, Item result, float experience,

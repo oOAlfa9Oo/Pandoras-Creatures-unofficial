@@ -19,8 +19,7 @@ public class PCPlantBlock extends BushBlock {
         super(properties);
     }
 
-    @Override
-    public MapCodec<PCPlantBlock> codec() {
+    public MapCodec<PCPlantBlock> pcCodec() {
         return CODEC;
     }
 

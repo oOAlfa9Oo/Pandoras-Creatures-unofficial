@@ -2,12 +2,8 @@
   "type": "pandoras_creatures:end_troll_box_coloring",
   "group": "end_troll_box_coloring",
   "ingredients": [
-    {
-      "tag": "pandoras_creatures:end_troll_boxes"
-    },
-    {
-      "tag": "c:dyes/black"
-    }
+    "#pandoras_creatures:end_troll_boxes",
+    "#c:dyes/black"
   ],
   "result": {
     "id": "pandoras_creatures:black_end_troll_box"

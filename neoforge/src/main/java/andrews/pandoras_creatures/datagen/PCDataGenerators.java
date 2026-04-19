@@ -1,7 +1,5 @@
 package andrews.pandoras_creatures.datagen;
 
-import andrews.pandoras_creatures.datagen.model.PCBlockStateModelDataProvider;
-import andrews.pandoras_creatures.datagen.model.PCItemModelDataProvider;
 import andrews.pandoras_creatures.datagen.loot.PCBlockLootTableDataProvider;
 import andrews.pandoras_creatures.datagen.loot.PCChestInjectionLootTableDataProvider;
 import andrews.pandoras_creatures.datagen.loot.PCEntityLootTableDataProvider;
@@ -28,26 +26,28 @@ public final class PCDataGenerators {
     private PCDataGenerators() {
     }
 
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherServerData(GatherDataEvent.Server event) {
+        PackOutput output = event.getGenerator().getPackOutput();
+        PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
+        event.addProvider(new PCTagDataProvider(output));
+        event.addProvider(new PCRecipeDataProvider(output));
+        event.addProvider(new PCBlockLootTableDataProvider(output));
+        event.addProvider(new PCEntityLootTableDataProvider(output));
+        event.addProvider(new PCChestInjectionLootTableDataProvider(output));
+        event.addProvider(new PCLootModifierDataProvider(output));
+        event.addProvider(new PCWorldgenTagDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
+        event.addProvider(new PCConfiguredFeatureDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCPlacedFeatureDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCTemplatePoolDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCStructureDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCStructureSetDataProvider(sharedWorldgenOutput));
+    }
+
+    public static void gatherClientData(GatherDataEvent.Client event) {
         PackOutput output = event.getGenerator().getPackOutput();
         PackOutput sharedClientOutput = sharedClientOutput(output);
-        PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
-        event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCLootModifierDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCConfiguredFeatureDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCPlacedFeatureDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCTemplatePoolDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCStructureDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCStructureSetDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeClient(), new PCLanguageDataProvider(sharedClientOutput));
-        event.getGenerator().addProvider(event.includeClient(), new PCBlockStateModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
-        event.getGenerator().addProvider(event.includeClient(), new PCItemModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
+        event.addProvider(new PCLanguageDataProvider(sharedClientOutput));
     }
 
     private static PackOutput sharedClientOutput(PackOutput fallbackOutput) {

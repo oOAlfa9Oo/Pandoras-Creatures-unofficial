@@ -10,6 +10,10 @@ import andrews.pandoras_creatures.registry.block.PCBlockBootstrap;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.registry.PCFoods;
 import andrews.pandoras_creatures.registry.bootstrap.SharedRegistryRegistrar;
+import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.food.FoodProperties;
@@ -64,7 +68,7 @@ public final class PCItemBootstrap {
                 throw new IllegalArgumentException("No block supplier available for simple block item id: " + id);
             }
 
-            registeredItems.put(id, registrar.register(id, () -> new BlockItem(blockSupplier.get(), new Item.Properties())));
+            registeredItems.put(id, registrar.register(id, () -> new BlockItem(blockSupplier.get(), properties(id))));
         }
 
         return Collections.unmodifiableMap(registeredItems);
@@ -109,7 +113,7 @@ public final class PCItemBootstrap {
 
             registeredItems.put(palette.itemName(), registrar.register(
                     palette.itemName(),
-                    () -> new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(), new Item.Properties())
+                    () -> new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(), properties(palette.itemName()))
             ));
         }
 
@@ -131,27 +135,27 @@ public final class PCItemBootstrap {
     private static <H extends Supplier<? extends Item>> void registerBasicItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id) {
-        items.put(id, registrar.register(id, () -> new Item(new Item.Properties())));
+        items.put(id, registrar.register(id, () -> new Item(properties(id))));
     }
 
     private static <H extends Supplier<? extends Item>> void registerFoodItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id,
             FoodProperties foodProperties) {
-        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().food(foodProperties))));
+        items.put(id, registrar.register(id, () -> new Item(properties(id).food(foodProperties))));
     }
 
     private static <H extends Supplier<? extends Item>> void registerSingleStackItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id) {
-        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().stacksTo(1))));
+        items.put(id, registrar.register(id, () -> new Item(properties(id).stacksTo(1))));
     }
 
     private static <H extends Supplier<? extends Item>, T extends Item> void registerCustomItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id,
-            Supplier<T> factory) {
-        items.put(id, registrar.register(id, factory));
+            Function<Item.Properties, T> factory) {
+        items.put(id, registrar.register(id, () -> factory.apply(properties(id))));
     }
 
     private static <H extends Supplier<? extends Item>> void registerEndTrollBoxItem(Map<String, H> items,
@@ -163,6 +167,10 @@ public final class PCItemBootstrap {
             throw new IllegalArgumentException("No block supplier available for end troll box item id: " + id);
         }
 
-        items.put(id, registrar.register(id, () -> new EndTrollBoxItem(blockSupplier.get(), new Item.Properties().stacksTo(1).fireResistant())));
+        items.put(id, registrar.register(id, () -> new EndTrollBoxItem(blockSupplier.get(), properties(id).stacksTo(1).fireResistant())));
+    }
+
+    public static Item.Properties properties(String id) {
+        return new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Reference.MODID, id)));
     }
 }

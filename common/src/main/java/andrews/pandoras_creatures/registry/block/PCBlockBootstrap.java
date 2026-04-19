@@ -3,6 +3,10 @@ package andrews.pandoras_creatures.registry.block;
 import andrews.pandoras_creatures.content.block.ArachnonCrystalBlock;
 import andrews.pandoras_creatures.content.block.PCPlantBlock;
 import andrews.pandoras_creatures.registry.bootstrap.SharedRegistryRegistrar;
+import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -36,32 +40,36 @@ public final class PCBlockBootstrap {
         LinkedHashMap<String, H> registeredBlocks = new LinkedHashMap<>();
 
         registeredBlocks.put(PCBlockIds.ARACHNON_CRYSTAL, registrar.register(PCBlockIds.ARACHNON_CRYSTAL,
-                () -> new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
+                () -> new ArachnonCrystalBlock(properties(PCBlockIds.ARACHNON_CRYSTAL, BlockBehaviour.Properties.of()
                         .strength(1.5F, 6.0F)
                         .lightLevel(state -> 9)
                         .requiresCorrectToolForDrops()
-                        .noOcclusion())));
+                        .noOcclusion()))));
 
         registeredBlocks.put(PCBlockIds.HORSETAIL, registrar.register(PCBlockIds.HORSETAIL,
-                () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                        .noCollission()
-                        .noOcclusion())));
+                () -> new PCPlantBlock(properties(PCBlockIds.HORSETAIL, BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                        .noCollision()
+                        .noOcclusion()))));
 
         registeredBlocks.put(PCBlockIds.DHANIA, registrar.register(PCBlockIds.DHANIA,
-                () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                        .noCollission()
-                        .noOcclusion())));
+                () -> new PCPlantBlock(properties(PCBlockIds.DHANIA, BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                        .noCollision()
+                        .noOcclusion()))));
 
         registeredBlocks.put(PCBlockIds.HILL_BLOOM, registrar.register(PCBlockIds.HILL_BLOOM,
-                () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
-                        .noCollission()
-                        .noOcclusion())));
+                () -> new PCPlantBlock(properties(PCBlockIds.HILL_BLOOM, BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                        .noCollision()
+                        .noOcclusion()))));
 
         registeredBlocks.put(PCBlockIds.PANDORIC_SHARD, registrar.register(PCBlockIds.PANDORIC_SHARD,
-                () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
+                () -> new Block(properties(PCBlockIds.PANDORIC_SHARD, BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
                         .noOcclusion()
-                        .lightLevel(state -> 10))));
+                        .lightLevel(state -> 10)))));
 
         return Collections.unmodifiableMap(registeredBlocks);
+    }
+
+    public static BlockBehaviour.Properties properties(String id, BlockBehaviour.Properties properties) {
+        return properties.setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Reference.MODID, id)));
     }
 }

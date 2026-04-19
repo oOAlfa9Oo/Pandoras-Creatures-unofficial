@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[7.0.17,8)'
 }
 
 version = rootProject.version
@@ -13,7 +13,7 @@ base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets {
     main {
@@ -41,23 +41,24 @@ tasks.named('processResources', ProcessResources).configure {
 }
 
 minecraft {
-    mappings channel: mapping_channel, version: mapping_version
-
     runs {
         configureEach {
-            workingDirectory = file("run/${name}")
+            workingDir = layout.projectDirectory.dir("run/${name}")
+            systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
         }
 
-        client
+        register('client')
 
-        server {
+        register('server') {
             args '--nogui'
         }
 
-        gameTestServer
+        register('gameTestServer') {
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        }
 
-        data {
-            workingDirectory = file('run/data')
+        register('data') {
+            workingDir = layout.projectDirectory.dir('run/data')
             args '--mod', mod_id, '--all',
                     '--output', file('src/generated/resources').absolutePath,
                     '--existing', file('src/main/resources').absolutePath,
@@ -68,16 +69,15 @@ minecraft {
 }
 
 repositories {
-    mavenLocal()
-    maven {
-        name = 'Forge'
-        url = 'https://maven.minecraftforge.net/'
-    }
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
     mavenCentral()
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.1'
 
     testImplementation platform('org.junit:junit-bom:5.14.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

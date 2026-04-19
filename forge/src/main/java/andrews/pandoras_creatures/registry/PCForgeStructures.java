@@ -7,15 +7,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.RegisterEvent;
 
 public final class PCForgeStructures {
     private PCForgeStructures() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeStructures::registerStructures);
+    public static void register(BusGroup modEventBus) {
+        RegisterEvent.getBus(modEventBus).addListener(PCForgeStructures::registerStructures);
     }
 
     private static void registerStructures(RegisterEvent event) {

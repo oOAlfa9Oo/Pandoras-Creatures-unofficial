@@ -555,16 +555,6 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        float arachnonScale = ArachnonVisualRules.renderScale();
-        poseStack.translate(0.0D, ArachnonVisualRules.renderYOffset(), 0.0D);
-        poseStack.scale(arachnonScale, arachnonScale, arachnonScale);
-        this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        poseStack.popPose();
-    }
-
-    @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 

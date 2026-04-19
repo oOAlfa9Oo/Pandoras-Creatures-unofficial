@@ -2,125 +2,88 @@ package andrews.pandoras_creatures.client.renderer.tile;
 
 import andrews.pandoras_creatures.client.model.base.PCModelLayers;
 import andrews.pandoras_creatures.client.model.tile.EndTrollBoxModel;
-import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3fc;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class PCItemRenderer extends BlockEntityWithoutLevelRenderer {
-    private static PCItemRenderer instance;
-    private EndTrollBoxModel endTrollBoxModel;
-
+public class PCItemRenderer implements NoDataSpecialModelRenderer {
     public static final Identifier DEFAULT_END_TROLL_BOX_TEXTURE = PCEndTrollBoxPalette.textureId(null);
-    public static final List<Identifier> END_TROLL_BOX_TEXTURES = PCEndTrollBoxPalette.orderedColors().stream()
-            .map(PCEndTrollBoxPalette::textureId)
-            .collect(ImmutableList.toImmutableList());
 
-    public PCItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
-        super(dispatcher, modelSet);
+    private final EndTrollBoxModel endTrollBoxModel;
+    private final Identifier texture;
+
+    public PCItemRenderer(EntityModelSet modelSet, Identifier texture) {
         this.endTrollBoxModel = new EndTrollBoxModel(modelSet.bakeLayer(PCModelLayers.END_TROLL_BOX));
-    }
-
-    public static PCItemRenderer getInstance() {
-        if (instance == null) {
-            Minecraft mc = Minecraft.getInstance();
-            instance = new PCItemRenderer(mc.getBlockEntityRenderDispatcher(), mc.getEntityModels());
-        }
-        return instance;
+        this.texture = texture;
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack,
-                             MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        Item item = stack.getItem();
-
-        // Check if this is an End Troll Box
-        if (isEndTrollBox(item)) {
-            renderEndTrollBox(stack, poseStack, buffer, packedLight, packedOverlay);
-        }
-        // TODO: Add Pandoric Shard rendering here when implemented
-    }
-
-    private boolean isEndTrollBox(Item item) {
-        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
-        return path.equals(PCEndTrollBoxBootstrap.blockId(null))
-                || PCEndTrollBoxPalette.orderedColors().stream()
-                .map(PCEndTrollBoxBootstrap::blockId)
-                .anyMatch(path::equals);
-    }
-
-    private void renderEndTrollBox(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer,
-                                   int packedLight, int packedOverlay) {
-        Item item = stack.getItem();
-        DyeColor color = getColorFromItem(item);
-        Identifier texture = color == null ? DEFAULT_END_TROLL_BOX_TEXTURE : END_TROLL_BOX_TEXTURES.get(color.getId());
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
+        RenderType renderType = RenderTypes.entityCutout(this.texture);
 
         poseStack.pushPose();
 
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(texture));
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.base, packedLight, packedOverlay);
 
-        poseStack.translate(0.5D, 1.5D, 0.5D);
-        poseStack.scale(1.0F, -1.0F, -1.0F);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.bottom_front_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.bottom_front_right, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.bottom_back_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.bottom_back_right, packedLight, packedOverlay);
 
-        // Render the closed box (no animation for item form)
-        endTrollBoxModel.base.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.decoration_front_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.decoration_front_right, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.decoration_back_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.decoration_back_right, packedLight, packedOverlay);
 
-        // Bottom corners
-        endTrollBoxModel.bottom_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.bottom_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.bottom_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.bottom_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.lid_front, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.lid_back, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.lid_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.lid_right, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.lid_top_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.lid_top_right, packedLight, packedOverlay);
 
-        // Decorations
-        endTrollBoxModel.decoration_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.decoration_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.decoration_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.decoration_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-
-        // Lids (closed position)
-        endTrollBoxModel.lid_front.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.lid_back.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.lid_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.lid_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.lid_top_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.lid_top_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-
-        // Top corners
-        endTrollBoxModel.top_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.top_front_left_1.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.top_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        endTrollBoxModel.top_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.top_front_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.top_front_left_1, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.top_back_left, packedLight, packedOverlay);
+        submitPart(submitNodeCollector, poseStack, renderType, this.endTrollBoxModel.top_back_right, packedLight, packedOverlay);
 
         poseStack.popPose();
     }
 
-    private DyeColor getColorFromItem(Item item) {
-        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
-        if (path.equals(PCEndTrollBoxBootstrap.blockId(null))) {
-            return null;
+    @Override
+    public void getExtents(Consumer<Vector3fc> consumer) {
+        this.endTrollBoxModel.root().getExtentsForGui(new PoseStack(), consumer);
+    }
+
+    private static void submitPart(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, ModelPart part, int packedLight, int packedOverlay) {
+        submitNodeCollector.submitModelPart(part, poseStack, renderType, packedLight, packedOverlay, null, false, false, -1, (ModelFeatureRenderer.CrumblingOverlay) null, 0);
+    }
+
+    public record Unbaked(Identifier texture) implements NoDataSpecialModelRenderer.Unbaked {
+        public static final MapCodec<Unbaked> MAP_CODEC = Identifier.CODEC
+                .optionalFieldOf("texture", DEFAULT_END_TROLL_BOX_TEXTURE)
+                .xmap(Unbaked::new, Unbaked::texture);
+
+        @Override
+        public SpecialModelRenderer<Void> bake(SpecialModelRenderer.BakingContext context) {
+            return new PCItemRenderer(context.entityModelSet(), this.texture);
         }
 
-        for (DyeColor color : PCEndTrollBoxPalette.orderedColors()) {
-            if (path.equals(PCEndTrollBoxBootstrap.blockId(color))) {
-                return color;
-            }
+        @Override
+        public MapCodec<Unbaked> type() {
+            return MAP_CODEC;
         }
-
-        return null;
     }
 }

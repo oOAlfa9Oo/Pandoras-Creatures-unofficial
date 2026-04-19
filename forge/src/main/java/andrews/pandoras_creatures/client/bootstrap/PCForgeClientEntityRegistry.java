@@ -25,15 +25,15 @@ import andrews.pandoras_creatures.client.renderer.tile.EndTrollBoxBlockEntityRen
 import andrews.pandoras_creatures.forge.registry.PCForgeBlockEntities;
 import andrews.pandoras_creatures.forge.registry.PCForgeEntities;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 
 public final class PCForgeClientEntityRegistry {
     private PCForgeClientEntityRegistry() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCForgeClientEntityRegistry::registerLayerDefinitions);
-        modEventBus.addListener(PCForgeClientEntityRegistry::registerRenderers);
+    public static void register(BusGroup modEventBus) {
+        EntityRenderersEvent.RegisterLayerDefinitions.BUS.addListener(PCForgeClientEntityRegistry::registerLayerDefinitions);
+        EntityRenderersEvent.RegisterRenderers.BUS.addListener(PCForgeClientEntityRegistry::registerRenderers);
     }
 
     private static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {

@@ -2043,8 +2043,4 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
 
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.movement_base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
 }

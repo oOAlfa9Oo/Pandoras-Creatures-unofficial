@@ -4,7 +4,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.pathfinder.PathType;
@@ -39,16 +39,16 @@ public abstract class AnimatedWaterMobEntity extends AnimatedCreatureEntity {
      * Get the experience points the entity currently has.
      */
     @Override
-    public int getBaseExperienceReward() {
-        return 1 + this.level().random.nextInt(3);
+    protected int getBaseExperienceReward(ServerLevel serverLevel) {
+        return 1 + this.random.nextInt(3);
     }
 
     protected void updateAir(int air) {
-        if (this.isAlive() && !this.isInWaterOrBubble()) {
+        if (this.isAlive() && !this.isInWater()) {
             this.setAirSupply(air - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
-                this.hurt(this.damageSources().drown(), 2.0F);
+                this.hurtOrSimulate(this.damageSources().drown(), 2.0F);
             }
         } else {
             this.setAirSupply(300);

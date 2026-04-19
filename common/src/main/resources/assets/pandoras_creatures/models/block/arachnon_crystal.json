@@ -2,7 +2,7 @@
 	"textures": {
 		"particle": "block/stone",
 		"texture": "block/stone",
-		"texture1": "pandoras_creatures:item/crystal"
+		"texture1": "pandoras_creatures:block/crystal"
 	},
 	"elements": [ 	 
 		{

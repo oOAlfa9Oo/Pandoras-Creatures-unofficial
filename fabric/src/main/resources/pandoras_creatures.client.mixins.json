@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "andrews.pandoras_creatures.mixin.client",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "SpecialModelRenderersAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -7,14 +7,16 @@ import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -25,10 +27,14 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
     private final String ourGroup;
     private final CraftingBookCategory ourCategory;
     private final ShapedRecipePattern ourPattern;
-    private final ItemStack ourResult;
+    private final ItemStackTemplate ourResult;
 
     public EndTrollBoxRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result) {
-        super(group, category, pattern, result);
+        this(group, category, pattern, ItemStackTemplate.fromNonEmptyStack(result));
+    }
+
+    public EndTrollBoxRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStackTemplate result) {
+        super(new Recipe.CommonInfo(true), new CraftingRecipe.CraftingBookInfo(category, group), pattern, result);
         this.ourGroup = group;
         this.ourCategory = category;
         this.ourPattern = pattern;
@@ -36,8 +42,8 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        final ItemStack craftingResult = super.assemble(input, registries);
+    public ItemStack assemble(CraftingInput input) {
+        final ItemStack craftingResult = super.assemble(input);
         boolean shulkerPresent = false;
 
         for (int i = 0; i < input.size(); i++) {
@@ -59,8 +65,9 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX);
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer) PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX);
     }
 
     public static RecipeSerializer<EndTrollBoxRecipe> serializer() {
@@ -73,7 +80,7 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
                         Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.ourGroup),
                         CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.ourCategory),
                         ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.ourPattern),
-                        ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.ourResult)
+                        ItemStackTemplate.CODEC.fieldOf("result").forGetter(r -> r.ourResult)
                 ).apply(instance, EndTrollBoxRecipe::new)
         );
 
@@ -82,7 +89,7 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
                         ByteBufCodecs.STRING_UTF8, r -> r.ourGroup,
                         CraftingBookCategory.STREAM_CODEC, r -> r.ourCategory,
                         ShapedRecipePattern.STREAM_CODEC, r -> r.ourPattern,
-                        ItemStack.STREAM_CODEC, r -> r.ourResult,
+                        ItemStackTemplate.STREAM_CODEC, r -> r.ourResult,
                         EndTrollBoxRecipe::new
                 );
 

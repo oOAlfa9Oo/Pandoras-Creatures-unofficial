@@ -9,9 +9,10 @@ import andrews.pandoras_creatures.menu.BufflonMenu;
 import andrews.pandoras_creatures.menu.BufflonMenuLayout;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,11 +29,9 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
     private float mousePosY;
 
     public BufflonScreen(BufflonMenu menu, Inventory inv, Component title) {
-        super(menu, inv, title);
+        super(menu, inv, title, BufflonMenuLayout.IMAGE_WIDTH, BufflonMenuLayout.IMAGE_HEIGHT);
         this.bufflon = menu.getBufflon();
         this.bufflonEntity = menu.getBufflonEntity();
-        this.imageWidth = BufflonMenuLayout.IMAGE_WIDTH;
-        this.imageHeight = BufflonMenuLayout.IMAGE_HEIGHT;
         this.titleLabelX = BufflonMenuLayout.TITLE_LABEL_X;
         this.titleLabelY = BufflonMenuLayout.TITLE_LABEL_Y;
         this.inventoryLabelX = BufflonMenuLayout.PLAYER_INVENTORY_LABEL_X;
@@ -94,27 +93,29 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x000000, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x000000, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x000000, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x000000, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        guiGraphics.blit(BUFFLON_GUI_TEXTURES, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.mousePosx = mouseX;
+        this.mousePosY = mouseY;
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BUFFLON_GUI_TEXTURES, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 
         BufflonBackAttachmentType attachmentType = this.bufflon.getBufflonBackAttachment();
         if (attachmentType.hasStorage()) {
-            renderBufflonInventorySlots(guiGraphics, this.leftPos, this.topPos, attachmentType.getStorageRows());
+            extractBufflonInventorySlots(guiGraphics, this.leftPos, this.topPos, attachmentType.getStorageRows());
         }
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X,
+        InventoryScreen.extractEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X,
                 this.topPos + BufflonMenuLayout.ENTITY_RENDER_MOUSE_Y, this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X,
                 this.topPos + BufflonMenuLayout.ENTITY_RENDER_Y, BufflonMenuLayout.ENTITY_RENDER_SIZE,
                 BufflonMenuLayout.ENTITY_RENDER_SCALE, this.mousePosx, this.mousePosY, this.bufflonEntity);
 
         if (!bufflon.isBufflonSaddled()) {
-            guiGraphics.renderFakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.BUFFLON_SADDLE)),
+            guiGraphics.fakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.BUFFLON_SADDLE)),
                     this.leftPos + BufflonMenuLayout.SADDLE_SLOT_X, this.topPos + BufflonMenuLayout.SADDLE_SLOT_Y);
         }
 
@@ -124,9 +125,11 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 case 2 -> PCItemIds.BUFFLON_SMALL_STORAGE;
                 default -> PCItemIds.BUFFLON_LARGE_STORAGE;
             };
-            guiGraphics.renderFakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(itemId)),
+            guiGraphics.fakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(itemId)),
                     this.leftPos + BufflonMenuLayout.BACK_ATTACHMENT_SLOT_X, this.topPos + BufflonMenuLayout.BACK_ATTACHMENT_SLOT_Y);
         }
+
+        super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -137,19 +140,10 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
         }
     }
 
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.mousePosx = (float) mouseX;
-        this.mousePosY = (float) mouseY;
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    private void renderBufflonInventorySlots(GuiGraphics guiGraphics, int posX, int posY, int rows) {
+    private void extractBufflonInventorySlots(GuiGraphicsExtractor guiGraphics, int posX, int posY, int rows) {
         for (int i = 0; i < rows; i++) {
-            guiGraphics.blit(BUFFLON_GUI_TEXTURES, posX + BufflonMenuLayout.STORAGE_BACKGROUND_X,
-                    posY + BufflonMenuLayout.STORAGE_BACKGROUND_Y + (i * BufflonMenuLayout.SLOT_SPACING), 0, 238, 162, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BUFFLON_GUI_TEXTURES, posX + BufflonMenuLayout.STORAGE_BACKGROUND_X,
+                    posY + BufflonMenuLayout.STORAGE_BACKGROUND_Y + (i * BufflonMenuLayout.SLOT_SPACING), 0.0F, 238.0F, 162, 18, 256, 256);
         }
     }
 }

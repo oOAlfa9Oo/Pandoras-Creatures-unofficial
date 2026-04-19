@@ -13,7 +13,7 @@ public final class PCAdvancements {
     }
 
     public static void award(ServerPlayer player, String path) {
-        AdvancementHolder advancement = player.server.getAdvancements().get(Identifier.fromNamespaceAndPath(Reference.MODID, path));
+        AdvancementHolder advancement = player.level().getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(Reference.MODID, path));
         if (advancement != null) {
             player.getAdvancements().award(advancement, IMPOSSIBLE_CRITERION);
         }

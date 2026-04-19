@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ public final class PCTagDataProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(endTrollBoxValues()), itemTagPathProvider.json(id("end_troll_boxes"))));
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(vanillaShulkerBoxValues()), itemTagPathProvider.json(id("vanilla_shulker_boxes"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.ARACHNON))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("arthropod"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.HELLHOUND))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("undead"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.ARACHNON))), entityTypeTagPathProvider.json(Identifier.withDefaultNamespace("arthropod"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.HELLHOUND))), entityTypeTagPathProvider.json(Identifier.withDefaultNamespace("undead"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -40,8 +40,8 @@ public final class PCTagDataProvider implements DataProvider {
         return "Pandoras Creatures Tags";
     }
 
-    private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+    private static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
     private static JsonObject createTagJson(List<String> values) {
@@ -70,6 +70,6 @@ public final class PCTagDataProvider implements DataProvider {
     }
 
     private static String modId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path).toString();
+        return Identifier.fromNamespaceAndPath(Reference.MODID, path).toString();
     }
 }
