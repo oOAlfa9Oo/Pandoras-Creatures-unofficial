@@ -19,6 +19,7 @@ public class ArachnonRenderer extends MobRenderer<ArachnonEntity, ArachnonModel<
 
     @Override
     public ResourceLocation getTextureLocation(ArachnonEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, ArachnonVisualRules.texturePathString());
+        return new ResourceLocation(Reference.MODID, ArachnonVisualRules.texturePathString());
     }
 }
+

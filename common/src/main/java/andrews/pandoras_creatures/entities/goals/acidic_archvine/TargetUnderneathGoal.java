@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.function.Predicate;
 
@@ -172,3 +172,4 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
                 && AcidicArchvineTargetingRules.isProtectedByPlantHat(player.getInventory().armor.get(3).is(PandorasCreaturesCommon.platform().registry().item(PCItemIds.PLANT_HAT)));
     }
 }
+

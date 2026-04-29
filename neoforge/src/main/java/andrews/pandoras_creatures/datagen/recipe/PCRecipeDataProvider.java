@@ -193,10 +193,11 @@ public final class PCRecipeDataProvider implements DataProvider {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     private record CookingRecipeDefinition(String name, String type, Item ingredient, Item result, float experience,
                                            int cookingTime) {
     }
 }
+

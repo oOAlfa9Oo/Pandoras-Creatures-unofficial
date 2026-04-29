@@ -187,6 +187,7 @@ public final class PCLanguageDataProvider implements DataProvider {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 }
+

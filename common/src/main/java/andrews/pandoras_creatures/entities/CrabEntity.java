@@ -31,7 +31,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.HitResult;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class CrabEntity extends BucketableMobEntity {
     private static final EntityDataAccessor<Integer> CRAB_TYPE = SynchedEntityData.defineId(CrabEntity.class, EntityDataSerializers.INT);
@@ -56,9 +56,9 @@ public class CrabEntity extends BucketableMobEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(CRAB_TYPE, CrabVariantCatalog.DEFAULT_TYPE);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CRAB_TYPE, CrabVariantCatalog.DEFAULT_TYPE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -73,9 +73,8 @@ public class CrabEntity extends BucketableMobEntity {
     @Override
     protected void setBucketData(ItemStack bucket) {
         super.setBucketData(bucket);
-        CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getCrabType());
-        bucket.set(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, net.minecraft.world.item.component.CustomData.of(compoundtag));
+        CompoundTag bucketTag = bucket.getOrCreateTag();
+        bucketTag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getCrabType());
     }
 
     @Override
@@ -92,8 +91,8 @@ public class CrabEntity extends BucketableMobEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         RandomSource rand = level.getRandom();
         int type = CrabVariantCatalog.randomTypeId(rand.nextInt(CrabVariantCatalog.MAX_TYPE));
         this.setCrabType(type);
@@ -183,3 +182,5 @@ public class CrabEntity extends BucketableMobEntity {
         this.entityData.set(CRAB_TYPE, CrabVariantCatalog.normalizeType(typeId));
     }
 }
+
+

@@ -31,7 +31,7 @@ public final class PCForgeCreativeTabs {
         event.register(
                 Registries.CREATIVE_MODE_TAB,
                 helper -> helper.register(
-                        ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCCreativeTabIds.PANDORAS_CREATURES),
+                        new ResourceLocation(Reference.MODID, PCCreativeTabIds.PANDORAS_CREATURES),
                         CreativeModeTab.builder()
                                 .title(Component.translatable(PCCreativeTabIds.PANDORAS_CREATURES_TRANSLATION_KEY))
                                 .icon(() -> new ItemStack(PCForgeItems.getItem(PCItemIds.BUFFLON_SADDLE)))
@@ -41,3 +41,4 @@ public final class PCForgeCreativeTabs {
         );
     }
 }
+

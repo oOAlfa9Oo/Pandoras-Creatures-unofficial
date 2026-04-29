@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class EndTrollBoxScreen extends AbstractContainerScreen<EndTrollBoxMenu> {
-    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/containers/end_troll_box.png");
+    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/containers/end_troll_box.png");
 
     public EndTrollBoxScreen(EndTrollBoxMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -20,7 +20,7 @@ public class EndTrollBoxScreen extends AbstractContainerScreen<EndTrollBoxMenu> 
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -38,3 +38,4 @@ public class EndTrollBoxScreen extends AbstractContainerScreen<EndTrollBoxMenu> 
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
     }
 }
+

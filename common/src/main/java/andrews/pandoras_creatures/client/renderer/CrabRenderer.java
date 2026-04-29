@@ -16,6 +16,7 @@ public class CrabRenderer extends MobRenderer<CrabEntity, CrabModel<CrabEntity>>
 
     @Override
     public ResourceLocation getTextureLocation(CrabEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, CrabVariantCatalog.texturePath(entity.getCrabType()));
+        return new ResourceLocation(Reference.MODID, CrabVariantCatalog.texturePath(entity.getCrabType()));
     }
 }
+

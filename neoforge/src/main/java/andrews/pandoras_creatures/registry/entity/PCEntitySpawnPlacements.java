@@ -30,7 +30,8 @@ public final class PCEntitySpawnPlacements {
                                 level.getBiome(pos).is(Biomes.WARM_OCEAN),
                                 pos.getY(),
                                 level.getBlockState(pos.below()).is(Blocks.SAND),
-                                level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)
+                                level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK),
+                                level.getBlockState(pos).isAir() || level.getFluidState(pos).is(FluidTags.WATER)
                         ),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
 

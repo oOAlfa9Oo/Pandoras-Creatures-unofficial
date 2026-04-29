@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class HellhoundEyesLayer<E extends HellhoundEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation HELLHOUND_EYES_LAYER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/hellhound/hellhound_eyes.png");
+    private static final ResourceLocation HELLHOUND_EYES_LAYER = new ResourceLocation(Reference.MODID, "textures/entity/hellhound/hellhound_eyes.png");
 
     public HellhoundEyesLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);
@@ -24,7 +24,8 @@ public class HellhoundEyesLayer<E extends HellhoundEntity, M extends EntityModel
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, E entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (HellhoundVisualRules.showsEyesLayer(entity.getHellhoundType())) {
             VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.eyes(HELLHOUND_EYES_LAYER));
-            this.getParentModel().renderToBuffer(poseStack, vertexConsumer, 15728640, OverlayTexture.NO_OVERLAY, -1);
+            this.getParentModel().renderToBuffer(poseStack, vertexConsumer, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 }
+

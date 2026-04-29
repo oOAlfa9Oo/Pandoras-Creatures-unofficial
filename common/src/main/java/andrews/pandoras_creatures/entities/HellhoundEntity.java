@@ -17,7 +17,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -41,7 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.HitResult;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class HellhoundEntity extends AnimatedMonsterEntity {
     private static final EntityDataAccessor<Integer> HELLHOUND_TYPE = SynchedEntityData.defineId(HellhoundEntity.class, EntityDataSerializers.INT);
@@ -67,9 +66,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(HELLHOUND_TYPE, HellhoundVariantCatalog.DEFAULT_TYPE);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(HELLHOUND_TYPE, HellhoundVariantCatalog.DEFAULT_TYPE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -95,15 +94,15 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         this.setHellhoundType(HellhoundVariantCatalog.randomTypeId(level.getRandom()));
         return spawnData;
     }
 
     @Override
-    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
-        super.dropCustomDeathLoot(level, source, recentlyHit);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
+        super.dropCustomDeathLoot(source, looting, recentlyHit);
         int coalDropCount = HellhoundCombatRules.coalDropCount(this.getHellhoundType(), this.random);
         if (coalDropCount > 0) {
             this.spawnAtLocation(new ItemStack(Items.COAL, coalDropCount));
@@ -157,9 +156,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    public int getExperienceReward() {
         this.xpReward = (int) ((float) this.xpReward * 2.0F);
-        return super.getBaseExperienceReward();
+        return super.getExperienceReward();
     }
 
     @Override
@@ -194,3 +193,5 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
         this.entityData.set(HELLHOUND_TYPE, HellhoundVariantCatalog.normalizeType(typeId));
     }
 }
+
+

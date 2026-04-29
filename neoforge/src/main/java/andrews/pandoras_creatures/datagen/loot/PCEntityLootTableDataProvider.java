@@ -155,7 +155,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     private record EntityLootDefinition(String name, List<LootPoolDefinition> pools) {
@@ -179,3 +179,4 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
         }
     }
 }
+

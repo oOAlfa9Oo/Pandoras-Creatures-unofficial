@@ -13,7 +13,7 @@ La regla principal es trabajar por **versiones ancla**, no por cada release meno
 | 1.17.1 | `release/1.17.1` | Objetivo | Objetivo | No aplica | Pendiente |
 | 1.18.2 | `release/1.18.2` | Objetivo | Objetivo | No aplica | Pendiente |
 | 1.19.2 | `release/1.19.2` | Objetivo | Objetivo | No aplica | Pendiente |
-| 1.20.1 | `release/1.20.1` | Objetivo | Objetivo | No aplica | Pendiente |
+| 1.20.1 | `release/1.20.1` | Objetivo | Objetivo | Experimental | En progreso |
 | 1.20.6 | `release/1.20.6` | Objetivo | Objetivo | Objetivo | Pendiente |
 | 1.21.1 | `release/1.21.1` | Objetivo | Objetivo | Objetivo | En progreso |
 | 26.1 | `release/26.1` | Objetivo | Objetivo | Experimental | Pendiente |

@@ -555,12 +555,12 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         float arachnonScale = ArachnonVisualRules.renderScale();
         poseStack.translate(0.0D, ArachnonVisualRules.renderYOffset(), 0.0D);
         poseStack.scale(arachnonScale, arachnonScale, arachnonScale);
-        this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
     }
 

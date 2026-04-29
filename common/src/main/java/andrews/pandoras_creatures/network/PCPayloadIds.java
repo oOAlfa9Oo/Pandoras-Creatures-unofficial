@@ -19,7 +19,7 @@ public final class PCPayloadIds {
     }
 
     public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     public static List<String> allPaths() {
@@ -32,3 +32,4 @@ public final class PCPayloadIds {
         );
     }
 }
+

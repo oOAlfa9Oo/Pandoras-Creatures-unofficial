@@ -39,7 +39,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class SeahorseEntity extends BucketableMobEntity {
     private static final EntityDataAccessor<Integer> SEAHORSE_TYPE = SynchedEntityData.defineId(SeahorseEntity.class, EntityDataSerializers.INT);
@@ -64,10 +64,10 @@ public class SeahorseEntity extends BucketableMobEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(SEAHORSE_TYPE, SeahorseVariantCatalog.DEFAULT_TYPE);
-        builder.define(SEAHORSE_SIZE, SeahorseVariantCatalog.DEFAULT_SIZE);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(SEAHORSE_TYPE, SeahorseVariantCatalog.DEFAULT_TYPE);
+        this.entityData.define(SEAHORSE_SIZE, SeahorseVariantCatalog.DEFAULT_SIZE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -159,10 +159,9 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     protected void setBucketData(ItemStack bucket) {
         super.setBucketData(bucket);
-        CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getSeahorseType());
-        compoundtag.putInt(BucketEntityDataKeys.BUCKET_SIZE_TAG, this.getSeahorseSize());
-        bucket.set(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, net.minecraft.world.item.component.CustomData.of(compoundtag));
+        CompoundTag bucketTag = bucket.getOrCreateTag();
+        bucketTag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getSeahorseType());
+        bucketTag.putInt(BucketEntityDataKeys.BUCKET_SIZE_TAG, this.getSeahorseSize());
     }
 
     @Override
@@ -181,8 +180,8 @@ public class SeahorseEntity extends BucketableMobEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         RandomSource rand = level.getRandom();
         int type = SeahorseVariantCatalog.randomTypeId(rand.nextInt(SeahorseVariantCatalog.MAX_TYPE));
         int size = SeahorseVariantCatalog.randomSizeId(rand.nextInt(SeahorseVariantCatalog.MAX_SIZE));
@@ -287,3 +286,5 @@ public class SeahorseEntity extends BucketableMobEntity {
         }
     }
 }
+
+

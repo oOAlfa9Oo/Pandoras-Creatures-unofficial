@@ -61,7 +61,7 @@ public final class PCPlacedFeatureDataProvider implements DataProvider {
 
         JsonObject heightmap = new JsonObject();
         heightmap.addProperty("type", "minecraft:heightmap");
-        heightmap.addProperty("heightmap", "MOTION_BLOCKING_NO_LEAVES");
+        heightmap.addProperty("heightmap", "MOTION_BLOCKING");
         placement.add(heightmap);
 
         JsonObject biome = new JsonObject();
@@ -80,9 +80,10 @@ public final class PCPlacedFeatureDataProvider implements DataProvider {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     private record CountPlacedFeatureDefinition(String name, String featureId, int count) {
     }
 }
+

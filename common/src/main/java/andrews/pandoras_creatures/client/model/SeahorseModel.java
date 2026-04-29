@@ -267,7 +267,7 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         float size = SeahorseVisualRules.renderScale(entity.getSeahorseSize());
         poseStack.translate(0, SeahorseVisualRules.renderYOffset(entity.getSeahorseSize()), 0);
@@ -275,7 +275,7 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
             poseStack.translate(0, 0.3F, 0);
         }
         poseStack.scale(size, size, size);
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, color);
+        this.body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
     }
 }

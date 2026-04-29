@@ -8,29 +8,27 @@ plugins {
 
 version = rootProject.version
 group = rootProject.group
+evaluationDependsOn(':common')
+def commonMainSourceSet = project(':common').sourceSets.main
 
 base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets {
     main {
-        java.srcDirs = [
-                project.file('src/main/java'),
-                rootProject.layout.projectDirectory.dir('common/src/main/java').asFile
-        ]
-        resources.srcDirs = [
-                project.file('src/main/resources'),
-                project.file('src/generated/resources'),
-                rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile,
-                rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile
-        ]
+        java.srcDirs = [project.file('src/main/java')] + commonMainSourceSet.java.srcDirs
+        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')] + commonMainSourceSet.resources.srcDirs
+        compileClasspath += commonMainSourceSet.output
+        runtimeClasspath += commonMainSourceSet.output
     }
     test {
         java.srcDirs = [project.file('src/test/java')]
         resources.srcDirs = [project.file('src/test/resources')]
+        compileClasspath += commonMainSourceSet.output
+        runtimeClasspath += commonMainSourceSet.output
     }
 }
 
@@ -78,10 +76,16 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation project(':common')
 
     testImplementation platform('org.junit:junit-bom:5.14.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('jar', Jar).configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(project(':common').sourceSets.main.output)
 }
 
 tasks.withType(ProcessResources).configureEach {

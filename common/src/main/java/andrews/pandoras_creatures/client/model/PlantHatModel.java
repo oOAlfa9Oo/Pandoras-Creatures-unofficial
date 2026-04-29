@@ -164,7 +164,7 @@ public class PlantHatModel extends HumanoidModel<LivingEntity> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         hatBase.xRot = this.head.xRot;
         hatBase.yRot = this.head.yRot;
         hatBase.zRot = this.head.zRot;
@@ -173,7 +173,7 @@ public class PlantHatModel extends HumanoidModel<LivingEntity> {
         if (armorStand) {
             poseStack.translate(0.0F, 0.12F, 0.0F);
         }
-        hatBase.render(poseStack, buffer, packedLight, packedOverlay, color);
+        hatBase.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
     }
 

@@ -3,101 +3,86 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.42-beta'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
 version = rootProject.version
 group = rootProject.group
 evaluationDependsOn(':common')
+def commonMainSourceSet = project(':common').sourceSets.main
 
 base {
     archivesName = "${mod_id}-neoforge-${minecraft_version}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets {
     main {
         java.srcDirs = [project.file('src/main/java')]
-        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')]
-        compileClasspath += project(':common').sourceSets.main.output
-        runtimeClasspath += project(':common').sourceSets.main.output
+        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')] + commonMainSourceSet.resources.srcDirs
+        compileClasspath += commonMainSourceSet.output
+        runtimeClasspath += commonMainSourceSet.output
     }
     test {
         java.srcDirs = [project.file('src/test/java')]
         resources.srcDirs = [project.file('src/test/resources')]
-        compileClasspath += project(':common').sourceSets.main.output
-        runtimeClasspath += project(':common').sourceSets.main.output
+        compileClasspath += commonMainSourceSet.output
+        runtimeClasspath += commonMainSourceSet.output
     }
 }
 
-neoForge {
-    version = neo_version
+sourceSets.main.output.resourcesDir = tasks.named('compileJava', JavaCompile).get().destinationDirectory.get().asFile
+
+tasks.named('processResources', ProcessResources).configure {
+    destinationDir = tasks.named('compileJava', JavaCompile).get().destinationDirectory.get().asFile
+}
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
 
     runs {
-        client {
-            client()
-            gameDirectory = rootProject.layout.projectDirectory.dir('run/client')
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        configureEach {
+            workingDirectory = file("run/${name}")
         }
+
+        client
 
         server {
-            server()
-            gameDirectory = rootProject.layout.projectDirectory.dir('run/server')
-            programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        }
-
-        gameTestServer {
-            type = "gameTestServer"
-            gameDirectory = rootProject.layout.projectDirectory.dir('run/gametest')
-            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
         }
 
         data {
-            data()
-            gameDirectory = rootProject.layout.projectDirectory.dir('run/data')
-            systemProperty 'pandoras_creatures.sharedGeneratedClientOutput',
-                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
-            systemProperty 'pandoras_creatures.sharedGeneratedWorldgenOutput',
-                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
-            programArguments.addAll '--mod', mod_id, '--all',
-                    '--output', project.file('src/generated/resources/').getAbsolutePath(),
-                    '--existing', project.file('src/main/resources/').getAbsolutePath(),
+            workingDirectory = file('run/neoforge-data')
+            args '--mod', mod_id, '--all',
+                    '--output', file('src/generated/resources').absolutePath,
+                    '--existing', file('src/main/resources').absolutePath,
                     '--existing', rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile.absolutePath,
                     '--existing', rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
         }
     }
-
-    mods {
-        "${mod_id}" {
-            sourceSet project(':common').sourceSets.main
-            sourceSet sourceSets.main
-        }
-    }
-}
-
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
+        name = 'NeoForged Releases'
+        url = 'https://maven.neoforged.net/releases'
     }
 }
 
 dependencies {
+    minecraft "net.neoforged:forge:${neo_forge_version}"
     implementation project(':common')
+
     testImplementation platform('org.junit:junit-bom:5.14.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('jar', Jar).configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(project(':common').sourceSets.main.output)
 }
 
@@ -105,7 +90,7 @@ tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
+            neo_version            : neo_forge_version,
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
             mod_id                 : mod_id,

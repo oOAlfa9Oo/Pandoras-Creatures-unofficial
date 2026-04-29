@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,19 +20,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class ItemArachnonHammer extends PickaxeItem {
     public ItemArachnonHammer() {
-        super(PCToolMaterials.ARACHNON_MATERIAL, new Properties()
-                .attributes(createAttributes(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F)));
+        super(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F, new Properties());
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
-        super.appendHoverText(stack, context, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
     }
 
     @Override
@@ -97,7 +96,7 @@ public class ItemArachnonHammer extends PickaxeItem {
         if (blockIn.getDestroySpeed(level, position) == -1) {
             return false;
         }
-        return this.isCorrectToolForDrops(new ItemStack(this), blockIn);
+        return this.isCorrectToolForDrops(blockIn);
     }
 
     private void processHarvest(Level level, BlockPos pos, BlockState state, ItemStack stack, Player player) {
@@ -131,7 +130,7 @@ public class ItemArachnonHammer extends PickaxeItem {
         float f5 = (float) Math.sin(-pitch * ((float) Math.PI / 180F));
         float f6 = f3 * f4;
         float f7 = f2 * f4;
-        double reach = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) * 2;
+        double reach = player.isCreative() ? 10.0D : 9.0D;
         Vec3 endVec = eyePos.add(f6 * reach, f5 * reach, f7 * reach);
         return level.clip(new ClipContext(eyePos, endVec, ClipContext.Block.OUTLINE, fluidMode, player));
     }

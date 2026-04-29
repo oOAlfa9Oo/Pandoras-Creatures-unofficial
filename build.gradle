@@ -103,6 +103,25 @@ tasks.register('verifyArtifactNaming') {
     }
 }
 
+tasks.register('verifyFamilyPolicy') {
+    group = 'verification'
+    description = 'Verifies the declared official and experimental loaders for the current Minecraft family.'
+
+    doLast {
+        def expectedPolicy = [
+                '1.20.1': [
+                        official    : ['fabric', 'forge'],
+                        experimental: ['neoforge']
+                ]
+        ]
+
+        def policy = expectedPolicy[minecraft_version]
+        if (policy == null) {
+            throw new GradleException("No family policy registered for Minecraft ${minecraft_version}")
+        }
+    }
+}
+
 tasks.register('verifyMultiversionDocs') {
     group = 'verification'
     description = 'Verifies that required multiversion planning documents are present.'
@@ -132,7 +151,7 @@ tasks.named('assemble') {
 }
 
 tasks.named('check') {
-    dependsOn ':common:test', ':fabric:test', ':forge:test', ':neoforge:test', 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs'
+    dependsOn ':common:test', ':fabric:test', ':forge:test', ':neoforge:test', 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy'
 }
 
 tasks.named('build') {
@@ -148,7 +167,7 @@ tasks.register('compileJava') {
 tasks.register('test') {
     group = 'verification'
     description = 'Runs unit tests for common, Fabric, Forge and NeoForge from the workspace root.'
-    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', ':common:test', ':fabric:test', ':forge:test', ':neoforge:test'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy', ':common:test', ':fabric:test', ':forge:test', ':neoforge:test'
 }
 
 tasks.register('runClient') {
@@ -205,8 +224,24 @@ tasks.register('buildLoaderJars') {
     dependsOn ':fabric:build', ':forge:build', ':neoforge:build'
 }
 
+tasks.register('validateOfficialLoaders') {
+    group = 'verification'
+    description = 'Runs the blocking validation gate for the official loaders of the current Minecraft family.'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy',
+            ':common:compileJava', ':common:test',
+            ':fabric:compileJava', ':fabric:test', ':fabric:build',
+            ':forge:compileJava', ':forge:test', ':forge:build'
+}
+
+tasks.register('validateExperimentalLoaders') {
+    group = 'verification'
+    description = 'Runs the non-blocking validation gate for experimental loaders of the current Minecraft family.'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy',
+            ':neoforge:compileJava', ':neoforge:test', ':neoforge:build'
+}
+
 tasks.register('validateCurrentFamily') {
     group = 'verification'
     description = 'Runs the minimum validation gate before freezing the current Minecraft family branch.'
-    dependsOn 'compileJava', 'test', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'buildLoaderJars'
+    dependsOn 'validateOfficialLoaders', 'buildLoaderJars'
 }

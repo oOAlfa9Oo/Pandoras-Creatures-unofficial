@@ -145,26 +145,26 @@ public class EndTrollBoxModel extends Model {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         // This is called for simple rendering, but we handle complex rendering in the BEWLR
-        base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        bottom_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        top_front_left_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_top_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_top_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_front.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_back.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        lid_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        decoration_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bottom_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bottom_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bottom_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bottom_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        top_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        top_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        top_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        top_front_left_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        lid_top_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        lid_top_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        lid_front.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        lid_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        lid_back.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        lid_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        decoration_front_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        decoration_front_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        decoration_back_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        decoration_back_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

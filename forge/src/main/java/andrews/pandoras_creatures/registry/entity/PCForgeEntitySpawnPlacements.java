@@ -4,7 +4,7 @@ import andrews.pandoras_creatures.forge.registry.PCForgeEntities;
 import andrews.pandoras_creatures.registry.entity.PCEntitySpawnRules;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -21,7 +21,7 @@ public final class PCForgeEntitySpawnPlacements {
     public static void registerAll(SpawnPlacementRegisterEvent event) {
         event.register(
                 PCForgeEntities.seahorse(),
-                SpawnPlacementTypes.IN_WATER,
+                SpawnPlacements.Type.IN_WATER,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnSeahorse(level.getFluidState(pos).is(FluidTags.WATER)),
@@ -30,7 +30,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.crab(),
-                SpawnPlacementTypes.NO_RESTRICTIONS,
+                SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnCrab(
@@ -38,14 +38,15 @@ public final class PCForgeEntitySpawnPlacements {
                                 level.getBiome(pos).is(net.minecraft.world.level.biome.Biomes.WARM_OCEAN),
                                 pos.getY(),
                                 level.getBlockState(pos.below()).is(Blocks.SAND),
-                                level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)
+                                level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK),
+                                level.getBlockState(pos).isAir() || level.getFluidState(pos).is(FluidTags.WATER)
                         ),
                 SpawnPlacementRegisterEvent.Operation.REPLACE
         );
 
         event.register(
                 PCForgeEntities.hellhound(),
-                SpawnPlacementTypes.ON_GROUND,
+                SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnHostileGroundMob(level.getDifficulty() != Difficulty.PEACEFUL),
@@ -54,7 +55,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.arachnon(),
-                SpawnPlacementTypes.ON_GROUND,
+                SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnArachnon(level.getDifficulty() != Difficulty.PEACEFUL, level.getRawBrightness(pos, 0)),
@@ -63,7 +64,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.acidicArchvine(),
-                SpawnPlacementTypes.NO_RESTRICTIONS,
+                SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnAcidicArchvine(
@@ -81,7 +82,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.bufflon(),
-                SpawnPlacementTypes.ON_GROUND,
+                SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnBufflon(level.getRawBrightness(pos, 0),
@@ -91,7 +92,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.endTroll(),
-                SpawnPlacementTypes.ON_GROUND,
+                SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> true,
                 SpawnPlacementRegisterEvent.Operation.REPLACE

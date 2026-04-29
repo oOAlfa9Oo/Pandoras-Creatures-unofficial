@@ -63,9 +63,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Team;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -138,16 +138,16 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(BUFFLON_TYPE, 0);
-        builder.define(TAMED, (byte) 0);
-        builder.define(OWNER_UNIQUE_ID, Optional.empty());
-        builder.define(IS_SADDLED, false);
-        builder.define(BACK_ATTACHMENT_TYPE, 0);
-        builder.define(IS_SITTING, false);
-        builder.define(IS_FOLLOWING, false);
-        builder.define(COMBAT_MODE, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(BUFFLON_TYPE, 0);
+        this.entityData.define(TAMED, (byte) 0);
+        this.entityData.define(OWNER_UNIQUE_ID, Optional.empty());
+        this.entityData.define(IS_SADDLED, false);
+        this.entityData.define(BACK_ATTACHMENT_TYPE, 0);
+        this.entityData.define(IS_SITTING, false);
+        this.entityData.define(IS_FOLLOWING, false);
+        this.entityData.define(COMBAT_MODE, false);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -171,21 +171,20 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         RandomSource rand = level.getRandom();
         int type = rand.nextInt(BUFFLON_VARIANT_COUNT) + 1;
         this.setBufflonType(type);
         return spawnData;
     }
 
-    @Override
     public boolean canBeLeashed() {
         return false;
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    public int getExperienceReward() {
         return 1 + this.level().random.nextInt(3);
     }
 
@@ -642,8 +641,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public void equipSaddle(ItemStack saddle, @Nullable net.minecraft.sounds.SoundSource source) {
-        this.bufflonStorage.setItem(BufflonInventoryLayout.SADDLE_SLOT, saddle.copyWithCount(1));
+    public void equipSaddle(@Nullable net.minecraft.sounds.SoundSource source) {
+        this.bufflonStorage.setItem(BufflonInventoryLayout.SADDLE_SLOT, new ItemStack(PandorasCreaturesCommon.platform().registry().item(BUFFLON_SADDLE_ITEM_ID)));
         if (source != null) {
             this.level().playSound(null, this, SoundEvents.HORSE_SADDLE, source, 0.5F, 1.0F);
         }
@@ -818,8 +817,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public PlayerTeam getTeam() {
-        PlayerTeam inheritedTeam = BufflonOwnership.getInheritedTeam(this.isTamed(), this.getOwner());
+    public Team getTeam() {
+        Team inheritedTeam = BufflonOwnership.getInheritedTeam(this.isTamed(), this.getOwner());
         if (inheritedTeam != null) {
             return inheritedTeam;
         }
@@ -948,7 +947,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             if (!itemStack.isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putByte(BufflonDataKeys.SLOT, (byte) slotIndex);
-                items.add(itemStack.save(this.registryAccess(), itemTag));
+                items.add(itemStack.save(itemTag));
             }
         }
         compound.put(BufflonDataKeys.ITEMS, items);
@@ -975,7 +974,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             CompoundTag compoundtag = listtag.getCompound(i);
             int slot = compoundtag.getByte(BufflonDataKeys.SLOT) & 255;
             if (slot >= 0 && slot < this.bufflonStorage.getContainerSize()) {
-                this.bufflonStorage.setItem(slot, ItemStack.parse(this.registryAccess(), compoundtag).orElse(ItemStack.EMPTY));
+                this.bufflonStorage.setItem(slot, ItemStack.of(compoundtag));
             }
         }
     }
@@ -1014,3 +1013,5 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         }
     }
 }
+
+

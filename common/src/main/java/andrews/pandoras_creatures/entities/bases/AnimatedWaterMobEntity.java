@@ -7,14 +7,14 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.shapes.Shapes;
 
 public abstract class AnimatedWaterMobEntity extends AnimatedCreatureEntity {
 
     protected AnimatedWaterMobEntity(EntityType<? extends AnimatedWaterMobEntity> type, Level level) {
         super(type, level);
-        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
     @Override
@@ -39,7 +39,7 @@ public abstract class AnimatedWaterMobEntity extends AnimatedCreatureEntity {
      * Get the experience points the entity currently has.
      */
     @Override
-    public int getBaseExperienceReward() {
+    public int getExperienceReward() {
         return 1 + this.level().random.nextInt(3);
     }
 
@@ -65,12 +65,10 @@ public abstract class AnimatedWaterMobEntity extends AnimatedCreatureEntity {
         this.updateAir(i);
     }
 
-    @Override
     public boolean isPushedByFluid() {
         return false;
     }
 
-    @Override
     public boolean canBeLeashed() {
         return false;
     }

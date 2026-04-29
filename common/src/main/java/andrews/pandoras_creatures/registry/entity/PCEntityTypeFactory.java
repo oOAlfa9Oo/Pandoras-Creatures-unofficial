@@ -36,7 +36,7 @@ public final class PCEntityTypeFactory {
     }
 
     public static String entityId(String name) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, name).toString();
+        return new ResourceLocation(Reference.MODID, name).toString();
     }
 
     private static <T extends Entity> EntityType.Builder<T> configure(EntityType.Builder<T> builder,
@@ -48,3 +48,4 @@ public final class PCEntityTypeFactory {
                 .updateInterval(updateInterval);
     }
 }
+

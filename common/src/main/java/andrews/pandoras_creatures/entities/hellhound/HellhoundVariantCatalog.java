@@ -29,6 +29,7 @@ public final class HellhoundVariantCatalog {
     }
 
     public static ResourceLocation texturePath(int typeId) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, texturePathString(typeId));
+        return new ResourceLocation(Reference.MODID, texturePathString(typeId));
     }
 }
+

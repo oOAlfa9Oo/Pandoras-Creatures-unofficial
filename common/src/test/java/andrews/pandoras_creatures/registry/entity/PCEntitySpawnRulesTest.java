@@ -13,9 +13,10 @@ class PCEntitySpawnRulesTest {
 
     @Test
     void crabSpawnRequiresAllowedHeightAndSurface() {
-        assertTrue(PCEntitySpawnRules.canSpawnCrab(true, false, 60, true, false));
-        assertFalse(PCEntitySpawnRules.canSpawnCrab(true, false, 71, true, false));
-        assertFalse(PCEntitySpawnRules.canSpawnCrab(false, false, 60, false, false));
+        assertTrue(PCEntitySpawnRules.canSpawnCrab(true, false, 60, true, false, true));
+        assertFalse(PCEntitySpawnRules.canSpawnCrab(true, false, 71, true, false, true));
+        assertFalse(PCEntitySpawnRules.canSpawnCrab(false, false, 60, false, false, true));
+        assertFalse(PCEntitySpawnRules.canSpawnCrab(true, false, 60, true, false, false));
     }
 
     @Test

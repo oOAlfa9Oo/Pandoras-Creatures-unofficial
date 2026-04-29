@@ -137,7 +137,7 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements IA
         ++this.animationDeathTime;
         if (this.animationDeathTime == deathTime) {
             if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))) {
-                int i = this.getBaseExperienceReward();
+                int i = this.getExperienceReward();
 
                 i = PandorasCreaturesCommon.platform().entities().getExperienceDrop(this, this.lastHurtByPlayer, i);
                 while (i > 0) {

@@ -11,7 +11,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class PandoricShardBlockEntity extends BlockEntity {
     private final RandomSource random = RandomSource.create();
@@ -97,3 +97,4 @@ public class PandoricShardBlockEntity extends BlockEntity {
         setChanged();
     }
 }
+

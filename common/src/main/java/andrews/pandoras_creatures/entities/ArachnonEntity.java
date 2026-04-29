@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.arachnon.ArachnonAttackRules;
+import andrews.pandoras_creatures.entities.arachnon.ArachnonSpawnTuning;
 import andrews.pandoras_creatures.entities.bases.AnimatedMonsterEntity;
 import andrews.pandoras_creatures.entities.goals.arachnon.MeleeAttackGoalWithRange;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
@@ -61,9 +62,9 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    public int getExperienceReward() {
         this.xpReward = (int) ((float) this.xpReward * 5.0F);
-        return super.getBaseExperienceReward();
+        return super.getExperienceReward();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
 
     @Override
     public int getMaxSpawnClusterSize() {
-        return 1;
+        return ArachnonSpawnTuning.maxSpawnGroup();
     }
 
     @Override

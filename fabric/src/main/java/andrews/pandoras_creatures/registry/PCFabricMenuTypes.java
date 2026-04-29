@@ -7,9 +7,6 @@ import andrews.pandoras_creatures.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
@@ -31,17 +28,15 @@ public final class PCFabricMenuTypes {
 
         BUFFLON = Registry.register(
                 BuiltInRegistries.MENU,
-                ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCMenuIds.BUFFLON),
-                new ExtendedScreenHandlerType<>(
-                        BufflonMenu::new,
-                        StreamCodec.composite(ByteBufCodecs.INT, Integer::intValue, Integer::valueOf)
-                )
+                new ResourceLocation(Reference.MODID, PCMenuIds.BUFFLON),
+                new ExtendedScreenHandlerType<>((syncId, inventory, buf) -> new BufflonMenu(syncId, inventory, buf.readInt()))
         );
 
         END_TROLL_BOX = Registry.register(
                 BuiltInRegistries.MENU,
-                ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCMenuIds.END_TROLL_BOX),
+                new ResourceLocation(Reference.MODID, PCMenuIds.END_TROLL_BOX),
                 new MenuType<>(EndTrollBoxMenu::new, FeatureFlags.DEFAULT_FLAGS)
         );
     }
 }
+

@@ -13,12 +13,13 @@ public final class PCTags {
     public static final class Items {
         public static final TagKey<Item> VANILLA_SHULKER_BOXES = TagKey.create(
                 Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath(Reference.MODID, "vanilla_shulker_boxes"));
+                new ResourceLocation(Reference.MODID, "vanilla_shulker_boxes"));
         public static final TagKey<Item> END_TROLL_BOXES = TagKey.create(
                 Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath(Reference.MODID, "end_troll_boxes"));
+                new ResourceLocation(Reference.MODID, "end_troll_boxes"));
 
         private Items() {
         }
     }
 }
+

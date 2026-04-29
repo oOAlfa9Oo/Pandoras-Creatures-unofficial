@@ -1,10 +1,7 @@
 package andrews.pandoras_creatures.network;
 
 import andrews.pandoras_creatures.entities.bufflon.BufflonHandle;
-import andrews.pandoras_creatures.network.payload.BufflonCombatModePayload;
-import andrews.pandoras_creatures.network.payload.BufflonFollowPayload;
-import andrews.pandoras_creatures.network.payload.BufflonInventoryPayload;
-import andrews.pandoras_creatures.network.payload.BufflonSitPayload;
+import andrews.pandoras_creatures.network.PCPayloadIds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -14,21 +11,21 @@ public final class FabricBufflonPayloadHandlers {
     }
 
     public static void registerReceivers() {
-        ServerPlayNetworking.registerGlobalReceiver(BufflonInventoryPayload.TYPE,
-                (payload, context) -> context.server().execute(() ->
-                        withBufflon(context.player(), payload.entityId(), (player, bufflon) -> bufflon.openBufflonMenu(player))));
+        ServerPlayNetworking.registerGlobalReceiver(PCPayloadIds.id(PCPayloadIds.BUFFLON_INVENTORY),
+                (server, player, handler, buf, responseSender) -> server.execute(() ->
+                        withBufflon(player, buf.readInt(), (serverPlayer, bufflon) -> bufflon.openBufflonMenu(serverPlayer))));
 
-        ServerPlayNetworking.registerGlobalReceiver(BufflonSitPayload.TYPE,
-                (payload, context) -> context.server().execute(() ->
-                        withOwnedBufflon(context.player(), payload.entityId(), (player, bufflon) -> bufflon.setBufflonOrderedToSit(payload.shouldSit()))));
+        ServerPlayNetworking.registerGlobalReceiver(PCPayloadIds.id(PCPayloadIds.BUFFLON_SIT),
+                (server, player, handler, buf, responseSender) -> server.execute(() ->
+                        withOwnedBufflon(player, buf.readInt(), (serverPlayer, bufflon) -> bufflon.setBufflonOrderedToSit(buf.readBoolean()))));
 
-        ServerPlayNetworking.registerGlobalReceiver(BufflonFollowPayload.TYPE,
-                (payload, context) -> context.server().execute(() ->
-                        withOwnedBufflon(context.player(), payload.entityId(), (player, bufflon) -> bufflon.setBufflonFollowingOwner(payload.shouldFollow()))));
+        ServerPlayNetworking.registerGlobalReceiver(PCPayloadIds.id(PCPayloadIds.BUFFLON_FOLLOW),
+                (server, player, handler, buf, responseSender) -> server.execute(() ->
+                        withOwnedBufflon(player, buf.readInt(), (serverPlayer, bufflon) -> bufflon.setBufflonFollowingOwner(buf.readBoolean()))));
 
-        ServerPlayNetworking.registerGlobalReceiver(BufflonCombatModePayload.TYPE,
-                (payload, context) -> context.server().execute(() ->
-                        withOwnedBufflon(context.player(), payload.entityId(), (player, bufflon) -> bufflon.setBufflonCombatMode(payload.combatMode()))));
+        ServerPlayNetworking.registerGlobalReceiver(PCPayloadIds.id(PCPayloadIds.BUFFLON_COMBAT_MODE),
+                (server, player, handler, buf, responseSender) -> server.execute(() ->
+                        withOwnedBufflon(player, buf.readInt(), (serverPlayer, bufflon) -> bufflon.setBufflonCombatMode(buf.readBoolean()))));
     }
 
     private static void withOwnedBufflon(ServerPlayer player, int entityId, BufflonAction action) {

@@ -55,7 +55,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class EndTrollEntity extends AnimatedMonsterEntity {
@@ -104,10 +104,10 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(IS_STANDING, false);
-        builder.define(HAS_SCREAMED, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(IS_STANDING, false);
+        this.entityData.define(HAS_SCREAMED, false);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -137,8 +137,8 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public EntityDimensions getDefaultDimensions(Pose pose) {
-        return this.isEntityStanding() ? STANDING_SIZE : super.getDefaultDimensions(pose);
+    public EntityDimensions getDimensions(Pose pose) {
+        return this.isEntityStanding() ? STANDING_SIZE : super.getDimensions(pose);
     }
 
     @Override
@@ -217,8 +217,8 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         return spawnData;
     }
 
@@ -247,12 +247,11 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    public int getExperienceReward() {
         this.xpReward = 100;
-        return super.getBaseExperienceReward();
+        return super.getExperienceReward();
     }
 
-    @Override
     public boolean canBeLeashed() {
         return false;
     }
@@ -513,3 +512,5 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
         return null;
     }
 }
+
+

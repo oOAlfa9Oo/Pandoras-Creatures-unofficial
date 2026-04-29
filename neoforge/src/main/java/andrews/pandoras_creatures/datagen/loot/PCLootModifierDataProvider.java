@@ -33,7 +33,7 @@ public final class PCLootModifierDataProvider implements DataProvider {
         for (LootModifierDefinition definition : DEFINITIONS) {
             futures.add(DataProvider.saveStable(cachedOutput, createLootModifier(definition), lootModifierPathProvider.json(id(definition.name()))));
         }
-        futures.add(DataProvider.saveStable(cachedOutput, createGlobalLootModifierList(), lootModifierPathProvider.json(ResourceLocation.fromNamespaceAndPath("neoforge", "global_loot_modifiers"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createGlobalLootModifierList(), lootModifierPathProvider.json(new ResourceLocation("neoforge", "global_loot_modifiers"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -68,9 +68,10 @@ public final class PCLootModifierDataProvider implements DataProvider {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     private record LootModifierDefinition(String name, String targetLootTableId) {
     }
 }
+

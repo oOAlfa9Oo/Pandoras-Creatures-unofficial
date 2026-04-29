@@ -14,11 +14,8 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import net.minecraft.world.level.levelgen.structure.pools.DimensionPadding;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
-import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 
 import java.util.Optional;
 
@@ -55,10 +52,7 @@ public class EndPrisonStructure extends Structure {
                 pos,
                 false,
                 Optional.empty(),
-                80,
-                PoolAliasLookup.EMPTY,
-                DimensionPadding.ZERO,
-                LiquidSettings.APPLY_WATERLOGGING
+                80
         );
 
         if (jigsawResult.isEmpty()) {

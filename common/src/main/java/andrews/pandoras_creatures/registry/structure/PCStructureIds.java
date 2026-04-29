@@ -31,7 +31,7 @@ public final class PCStructureIds {
     }
 
     public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     public static String qualified(String path) {
@@ -42,3 +42,4 @@ public final class PCStructureIds {
         return "#" + qualified(tagPath);
     }
 }
+

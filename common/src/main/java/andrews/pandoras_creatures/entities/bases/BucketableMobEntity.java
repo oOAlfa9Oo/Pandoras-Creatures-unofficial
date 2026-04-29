@@ -33,9 +33,9 @@ public abstract class BucketableMobEntity extends AnimatedWaterMobEntity impleme
      * Registers the data of the DataManager
      */
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(FROM_BUCKET, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(FROM_BUCKET, false);
     }
 
     /**
@@ -44,7 +44,7 @@ public abstract class BucketableMobEntity extends AnimatedWaterMobEntity impleme
      */
     protected void setBucketData(ItemStack bucket) {
         if (this.hasCustomName()) {
-            bucket.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, this.getCustomName());
+            bucket.setHoverName(this.getCustomName());
         }
     }
 
@@ -139,3 +139,4 @@ public abstract class BucketableMobEntity extends AnimatedWaterMobEntity impleme
         return this.fromBucket();
     }
 }
+

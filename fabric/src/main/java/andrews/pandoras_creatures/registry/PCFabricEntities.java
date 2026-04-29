@@ -31,7 +31,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.LevelAccessor;
@@ -43,18 +42,16 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public final class PCFabricEntities {
-    // Fabric does not need a custom data fixer name for mod entities here; using null avoids noisy
-    // "No data fixer registered" messages during bootstrap for ids owned by the mod.
-    public static final EntityType<AcidicArchvineEntity> ACIDIC_ARCHVINE = register(PCEntityIds.ACIDIC_ARCHVINE, PCEntityBootstrap.acidicArchvineType().build(null));
-    public static final EntityType<ArachnonEntity> ARACHNON = register(PCEntityIds.ARACHNON, PCEntityBootstrap.arachnonType().build(null));
-    public static final EntityType<BufflonEntity> BUFFLON = register(PCEntityIds.BUFFLON, PCEntityBootstrap.bufflonType().build(null));
-    public static final EntityType<CrabEntity> CRAB = register(PCEntityIds.CRAB, PCEntityBootstrap.crabType().build(null));
-    public static final EntityType<EndTrollEntity> END_TROLL = register(PCEntityIds.END_TROLL, PCEntityBootstrap.endTrollType().build(null));
-    public static final EntityType<EndTrollBulletDamageEntity> END_TROLL_BULLET_DAMAGE = register(PCEntityIds.END_TROLL_BULLET_DAMAGE, PCEntityBootstrap.endTrollBulletDamageType().build(null));
-    public static final EntityType<EndTrollBulletPoisonEntity> END_TROLL_BULLET_POISON = register(PCEntityIds.END_TROLL_BULLET_POISON, PCEntityBootstrap.endTrollBulletPoisonType().build(null));
-    public static final EntityType<EndTrollBulletWitherEntity> END_TROLL_BULLET_WITHER = register(PCEntityIds.END_TROLL_BULLET_WITHER, PCEntityBootstrap.endTrollBulletWitherType().build(null));
-    public static final EntityType<HellhoundEntity> HELLHOUND = register(PCEntityIds.HELLHOUND, PCEntityBootstrap.hellhoundType().build(null));
-    public static final EntityType<SeahorseEntity> SEAHORSE = register(PCEntityIds.SEAHORSE, PCEntityBootstrap.seahorseType().build(null));
+    public static final EntityType<AcidicArchvineEntity> ACIDIC_ARCHVINE = register(PCEntityIds.ACIDIC_ARCHVINE, PCEntityBootstrap.acidicArchvineType().build(PCEntityTypeFactory.entityId(PCEntityIds.ACIDIC_ARCHVINE).toString()));
+    public static final EntityType<ArachnonEntity> ARACHNON = register(PCEntityIds.ARACHNON, PCEntityBootstrap.arachnonType().build(PCEntityTypeFactory.entityId(PCEntityIds.ARACHNON).toString()));
+    public static final EntityType<BufflonEntity> BUFFLON = register(PCEntityIds.BUFFLON, PCEntityBootstrap.bufflonType().build(PCEntityTypeFactory.entityId(PCEntityIds.BUFFLON).toString()));
+    public static final EntityType<CrabEntity> CRAB = register(PCEntityIds.CRAB, PCEntityBootstrap.crabType().build(PCEntityTypeFactory.entityId(PCEntityIds.CRAB).toString()));
+    public static final EntityType<EndTrollEntity> END_TROLL = register(PCEntityIds.END_TROLL, PCEntityBootstrap.endTrollType().build(PCEntityTypeFactory.entityId(PCEntityIds.END_TROLL).toString()));
+    public static final EntityType<EndTrollBulletDamageEntity> END_TROLL_BULLET_DAMAGE = register(PCEntityIds.END_TROLL_BULLET_DAMAGE, PCEntityBootstrap.endTrollBulletDamageType().build(PCEntityTypeFactory.entityId(PCEntityIds.END_TROLL_BULLET_DAMAGE).toString()));
+    public static final EntityType<EndTrollBulletPoisonEntity> END_TROLL_BULLET_POISON = register(PCEntityIds.END_TROLL_BULLET_POISON, PCEntityBootstrap.endTrollBulletPoisonType().build(PCEntityTypeFactory.entityId(PCEntityIds.END_TROLL_BULLET_POISON).toString()));
+    public static final EntityType<EndTrollBulletWitherEntity> END_TROLL_BULLET_WITHER = register(PCEntityIds.END_TROLL_BULLET_WITHER, PCEntityBootstrap.endTrollBulletWitherType().build(PCEntityTypeFactory.entityId(PCEntityIds.END_TROLL_BULLET_WITHER).toString()));
+    public static final EntityType<HellhoundEntity> HELLHOUND = register(PCEntityIds.HELLHOUND, PCEntityBootstrap.hellhoundType().build(PCEntityTypeFactory.entityId(PCEntityIds.HELLHOUND).toString()));
+    public static final EntityType<SeahorseEntity> SEAHORSE = register(PCEntityIds.SEAHORSE, PCEntityBootstrap.seahorseType().build(PCEntityTypeFactory.entityId(PCEntityIds.SEAHORSE).toString()));
 
     private static boolean initialized;
 
@@ -77,7 +74,7 @@ public final class PCFabricEntities {
 
         SpawnPlacements.register(
                 ACIDIC_ARCHVINE,
-                SpawnPlacementTypes.NO_RESTRICTIONS,
+                SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnAcidicArchvine(
                         level.getDifficulty() != Difficulty.PEACEFUL,
@@ -93,35 +90,36 @@ public final class PCFabricEntities {
 
         SpawnPlacements.register(
                 ARACHNON,
-                SpawnPlacementTypes.ON_GROUND,
+                SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnArachnon(level.getDifficulty() != Difficulty.PEACEFUL, level.getRawBrightness(pos, 0))
         );
 
         SpawnPlacements.register(
                 HELLHOUND,
-                SpawnPlacementTypes.ON_GROUND,
+                SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnHostileGroundMob(level.getDifficulty() != Difficulty.PEACEFUL)
         );
 
         SpawnPlacements.register(
                 SEAHORSE,
-                SpawnPlacementTypes.IN_WATER,
+                SpawnPlacements.Type.IN_WATER,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnSeahorse(level.getFluidState(pos).is(FluidTags.WATER))
         );
 
         SpawnPlacements.register(
                 CRAB,
-                SpawnPlacementTypes.NO_RESTRICTIONS,
+                SpawnPlacements.Type.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnCrab(
                         isBiome(level, pos, Biomes.BEACH),
                         isBiome(level, pos, Biomes.WARM_OCEAN),
                         pos.getY(),
                         level.getBlockState(pos.below()).is(Blocks.SAND),
-                        level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)
+                        level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK),
+                        level.getBlockState(pos).isAir() || level.getFluidState(pos).is(FluidTags.WATER)
                 )
         );
 
@@ -134,7 +132,7 @@ public final class PCFabricEntities {
 
     private static void registerBiomeSpawns() {
         for (PCBiomeSpawnCatalog.SpawnDefinition definition : PCBiomeSpawnCatalog.definitions()) {
-            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.parse(definition.entityTypeId()))
+            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getOptional(new ResourceLocation(definition.entityTypeId()))
                     .orElseThrow(() -> new IllegalStateException("Unknown Fabric entity id for biome spawn: " + definition.entityTypeId()));
             BiomeModifications.addSpawn(
                     toBiomeSelector(definition.biomes()),
@@ -148,14 +146,14 @@ public final class PCFabricEntities {
     }
 
     private static Predicate<BiomeSelectionContext> toBiomeSelector(List<String> biomeSelectors) {
-        if (biomeSelectors.size() == 1 && biomeSelectors.getFirst().startsWith("#")) {
-            String selector = biomeSelectors.getFirst().substring(1);
-            TagKey<Biome> tag = TagKey.create(Registries.BIOME, ResourceLocation.parse(selector));
+        if (biomeSelectors.size() == 1 && biomeSelectors.get(0).startsWith("#")) {
+            String selector = biomeSelectors.get(0).substring(1);
+            TagKey<Biome> tag = TagKey.create(Registries.BIOME, new ResourceLocation(selector));
             return BiomeSelectors.tag(tag);
         }
 
         List<ResourceKey<Biome>> biomeKeys = biomeSelectors.stream()
-                .map(ResourceLocation::parse)
+                .map(ResourceLocation::new)
                 .map(id -> ResourceKey.create(Registries.BIOME, id))
                 .toList();
         return BiomeSelectors.includeByKey(biomeKeys);

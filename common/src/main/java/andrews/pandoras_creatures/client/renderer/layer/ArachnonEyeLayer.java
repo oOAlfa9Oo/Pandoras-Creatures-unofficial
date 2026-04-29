@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class ArachnonEyeLayer<E extends ArachnonEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation ARACHNON_EYE_LAYER = ResourceLocation.fromNamespaceAndPath(Reference.MODID, ArachnonVisualRules.eyeTexturePathString());
+    private static final ResourceLocation ARACHNON_EYE_LAYER = new ResourceLocation(Reference.MODID, ArachnonVisualRules.eyeTexturePathString());
 
     public ArachnonEyeLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);
@@ -23,6 +23,7 @@ public class ArachnonEyeLayer<E extends ArachnonEntity, M extends EntityModel<E>
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, E entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.eyes(ARACHNON_EYE_LAYER));
-        this.getParentModel().renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, -1);
+        this.getParentModel().renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 }
+

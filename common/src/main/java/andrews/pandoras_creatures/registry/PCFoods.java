@@ -24,7 +24,7 @@ public final class PCFoods {
     private static FoodProperties food(int nutrition, float saturationModifier) {
         return new FoodProperties.Builder()
                 .nutrition(nutrition)
-                .saturationModifier(saturationModifier)
+                .saturationMod(saturationModifier)
                 .build();
     }
 }

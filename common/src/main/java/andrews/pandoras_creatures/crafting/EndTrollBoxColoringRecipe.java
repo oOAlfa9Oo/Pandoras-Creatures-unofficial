@@ -4,44 +4,34 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
 import andrews.pandoras_creatures.registry.PCTags;
 import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
+import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import org.jetbrains.annotations.Nullable;
 
 public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
-    private final String ourGroup;
-    private final CraftingBookCategory ourCategory;
-    private final ItemStack ourResult;
-    private final NonNullList<Ingredient> ourIngredients;
-
-    public EndTrollBoxColoringRecipe(String group, CraftingBookCategory category, ItemStack result, NonNullList<Ingredient> ingredients) {
-        super(group, category, result, ingredients);
-        this.ourGroup = group;
-        this.ourCategory = category;
-        this.ourResult = result;
-        this.ourIngredients = ingredients;
+    public EndTrollBoxColoringRecipe(ResourceLocation id, String group, CraftingBookCategory category, ItemStack result, NonNullList<Ingredient> ingredients) {
+        super(id, group, category, result, ingredients);
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingContainer input, RegistryAccess registries) {
         boolean endTrollBoxPresent = false;
         boolean dyeItemPresent = false;
         DyeColor colorItem = null;
 
-        for (int i = 0; i < input.size(); i++) {
+        for (int i = 0; i < input.getContainerSize(); i++) {
             final ItemStack slotStack = input.getItem(i);
             if (!slotStack.isEmpty() && slotStack.getItem() instanceof DyeItem dyeItem) {
                 if (dyeItemPresent) {
@@ -52,18 +42,22 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
             }
         }
 
-        for (int i = 0; i < input.size(); i++) {
+        for (int i = 0; i < input.getContainerSize(); i++) {
             final ItemStack slotStack = input.getItem(i);
             if (!slotStack.isEmpty() && slotStack.is(PCTags.Items.END_TROLL_BOXES)) {
-                if (endTrollBoxPresent) {
+                if (endTrollBoxPresent || colorItem == null) {
                     return ItemStack.EMPTY;
                 }
                 endTrollBoxPresent = true;
-                return slotStack.transmuteCopy(EndTrollBoxBlock.getBlockByColor(colorItem), 1);
+                ItemStack coloredEndTrollBox = new ItemStack(EndTrollBoxBlock.getBlockByColor(colorItem));
+                if (slotStack.hasTag()) {
+                    coloredEndTrollBox.setTag(slotStack.getTag().copy());
+                }
+                return coloredEndTrollBox;
             }
         }
 
-        return super.assemble(input, registries);
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -72,54 +66,24 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxColoringRecipe> {
-        public static final MapCodec<EndTrollBoxColoringRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
-                instance.group(
-                        Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.ourGroup),
-                        CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.ourCategory),
-                        ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.ourResult),
-                        Ingredient.CODEC.listOf()
-                                .fieldOf("ingredients")
-                                .xmap(list -> {
-                                    NonNullList<Ingredient> nonnull = NonNullList.create();
-                                    nonnull.addAll(list);
-                                    return nonnull;
-                                }, list -> list)
-                                .forGetter(r -> r.ourIngredients)
-                ).apply(instance, EndTrollBoxColoringRecipe::new)
-        );
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, EndTrollBoxColoringRecipe> STREAM_CODEC =
-                StreamCodec.of(
-                        (buf, recipe) -> {
-                            ByteBufCodecs.STRING_UTF8.encode(buf, recipe.ourGroup);
-                            CraftingBookCategory.STREAM_CODEC.encode(buf, recipe.ourCategory);
-                            ItemStack.STREAM_CODEC.encode(buf, recipe.ourResult);
-                            buf.writeVarInt(recipe.ourIngredients.size());
-                            for (Ingredient ingredient : recipe.ourIngredients) {
-                                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
-                            }
-                        },
-                        buf -> {
-                            String group = ByteBufCodecs.STRING_UTF8.decode(buf);
-                            CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
-                            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
-                            int count = buf.readVarInt();
-                            NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
-                            for (int i = 0; i < count; i++) {
-                                ingredients.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
-                            }
-                            return new EndTrollBoxColoringRecipe(group, category, result, ingredients);
-                        }
-                );
+        private static final ShapelessRecipe.Serializer VANILLA = new ShapelessRecipe.Serializer();
 
         @Override
-        public MapCodec<EndTrollBoxColoringRecipe> codec() {
-            return CODEC;
+        public EndTrollBoxColoringRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+            ShapelessRecipe recipe = VANILLA.fromJson(recipeId, json);
+            return new EndTrollBoxColoringRecipe(recipeId, recipe.getGroup(), recipe.category(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.getIngredients());
+        }
+
+        @Nullable
+        @Override
+        public EndTrollBoxColoringRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            ShapelessRecipe recipe = VANILLA.fromNetwork(recipeId, buffer);
+            return recipe == null ? null : new EndTrollBoxColoringRecipe(recipeId, recipe.getGroup(), recipe.category(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.getIngredients());
         }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, EndTrollBoxColoringRecipe> streamCodec() {
-            return STREAM_CODEC;
+        public void toNetwork(FriendlyByteBuf buffer, EndTrollBoxColoringRecipe recipe) {
+            VANILLA.toNetwork(buffer, recipe);
         }
     }
 }

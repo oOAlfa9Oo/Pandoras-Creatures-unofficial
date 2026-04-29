@@ -5,12 +5,10 @@ import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.util.Reference;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,17 +38,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<EndTrollBoxBlock> CODEC = simpleCodec(props -> new EndTrollBoxBlock(null, props));
-
-    @Override
-    public MapCodec<EndTrollBoxBlock> codec() {
-        return CODEC;
-    }
-
     protected static final VoxelShape FLOOR_AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
     protected static final VoxelShape CEILING_AABB = Block.box(1.0D, 2.0D, 1.0D, 15.0D, 16.0D, 15.0D);
     protected static final VoxelShape NORTH_AABB = Block.box(1.0D, 1.0D, 2.0D, 15.0D, 15.0D, 16.0D);
@@ -60,7 +51,7 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
-    public static final ResourceLocation CONTENTS = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "contents");
+    public static final ResourceLocation CONTENTS = new ResourceLocation(Reference.MODID, "contents");
 
     @Nullable
     private final DyeColor color;
@@ -94,7 +85,7 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else if (player.isSpectator()) {
@@ -147,9 +138,7 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof EndTrollBoxBlockEntity endTrollBoxBlockEntity) {
-                if (!level.isClientSide) {
-                    Containers.dropContents(level, pos, endTrollBoxBlockEntity);
-                }
+                // The loot table copies container components into the dropped box item, shulker-style.
                 level.updateNeighbourForOutputSignal(pos, state.getBlock());
             }
             super.onRemove(state, level, pos, newState, isMoving);
@@ -195,3 +184,4 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
         return new ItemStack(getBlockByColor(color));
     }
 }
+

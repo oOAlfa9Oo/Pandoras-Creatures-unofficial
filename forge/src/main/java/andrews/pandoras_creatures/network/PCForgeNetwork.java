@@ -8,71 +8,66 @@ import andrews.pandoras_creatures.network.payload.BufflonFollowPayload;
 import andrews.pandoras_creatures.network.payload.BufflonInventoryPayload;
 import andrews.pandoras_creatures.network.payload.BufflonSitPayload;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.Channel;
-import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class PCForgeNetwork {
-    private static final int PROTOCOL_VERSION = 1;
-    private static final SimpleChannel CHANNEL = ChannelBuilder
-            .named(PCPayloadIds.id("play"))
-            .acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
-            .networkProtocolVersion(PROTOCOL_VERSION)
-            .simpleChannel();
+    private static final String PROTOCOL_VERSION = "1";
+    private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+            PCPayloadIds.id("play"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
 
     static {
         int index = 0;
-        CHANNEL.messageBuilder(AnimationPayload.class, index++)
-                .direction(PacketFlow.CLIENTBOUND)
+        CHANNEL.messageBuilder(AnimationPayload.class, index++, net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT)
                 .encoder((payload, buf) -> {
                     buf.writeInt(payload.entityId());
                     buf.writeInt(payload.animationIndex());
                 })
                 .decoder(PCForgeNetwork::decodeAnimationPayload)
-                .consumerMainThread((payload, context) -> ForgeAnimationPayloadClientHandler.handle(payload))
+                .consumerMainThread((payload, contextSupplier) -> {
+                    ForgeAnimationPayloadClientHandler.handle(payload);
+                    contextSupplier.get().setPacketHandled(true);
+                })
                 .add();
 
-        CHANNEL.messageBuilder(BufflonInventoryPayload.class, index++)
-                .direction(PacketFlow.SERVERBOUND)
+        CHANNEL.messageBuilder(BufflonInventoryPayload.class, index++, net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER)
                 .encoder((payload, buf) -> buf.writeInt(payload.entityId()))
                 .decoder(buf -> new BufflonInventoryPayload(buf.readInt()))
-                .consumerMainThread((payload, context) -> ForgeBufflonPayloadHandlers.handleInventoryRequest(payload.entityId(), context))
+                .consumerMainThread((payload, contextSupplier) -> ForgeBufflonPayloadHandlers.handleInventoryRequest(payload.entityId(), contextSupplier))
                 .add();
 
-        CHANNEL.messageBuilder(BufflonSitPayload.class, index++)
-                .direction(PacketFlow.SERVERBOUND)
+        CHANNEL.messageBuilder(BufflonSitPayload.class, index++, net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER)
                 .encoder((payload, buf) -> {
                     buf.writeInt(payload.entityId());
                     buf.writeBoolean(payload.shouldSit());
                 })
                 .decoder(buf -> new BufflonSitPayload(buf.readInt(), buf.readBoolean()))
-                .consumerMainThread((payload, context) -> ForgeBufflonPayloadHandlers.handleSitRequest(payload.entityId(), payload.shouldSit(), context))
+                .consumerMainThread((payload, contextSupplier) -> ForgeBufflonPayloadHandlers.handleSitRequest(payload.entityId(), payload.shouldSit(), contextSupplier))
                 .add();
 
-        CHANNEL.messageBuilder(BufflonFollowPayload.class, index++)
-                .direction(PacketFlow.SERVERBOUND)
+        CHANNEL.messageBuilder(BufflonFollowPayload.class, index++, net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER)
                 .encoder((payload, buf) -> {
                     buf.writeInt(payload.entityId());
                     buf.writeBoolean(payload.shouldFollow());
                 })
                 .decoder(buf -> new BufflonFollowPayload(buf.readInt(), buf.readBoolean()))
-                .consumerMainThread((payload, context) -> ForgeBufflonPayloadHandlers.handleFollowRequest(payload.entityId(), payload.shouldFollow(), context))
+                .consumerMainThread((payload, contextSupplier) -> ForgeBufflonPayloadHandlers.handleFollowRequest(payload.entityId(), payload.shouldFollow(), contextSupplier))
                 .add();
 
-        CHANNEL.messageBuilder(BufflonCombatModePayload.class, index)
-                .direction(PacketFlow.SERVERBOUND)
+        CHANNEL.messageBuilder(BufflonCombatModePayload.class, index, net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER)
                 .encoder((payload, buf) -> {
                     buf.writeInt(payload.entityId());
                     buf.writeBoolean(payload.combatMode());
                 })
                 .decoder(buf -> new BufflonCombatModePayload(buf.readInt(), buf.readBoolean()))
-                .consumerMainThread((payload, context) -> ForgeBufflonPayloadHandlers.handleCombatModeRequest(payload.entityId(), payload.combatMode(), context))
+                .consumerMainThread((payload, contextSupplier) -> ForgeBufflonPayloadHandlers.handleCombatModeRequest(payload.entityId(), payload.combatMode(), contextSupplier))
                 .add();
-
-        CHANNEL.build();
     }
 
     private PCForgeNetwork() {
@@ -83,11 +78,11 @@ public final class PCForgeNetwork {
     }
 
     public static void sendToServer(Object payload) {
-        CHANNEL.send(payload, PacketDistributor.SERVER.noArg());
+        CHANNEL.sendToServer(payload);
     }
 
     public static void sendToTrackingEntityAndSelf(Entity entity, Object payload) {
-        CHANNEL.send(payload, PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity));
+        CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), payload);
     }
 
     private static AnimationPayload decodeAnimationPayload(FriendlyByteBuf buf) {

@@ -21,7 +21,7 @@ public interface RegistryBridge {
     String namespace();
 
     default ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(namespace(), path);
+        return new ResourceLocation(namespace(), path);
     }
 
     Item item(String path);
@@ -42,3 +42,4 @@ public interface RegistryBridge {
 
     StructurePieceType structurePieceType(String path);
 }
+

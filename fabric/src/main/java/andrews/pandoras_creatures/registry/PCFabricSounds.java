@@ -23,8 +23,9 @@ public final class PCFabricSounds {
 
         registeredSounds = PCSoundBootstrap.registerAll((id, factory) -> {
             SoundEvent soundEvent = factory.get();
-            Registry.register(BuiltInRegistries.SOUND_EVENT, ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), soundEvent);
+            Registry.register(BuiltInRegistries.SOUND_EVENT, new ResourceLocation(Reference.MODID, id), soundEvent);
             return () -> soundEvent;
         });
     }
 }
+

@@ -32,6 +32,7 @@ public final class PCTagDataProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(vanillaShulkerBoxValues()), itemTagPathProvider.json(id("vanilla_shulker_boxes"))));
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.ARACHNON))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("arthropod"))));
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.HELLHOUND))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("undead"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(waterBreathingEntityValues()), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("can_breathe_under_water"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -41,7 +42,7 @@ public final class PCTagDataProvider implements DataProvider {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     private static JsonObject createTagJson(List<String> values) {
@@ -69,7 +70,15 @@ public final class PCTagDataProvider implements DataProvider {
         return values;
     }
 
+    private static List<String> waterBreathingEntityValues() {
+        return List.of(
+                modId(PCEntityIds.CRAB),
+                modId(PCEntityIds.SEAHORSE)
+        );
+    }
+
     private static String modId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path).toString();
+        return new ResourceLocation(Reference.MODID, path).toString();
     }
 }
+

@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.LinkedHashMap;
@@ -68,6 +68,7 @@ public final class PCEndTrollBoxBootstrap {
             @Nullable DyeColor color) {
         String id = blockId(color);
         Block sourceBlock = sourceBlock(color);
-        blocks.put(id, registrar.register(id, () -> new EndTrollBoxBlock(color, BlockBehaviour.Properties.ofFullCopy(sourceBlock))));
+        blocks.put(id, registrar.register(id, () -> new EndTrollBoxBlock(color, BlockBehaviour.Properties.copy(sourceBlock))));
     }
 }
+

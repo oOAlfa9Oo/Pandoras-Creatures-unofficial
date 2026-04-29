@@ -21,7 +21,7 @@ public final class PCSoundBootstrap {
         LinkedHashMap<String, H> registeredSounds = new LinkedHashMap<>();
 
         for (String soundId : PCSoundCatalog.allSoundIds()) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Reference.MODID, soundId);
+            ResourceLocation id = new ResourceLocation(Reference.MODID, soundId);
             H handle = registrar.register(soundId, () -> SoundEvent.createVariableRangeEvent(id));
             registeredSounds.put(soundId, handle);
         }
@@ -29,3 +29,4 @@ public final class PCSoundBootstrap {
         return Collections.unmodifiableMap(registeredSounds);
     }
 }
+

@@ -25,10 +25,11 @@ public class PCModelLayers {
     public static final ModelLayerLocation PANDORIC_SHARD = createLocation(PCBlockIds.PANDORIC_SHARD);
 
     private static ModelLayerLocation createLocation(String name) {
-        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name), "main");
+        return new ModelLayerLocation(new ResourceLocation(Reference.MODID, name), "main");
     }
 
     private static ModelLayerLocation createLocation(String name, String layer) {
-        return new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Reference.MODID, name), layer);
+        return new ModelLayerLocation(new ResourceLocation(Reference.MODID, name), layer);
     }
 }
+

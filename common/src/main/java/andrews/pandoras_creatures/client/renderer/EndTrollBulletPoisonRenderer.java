@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class EndTrollBulletPoisonRenderer extends EntityRenderer<EndTrollBulletPoisonEntity> {
-    private static final ResourceLocation END_TROLL_BULLET_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/end_troll/bullets/end_troll_bullet_2.png");
+    private static final ResourceLocation END_TROLL_BULLET_TEXTURE = new ResourceLocation(Reference.MODID, "textures/entity/end_troll/bullets/end_troll_bullet_2.png");
     private static final RenderType END_TROLL_BULLET_RENDER_TYPE = RenderType.entityTranslucent(END_TROLL_BULLET_TEXTURE);
     private final EndTrollBulletModel<EndTrollBulletPoisonEntity> model;
 
@@ -44,10 +44,10 @@ public class EndTrollBulletPoisonRenderer extends EntityRenderer<EndTrollBulletP
         poseStack.scale(-0.5F, -0.5F, 0.5F);
         this.model.setupAnim(entity, 0.0F, 0.0F, 0.0F, f, f1);
         VertexConsumer vertexConsumer = buffer.getBuffer(this.model.renderType(END_TROLL_BULLET_TEXTURE));
-        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
+        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         poseStack.scale(1.5F, 1.5F, 1.5F);
         VertexConsumer vertexConsumer1 = buffer.getBuffer(END_TROLL_BULLET_RENDER_TYPE);
-        this.model.renderToBuffer(poseStack, vertexConsumer1, packedLight, OverlayTexture.NO_OVERLAY, 0x26FFFFFF);
+        this.model.renderToBuffer(poseStack, vertexConsumer1, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.15F);
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
@@ -67,3 +67,4 @@ public class EndTrollBulletPoisonRenderer extends EntityRenderer<EndTrollBulletP
         return prevRotation + partialTicks * f;
     }
 }
+

@@ -19,9 +19,9 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, AcidicArchvineModel<AcidicArchvineEntity>> {
-    private static final ResourceLocation TONGUE_1 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
-    private static final ResourceLocation TONGUE_2 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
-    private static final ResourceLocation TONGUE_3 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
+    private static final ResourceLocation TONGUE_1 = new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
+    private static final ResourceLocation TONGUE_2 = new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
+    private static final ResourceLocation TONGUE_3 = new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
     private final RenderType TONGUE_RENDER_TYPE_1 = RenderType.entityCutoutNoCull(TONGUE_1);
     private final RenderType TONGUE_RENDER_TYPE_2 = RenderType.entityCutoutNoCull(TONGUE_2);
     private final RenderType TONGUE_RENDER_TYPE_3 = RenderType.entityCutoutNoCull(TONGUE_3);
@@ -32,7 +32,7 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
 
     @Override
     public ResourceLocation getTextureLocation(AcidicArchvineEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
+        return new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
     }
 
     private RenderType getEntityTongueRenderType(AcidicArchvineEntity entity) {
@@ -128,11 +128,13 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
     }
 
     private static void vertexThingy(VertexConsumer vertexConsumer, Matrix4f matrix4, PoseStack.Pose pose, float x, float y, float z, int r, int g, int b, float u, float v) {
-        vertexConsumer.addVertex(matrix4, x, y, z)
-                .setColor(r, g, b, 255)
-                .setUv(u, v)
-                .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(15728880)
-                .setNormal(pose, 0.0F, 1.0F, 0.0F);
+        vertexConsumer.vertex(matrix4, x, y, z)
+                .color(r, g, b, 255)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(15728880)
+                .normal(pose.normal(), 0.0F, 1.0F, 0.0F)
+                .endVertex();
     }
 }
+

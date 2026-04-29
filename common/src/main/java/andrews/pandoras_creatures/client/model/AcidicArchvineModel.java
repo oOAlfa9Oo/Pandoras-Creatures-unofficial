@@ -639,13 +639,13 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         poseStack.translate(0, 1.5F, 0);
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
 
-        this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.tongue_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.tongue_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
         poseStack.popPose();
     }

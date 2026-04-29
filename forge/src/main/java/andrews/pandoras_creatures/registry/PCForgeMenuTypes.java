@@ -33,7 +33,7 @@ public final class PCForgeMenuTypes {
 
     @SuppressWarnings("unchecked")
     private static <T extends net.minecraft.world.inventory.AbstractContainerMenu> MenuType<T> menuType(String id) {
-        ResourceLocation menuId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
+        ResourceLocation menuId = new ResourceLocation(Reference.MODID, id);
         MenuType<?> value = BuiltInRegistries.MENU.get(menuId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge menu type id: " + menuId);
@@ -49,13 +49,14 @@ public final class PCForgeMenuTypes {
         registered = true;
         event.register(ForgeRegistries.Keys.MENU_TYPES, helper -> {
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCMenuIds.BUFFLON),
+                    new ResourceLocation(Reference.MODID, PCMenuIds.BUFFLON),
                     IForgeMenuType.create((windowId, inventory, data) -> new BufflonMenu(windowId, inventory, data.readInt()))
             );
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCMenuIds.END_TROLL_BOX),
+                    new ResourceLocation(Reference.MODID, PCMenuIds.END_TROLL_BOX),
                     new MenuType<>(EndTrollBoxMenu::new, FeatureFlags.DEFAULT_FLAGS)
             );
         });
     }
 }
+

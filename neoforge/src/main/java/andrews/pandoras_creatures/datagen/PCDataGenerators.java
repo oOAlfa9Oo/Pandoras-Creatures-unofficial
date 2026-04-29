@@ -23,6 +23,7 @@ import java.nio.file.Path;
 
 public final class PCDataGenerators {
     private static final String SHARED_CLIENT_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedClientOutput";
+    private static final String SHARED_DATA_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedDataOutput";
     private static final String SHARED_WORLDGEN_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedWorldgenOutput";
 
     private PCDataGenerators() {
@@ -31,12 +32,13 @@ public final class PCDataGenerators {
     public static void gatherData(GatherDataEvent event) {
         PackOutput output = event.getGenerator().getPackOutput();
         PackOutput sharedClientOutput = sharedClientOutput(output);
+        PackOutput sharedDataOutput = sharedDataOutput(output);
         PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
-        event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(output));
+        event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(sharedDataOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCLootModifierDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
@@ -52,6 +54,10 @@ public final class PCDataGenerators {
 
     private static PackOutput sharedClientOutput(PackOutput fallbackOutput) {
         return redirectedOutput(SHARED_CLIENT_OUTPUT_PROPERTY, fallbackOutput);
+    }
+
+    private static PackOutput sharedDataOutput(PackOutput fallbackOutput) {
+        return redirectedOutput(SHARED_DATA_OUTPUT_PROPERTY, fallbackOutput);
     }
 
     private static PackOutput sharedWorldgenOutput(PackOutput fallbackOutput) {

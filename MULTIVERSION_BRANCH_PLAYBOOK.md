@@ -46,6 +46,8 @@ Usar `git switch release/<minecraft>` solo cuando se vaya a trabajar especificam
 ```powershell
 .\gradlew.bat compileJava test verifyArtifactNaming --console=plain
 .\gradlew.bat buildLoaderJars --console=plain
+.\gradlew.bat validateOfficialLoaders --console=plain
+.\gradlew.bat validateExperimentalLoaders --console=plain
 .\gradlew.bat validateCurrentFamily --console=plain
 ```
 

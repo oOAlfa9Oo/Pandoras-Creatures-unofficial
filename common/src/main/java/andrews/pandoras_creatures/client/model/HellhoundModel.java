@@ -515,7 +515,7 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         float hellhoundScale = HellhoundVisualRules.renderScale(entity.getHellhoundType());
         float yOffset = HellhoundVisualRules.renderYOffset(entity.getHellhoundType());
@@ -523,7 +523,7 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
             poseStack.translate(0, yOffset, 0);
             poseStack.scale(hellhoundScale, hellhoundScale, hellhoundScale);
         }
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, color);
+        this.body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
     }
 }

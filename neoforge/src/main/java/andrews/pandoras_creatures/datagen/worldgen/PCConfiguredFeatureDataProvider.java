@@ -45,8 +45,8 @@ public final class PCConfiguredFeatureDataProvider implements DataProvider {
 
         JsonObject config = new JsonObject();
         config.addProperty("tries", 64);
-        config.addProperty("xz_spread", 6);
-        config.addProperty("y_spread", 2);
+        config.addProperty("xz_spread", 7);
+        config.addProperty("y_spread", 3);
 
         JsonObject featureHolder = new JsonObject();
         JsonObject feature = new JsonObject();
@@ -64,17 +64,33 @@ public final class PCConfiguredFeatureDataProvider implements DataProvider {
         featureConfig.add("to_place", toPlace);
         feature.add("config", featureConfig);
         featureHolder.add("feature", feature);
-        featureHolder.add("placement", new JsonArray());
+        featureHolder.add("placement", createAirOnlyPlacement());
         config.add("feature", featureHolder);
 
         root.add("config", config);
         return root;
     }
 
+    private static JsonArray createAirOnlyPlacement() {
+        JsonArray placement = new JsonArray();
+
+        JsonObject predicate = new JsonObject();
+        predicate.addProperty("type", "minecraft:matching_blocks");
+        predicate.addProperty("blocks", "minecraft:air");
+
+        JsonObject filter = new JsonObject();
+        filter.addProperty("type", "minecraft:block_predicate_filter");
+        filter.add("predicate", predicate);
+        placement.add(filter);
+
+        return placement;
+    }
+
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     private record FlowerConfiguredFeatureDefinition(String name, String blockId) {
     }
 }
+

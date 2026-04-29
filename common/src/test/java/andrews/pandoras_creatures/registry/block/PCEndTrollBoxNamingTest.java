@@ -7,9 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PCEndTrollBoxNamingTest {
     @Test
     void orderedColorNamesStayStable() {
-        assertEquals(16, PCEndTrollBoxNaming.orderedColorNames().size());
-        assertEquals("white", PCEndTrollBoxNaming.orderedColorNames().getFirst());
-        assertEquals("black", PCEndTrollBoxNaming.orderedColorNames().getLast());
+        var names = PCEndTrollBoxNaming.orderedColorNames();
+        assertEquals(16, names.size());
+        assertEquals("white", names.get(0));
+        assertEquals("black", names.get(names.size() - 1));
     }
 
     @Test

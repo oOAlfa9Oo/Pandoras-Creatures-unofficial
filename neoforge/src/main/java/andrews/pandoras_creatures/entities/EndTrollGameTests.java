@@ -142,7 +142,7 @@ public final class EndTrollGameTests {
     @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void liberationAdvancementIsLoaded(GameTestHelper helper) {
         AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements()
-                .get(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCAdvancements.FREE_THE_END_TROLL));
+                .get(new ResourceLocation(Reference.MODID, PCAdvancements.FREE_THE_END_TROLL));
 
         helper.assertTrue(advancement != null, "End Troll liberation advancement should be present in the loaded advancement tree");
         helper.succeed();
@@ -234,3 +234,4 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 }
+

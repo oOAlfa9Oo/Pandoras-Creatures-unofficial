@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     private static final EntityDataAccessor<Integer> ARCHVINE_TYPE = SynchedEntityData.defineId(AcidicArchvineEntity.class, EntityDataSerializers.INT);
@@ -55,10 +55,10 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(TARGET_ENTITY, 0);
-        builder.define(ARCHVINE_TYPE, AcidicArchvinePlacementRules.DEFAULT_ARCHVINE_TYPE);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(TARGET_ENTITY, 0);
+        this.entityData.define(ARCHVINE_TYPE, AcidicArchvinePlacementRules.DEFAULT_ARCHVINE_TYPE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -131,8 +131,8 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
         this.setArchvineType(resolveArchvineType(level));
 
         BlockPos pos = this.blockPosition();
@@ -174,7 +174,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
             }
 
             AcidicArchvineEntity companion = new AcidicArchvineEntity(level.getLevel(), candidatePos.getX() + 0.5D, candidatePos.getY(), candidatePos.getZ() + 0.5D);
-            companion.finalizeSpawn(level, level.getCurrentDifficultyAt(candidatePos), reason, AcidicArchvineSpawnData.noCompanionSpawn());
+            companion.finalizeSpawn(level, level.getCurrentDifficultyAt(candidatePos), reason, AcidicArchvineSpawnData.noCompanionSpawn(), null);
             if (!level.addFreshEntity(companion)) {
                 continue;
             }
@@ -268,3 +268,5 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
         }
     }
 }
+
+

@@ -19,7 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
-    private static final ResourceLocation BUFFLON_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/gui/menus/bufflon_menu.png");
+    private static final ResourceLocation BUFFLON_GUI_TEXTURES = new ResourceLocation(Reference.MODID, "textures/gui/menus/bufflon_menu.png");
 
     private final BufflonAccess bufflon;
     private final LivingEntity bufflonEntity;
@@ -109,9 +109,8 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
         }
 
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X,
-                this.topPos + BufflonMenuLayout.ENTITY_RENDER_MOUSE_Y, this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X,
                 this.topPos + BufflonMenuLayout.ENTITY_RENDER_Y, BufflonMenuLayout.ENTITY_RENDER_SIZE,
-                BufflonMenuLayout.ENTITY_RENDER_SCALE, this.mousePosx, this.mousePosY, this.bufflonEntity);
+                this.mousePosx, this.mousePosY, this.bufflonEntity);
 
         if (!bufflon.isBufflonSaddled()) {
             guiGraphics.renderFakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.BUFFLON_SADDLE)),
@@ -141,7 +140,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.mousePosx = (float) mouseX;
         this.mousePosY = (float) mouseY;
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -153,3 +152,4 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
         }
     }
 }
+

@@ -22,10 +22,11 @@ public final class PCRecipeIds {
     }
 
     public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, path);
+        return new ResourceLocation(Reference.MODID, path);
     }
 
     public static String qualified(String path) {
         return Reference.MODID + ":" + path;
     }
 }
+

@@ -101,8 +101,7 @@ public class EndPrisonPieces {
             if (name.startsWith("Chest")) {
                 BlockPos chestPos = pos.below();
                 if (box.isInside(chestPos) && level.getBlockEntity(chestPos) instanceof RandomizableContainerBlockEntity container) {
-                    container.setLootTable(BuiltInLootTables.END_CITY_TREASURE);
-                    container.setLootTableSeed(random.nextLong());
+                    container.setLootTable(BuiltInLootTables.END_CITY_TREASURE, random.nextLong());
                 }
             } else if (name.startsWith("Sentry")) {
                 if (level instanceof ServerLevel serverLevel) {
@@ -131,8 +130,7 @@ public class EndPrisonPieces {
                     for (int z = box.minZ(); z <= box.maxZ(); z++) {
                         BlockPos containerPos = new BlockPos(x, y, z);
                         if (level.getBlockEntity(containerPos) instanceof RandomizableContainerBlockEntity container) {
-                            container.setLootTable(BuiltInLootTables.END_CITY_TREASURE);
-                            container.setLootTableSeed(random.nextLong());
+                            container.setLootTable(BuiltInLootTables.END_CITY_TREASURE, random.nextLong());
                         }
                     }
                 }

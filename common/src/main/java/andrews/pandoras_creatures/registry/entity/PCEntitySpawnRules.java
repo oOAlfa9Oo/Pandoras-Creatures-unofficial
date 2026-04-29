@@ -24,8 +24,8 @@ public final class PCEntitySpawnRules {
         return inWater;
     }
 
-    public static boolean canSpawnCrab(boolean inBeach, boolean inWarmOcean, int y, boolean sandBelow, boolean grassBelow) {
-        return isAllowedCrabHeight(inBeach, inWarmOcean, y) && (sandBelow || grassBelow);
+    public static boolean canSpawnCrab(boolean inBeach, boolean inWarmOcean, int y, boolean sandBelow, boolean grassBelow, boolean spawnBlockIsAirOrWater) {
+        return isAllowedCrabHeight(inBeach, inWarmOcean, y) && (sandBelow || grassBelow) && spawnBlockIsAirOrWater;
     }
 
     public static boolean canSpawnHostileGroundMob(boolean hostileDifficulty) {

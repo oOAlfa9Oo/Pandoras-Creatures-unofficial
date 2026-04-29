@@ -7,7 +7,6 @@ import andrews.pandoras_creatures.menu.EndTrollBoxMenu;
 import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,7 +25,7 @@ import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.stream.IntStream;
 
 public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
@@ -143,27 +142,27 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.loadFromTag(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.loadFromTag(tag);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        this.saveToTag(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        this.saveToTag(tag);
     }
 
-    public void loadFromTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void loadFromTag(CompoundTag tag) {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(tag) && tag.contains("Items")) {
-            ContainerHelper.loadAllItems(tag, this.items, registries);
+            ContainerHelper.loadAllItems(tag, this.items);
         }
     }
 
-    public CompoundTag saveToTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public CompoundTag saveToTag(CompoundTag tag) {
         if (!this.trySaveLootTable(tag)) {
-            ContainerHelper.saveAllItems(tag, this.items, false, registries);
+            ContainerHelper.saveAllItems(tag, this.items, false);
         }
         return tag;
     }
@@ -229,3 +228,4 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
         CLOSED, OPENING, OPENED, CLOSING
     }
 }
+

@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public final class FabricPlantHatArmorRenderer {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/models/armor/plant_hat.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/models/armor/plant_hat.png");
     private static PlantHatModel model;
     private static boolean initialized;
 
@@ -42,3 +42,4 @@ public final class FabricPlantHatArmorRenderer {
         return model;
     }
 }
+

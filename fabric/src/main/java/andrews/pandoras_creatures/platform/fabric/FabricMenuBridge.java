@@ -5,6 +5,7 @@ import andrews.pandoras_creatures.menu.BufflonMenu;
 import andrews.pandoras_creatures.platform.MenuBridge;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,10 +25,10 @@ final class FabricMenuBridge implements MenuBridge {
             return;
         }
 
-        player.openMenu(new ExtendedScreenHandlerFactory<Integer>() {
+        player.openMenu(new ExtendedScreenHandlerFactory() {
             @Override
-            public Integer getScreenOpeningData(ServerPlayer currentPlayer) {
-                return bufflon.getBufflonId();
+            public void writeScreenOpeningData(ServerPlayer currentPlayer, FriendlyByteBuf buf) {
+                buf.writeInt(bufflon.getBufflonId());
             }
 
             @Override

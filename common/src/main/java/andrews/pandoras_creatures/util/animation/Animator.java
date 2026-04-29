@@ -177,7 +177,6 @@ public class Animator {
      * @return - The partial ticks of the minecraft client
      */
     private static float getPartialTicks() {
-        Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+        return Minecraft.getInstance().getFrameTime();
     }
 }

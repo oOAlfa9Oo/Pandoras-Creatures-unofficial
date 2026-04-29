@@ -348,7 +348,7 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.Body.render(poseStack, buffer, packedLight, packedOverlay, color);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        this.Body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 public class ItemMobBucket extends BucketItem {
@@ -55,3 +55,4 @@ public class ItemMobBucket extends BucketItem {
         }
     }
 }
+

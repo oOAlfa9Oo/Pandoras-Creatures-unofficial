@@ -1,6 +1,5 @@
 package andrews.pandoras_creatures.content.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,12 +22,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ArachnonCrystalBlock extends FaceAttachedHorizontalDirectionalBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<ArachnonCrystalBlock> CODEC = simpleCodec(ArachnonCrystalBlock::new);
-
-    @Override
-    public MapCodec<ArachnonCrystalBlock> codec() {
-        return CODEC;
-    }
     protected static final VoxelShape CRYSTAL_NORTH_AABB = Block.box(4.0D, 4.0D, 7.0D, 12.0D, 12.0D, 16.0D);
     protected static final VoxelShape CRYSTAL_SOUTH_AABB = Block.box(4.0D, 4.0D, 0.0D, 12.0D, 12.0D, 9.0D);
     protected static final VoxelShape CRYSTAL_WEST_AABB = Block.box(7.0D, 4.0D, 4.0D, 16.0D, 12.0D, 12.0D);
