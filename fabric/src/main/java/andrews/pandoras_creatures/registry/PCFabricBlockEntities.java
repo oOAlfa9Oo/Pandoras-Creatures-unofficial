@@ -24,7 +24,7 @@ public final class PCFabricBlockEntities {
 
         END_TROLL_BOX = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE,
-                new ResourceLocation(Reference.MODID, PCBlockEntityIds.END_TROLL_BOX),
+                Reference.id(PCBlockEntityIds.END_TROLL_BOX),
                 BlockEntityType.Builder.of(EndTrollBoxBlockEntity::new, PCFabricBlocks.getEndTrollBoxBlockArray()).build(null)
         );
     }

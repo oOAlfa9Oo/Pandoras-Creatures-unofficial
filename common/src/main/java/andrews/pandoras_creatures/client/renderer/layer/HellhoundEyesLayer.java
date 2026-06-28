@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class HellhoundEyesLayer<E extends HellhoundEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation HELLHOUND_EYES_LAYER = new ResourceLocation(Reference.MODID, "textures/entity/hellhound/hellhound_eyes.png");
+    private static final ResourceLocation HELLHOUND_EYES_LAYER = Reference.id("textures/entity/hellhound/hellhound_eyes.png");
 
     public HellhoundEyesLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);

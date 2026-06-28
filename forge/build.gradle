@@ -19,7 +19,10 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets {
     main {
-        java.srcDirs = [project.file('src/main/java')] + commonMainSourceSet.java.srcDirs
+        // Consume el output compilado de :common (igual que neoforge/fabric) en vez de
+        // reabsorber su fuente. El dev-run encuentra common via `mods { source ... }` mas abajo.
+        // Ver ADR-0003.
+        java.srcDirs = [project.file('src/main/java')]
         resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')] + commonMainSourceSet.resources.srcDirs
         compileClasspath += commonMainSourceSet.output
         runtimeClasspath += commonMainSourceSet.output
@@ -44,6 +47,14 @@ minecraft {
     runs {
         configureEach {
             workingDirectory = file("run/${name}")
+            // El mod en dev-run se compone de las fuentes de forge + :common, para que
+            // FML encuentre las clases de common sin reabsorber su fuente. Ver ADR-0003.
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                    source commonMainSourceSet
+                }
+            }
         }
 
         client

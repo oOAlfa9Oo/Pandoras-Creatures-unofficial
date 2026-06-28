@@ -14,7 +14,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public class BufflonStateButton extends Button {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/buttons/bufflon_menu_buttons.png");
+    private static final ResourceLocation TEXTURE = Reference.id("textures/gui/buttons/bufflon_menu_buttons.png");
     private static final int BUTTON_WIDTH = 26;
     private static final int BUTTON_HEIGHT = 26;
     private static final int TEXTURE_U_SELECTED = 26;

@@ -20,4 +20,23 @@ class PCEntityIdsTest {
         assertTrue(PCEntityIds.allPaths().stream().allMatch(path -> path.equals(path.toLowerCase())));
         assertTrue(PCEntityIds.allPaths().stream().allMatch(path -> !path.contains(":")));
     }
+
+    @Test
+    void entityCatalogContainsExactlyExpectedIds() {
+        // Contrato de contenido: borrar o renombrar un id rompe este test.
+        assertEquals(
+                Set.of(
+                        "arachnon",
+                        "hellhound",
+                        "crab",
+                        "seahorse",
+                        "acidic_archvine",
+                        "bufflon",
+                        "end_troll",
+                        "end_troll_bullet_damage",
+                        "end_troll_bullet_poison",
+                        "end_troll_bullet_wither"),
+                Set.copyOf(PCEntityIds.allPaths()));
+        assertEquals(10, PCEntityIds.allPaths().size());
+    }
 }

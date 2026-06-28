@@ -27,7 +27,7 @@ public final class PCFabricCreativeTabs {
 
         PANDORAS_CREATURES_TAB = Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
-                new ResourceLocation(Reference.MODID, PCCreativeTabIds.PANDORAS_CREATURES),
+                Reference.id(PCCreativeTabIds.PANDORAS_CREATURES),
                 FabricItemGroup.builder()
                         .title(Component.translatable(PCCreativeTabIds.PANDORAS_CREATURES_TRANSLATION_KEY))
                         .icon(() -> new ItemStack(PCFabricItems.getItem(andrews.pandoras_creatures.registry.item.PCItemIds.BUFFLON_SADDLE)))

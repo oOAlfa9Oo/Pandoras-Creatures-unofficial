@@ -28,4 +28,38 @@ class PCItemIdsTest {
         assertTrue(PCItemIds.allPaths().stream().allMatch(path -> path.equals(path.toLowerCase())));
         assertTrue(PCItemIds.allPaths().stream().allMatch(path -> !path.contains(":")));
     }
+
+    @Test
+    void itemCatalogContainsExactlyExpectedIds() {
+        // Contrato de contenido: 18 items base + 7 spawn eggs. Borrar/renombrar rompe el test.
+        assertEquals(
+                Set.of(
+                        "crab_meat",
+                        "crab_meat_cooked",
+                        "seahorse",
+                        "seahorse_cooked",
+                        "acidic_archvine_tongue",
+                        "herb_bundle",
+                        "bufflon_beef",
+                        "bufflon_beef_cooked",
+                        "bufflon_hide",
+                        "bufflon_saddle",
+                        "bufflon_player_seats",
+                        "bufflon_small_storage",
+                        "bufflon_large_storage",
+                        "end_troll_skin",
+                        "arachnon_hammer",
+                        "crab_bucket",
+                        "seahorse_bucket",
+                        "plant_hat",
+                        "arachnon_spawn_egg",
+                        "hellhound_spawn_egg",
+                        "crab_spawn_egg",
+                        "seahorse_spawn_egg",
+                        "acidic_archvine_spawn_egg",
+                        "bufflon_spawn_egg",
+                        "end_troll_spawn_egg"),
+                Set.copyOf(PCItemIds.allPaths()));
+        assertEquals(25, PCItemIds.allPaths().size());
+    }
 }

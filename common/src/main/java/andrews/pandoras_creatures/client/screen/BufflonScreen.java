@@ -19,7 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
-    private static final ResourceLocation BUFFLON_GUI_TEXTURES = new ResourceLocation(Reference.MODID, "textures/gui/menus/bufflon_menu.png");
+    private static final ResourceLocation BUFFLON_GUI_TEXTURES = Reference.id("textures/gui/menus/bufflon_menu.png");
 
     private final BufflonAccess bufflon;
     private final LivingEntity bufflonEntity;

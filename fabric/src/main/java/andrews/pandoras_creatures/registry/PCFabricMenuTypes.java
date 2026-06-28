@@ -28,13 +28,13 @@ public final class PCFabricMenuTypes {
 
         BUFFLON = Registry.register(
                 BuiltInRegistries.MENU,
-                new ResourceLocation(Reference.MODID, PCMenuIds.BUFFLON),
+                Reference.id(PCMenuIds.BUFFLON),
                 new ExtendedScreenHandlerType<>((syncId, inventory, buf) -> new BufflonMenu(syncId, inventory, buf.readInt()))
         );
 
         END_TROLL_BOX = Registry.register(
                 BuiltInRegistries.MENU,
-                new ResourceLocation(Reference.MODID, PCMenuIds.END_TROLL_BOX),
+                Reference.id(PCMenuIds.END_TROLL_BOX),
                 new MenuType<>(EndTrollBoxMenu::new, FeatureFlags.DEFAULT_FLAGS)
         );
     }

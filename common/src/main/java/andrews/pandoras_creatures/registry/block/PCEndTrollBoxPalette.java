@@ -37,7 +37,7 @@ public final class PCEndTrollBoxPalette {
     }
 
     public static ResourceLocation textureId(DyeColor color) {
-        return new ResourceLocation(Reference.MODID, texturePath(color));
+        return Reference.id(texturePath(color));
     }
 }
 

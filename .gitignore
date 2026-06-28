@@ -1,11 +1,19 @@
 .gradle/
 build/
+bin/
 run/
 backup/
 net/
 .vscode/
 .claude/
-docs/
+docs/*
+!docs/adr/
+# Junk / quarantine artifacts
+*.tar
+.git.broken/
+.nextcloud-resync.txt
+_codex_chats/
+_claude_chats/
 src/generated/resources/.cache/
 common/src/generated/resources/.cache/
 neoforge/src/generated/resources/.cache/
@@ -13,9 +21,15 @@ build_error.txt
 build_output.txt
 *.log
 .gitignore
-# Local analysis notes not intended for publication
-ANIMATION_SYSTEM_PORT.md
-AUDITORIA_ESTADISTICAS_ENTIDADES.md
-BUFFLON_MIGRACION_LEVANTAMIENTO.md
-LEVANTAMIENTO_*.md
-PLAN_REESTRUCTURACION_MULTILOADER.md
+# Work / analysis notes and AI chat logs not intended for publication.
+# Deny-by-default: ignore every top-level .md, then whitelist the official docs.
+/*.md
+!/README.md
+!/CONTRIBUTING.md
+!/PLATFORM_CONTRACTS.md
+!/MULTIVERSION_SUPPORT.md
+!/MULTIVERSION_PORTING_CHECKLIST.md
+!/MULTIVERSION_TECHNICAL_MATRIX.md
+!/MULTIVERSION_BRANCH_PLAYBOOK.md
+!/RELEASE_1.21.1_FREEZE.md
+!/RELEASE_1.20.1_BOOTSTRAP.md

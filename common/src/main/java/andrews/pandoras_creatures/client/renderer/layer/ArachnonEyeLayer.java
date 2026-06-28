@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class ArachnonEyeLayer<E extends ArachnonEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation ARACHNON_EYE_LAYER = new ResourceLocation(Reference.MODID, ArachnonVisualRules.eyeTexturePathString());
+    private static final ResourceLocation ARACHNON_EYE_LAYER = Reference.id(ArachnonVisualRules.eyeTexturePathString());
 
     public ArachnonEyeLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);

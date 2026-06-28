@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class EndTrollBoxScreen extends AbstractContainerScreen<EndTrollBoxMenu> {
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Reference.MODID, "textures/gui/containers/end_troll_box.png");
+    private static final ResourceLocation GUI_TEXTURE = Reference.id("textures/gui/containers/end_troll_box.png");
 
     public EndTrollBoxScreen(EndTrollBoxMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);

@@ -1,6 +1,7 @@
-package andrews.pandoras_creatures.util.animation;
+package andrews.pandoras_creatures.client.animation;
 
 import andrews.pandoras_creatures.entities.bases.AnimatedCreatureEntity;
+import andrews.pandoras_creatures.util.animation.Animation;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;

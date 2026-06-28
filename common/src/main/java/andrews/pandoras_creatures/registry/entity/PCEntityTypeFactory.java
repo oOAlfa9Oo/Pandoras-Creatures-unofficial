@@ -36,7 +36,7 @@ public final class PCEntityTypeFactory {
     }
 
     public static String entityId(String name) {
-        return new ResourceLocation(Reference.MODID, name).toString();
+        return Reference.id(name).toString();
     }
 
     private static <T extends Entity> EntityType.Builder<T> configure(EntityType.Builder<T> builder,

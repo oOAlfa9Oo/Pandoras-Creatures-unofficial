@@ -27,31 +27,31 @@ public final class PCFabricItems {
 
         registeredItems = PCItemBootstrap.registerCoreItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Reference.id(id), item);
             return () -> item;
         });
 
         registeredSimpleBlockItems = PCItemBootstrap.registerSimpleBlockItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Reference.id(id), item);
             return () -> item;
         }, id -> () -> PCFabricBlocks.getSimpleBlock(id));
 
         registeredEndTrollBoxItems = PCItemBootstrap.registerEndTrollBoxItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Reference.id(id), item);
             return () -> item;
         }, id -> () -> PCFabricBlocks.getEndTrollBox(andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette.colorForBlockName(id)));
 
         registeredBucketItems = PCItemBootstrap.registerAquaticBucketItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Reference.id(id), item);
             return () -> item;
         });
 
         registeredPortableSpawnEggItems = PCItemBootstrap.registerPortableSpawnEggItems((id, factory) -> {
             Item item = factory.get();
-            Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(Reference.MODID, id), item);
+            Registry.register(BuiltInRegistries.ITEM, Reference.id(id), item);
             return () -> item;
         }, entityId -> switch (entityId) {
             case "arachnon" -> () -> PCFabricEntities.ARACHNON;

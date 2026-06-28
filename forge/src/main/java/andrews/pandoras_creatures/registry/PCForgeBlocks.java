@@ -32,7 +32,7 @@ public final class PCForgeBlocks {
     }
 
     public static Block getSimpleBlock(String id) {
-        ResourceLocation blockId = new ResourceLocation(Reference.MODID, id);
+        ResourceLocation blockId = Reference.id(id);
         Block value = BuiltInRegistries.BLOCK.get(blockId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge block id: " + blockId);
@@ -51,7 +51,7 @@ public final class PCForgeBlocks {
     }
 
     public static Block getEndTrollBox(@Nullable DyeColor color) {
-        ResourceLocation blockId = new ResourceLocation(Reference.MODID, PCEndTrollBoxBootstrap.blockId(color));
+        ResourceLocation blockId = Reference.id(PCEndTrollBoxBootstrap.blockId(color));
         Block value = BuiltInRegistries.BLOCK.get(blockId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge end troll box block id: " + blockId);
@@ -82,7 +82,7 @@ public final class PCForgeBlocks {
         registered = true;
         event.register(ForgeRegistries.Keys.BLOCKS, helper -> {
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCBlockIds.ARACHNON_CRYSTAL),
+                    Reference.id(PCBlockIds.ARACHNON_CRYSTAL),
                     new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
                             .strength(1.5F, 6.0F)
                             .lightLevel(state -> 9)
@@ -90,32 +90,32 @@ public final class PCForgeBlocks {
                             .noOcclusion())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCBlockIds.HORSETAIL),
+                    Reference.id(PCBlockIds.HORSETAIL),
                     new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCBlockIds.DHANIA),
+                    Reference.id(PCBlockIds.DHANIA),
                     new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCBlockIds.HILL_BLOOM),
+                    Reference.id(PCBlockIds.HILL_BLOOM),
                     new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCBlockIds.PANDORIC_SHARD),
+                    Reference.id(PCBlockIds.PANDORIC_SHARD),
                     new Block(BlockBehaviour.Properties.copy(Blocks.END_STONE)
                             .noOcclusion()
                             .lightLevel(state -> 10))
             );
             PCEndTrollBoxBootstrap.registerBlocks((id, factory) -> {
                 Block block = factory.get();
-                helper.register(new ResourceLocation(Reference.MODID, id), block);
+                helper.register(Reference.id(id), block);
                 return () -> block;
             });
         });

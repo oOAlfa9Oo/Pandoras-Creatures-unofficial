@@ -26,7 +26,7 @@ public final class PCForgeSounds {
         registered = true;
         event.register(ForgeRegistries.Keys.SOUND_EVENTS, helper -> {
             for (String soundId : PCSoundCatalog.allSoundIds()) {
-                ResourceLocation id = new ResourceLocation(Reference.MODID, soundId);
+                ResourceLocation id = Reference.id(soundId);
                 helper.register(id, SoundEvent.createVariableRangeEvent(id));
             }
         });

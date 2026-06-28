@@ -19,9 +19,9 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, AcidicArchvineModel<AcidicArchvineEntity>> {
-    private static final ResourceLocation TONGUE_1 = new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
-    private static final ResourceLocation TONGUE_2 = new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
-    private static final ResourceLocation TONGUE_3 = new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
+    private static final ResourceLocation TONGUE_1 = Reference.id("textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
+    private static final ResourceLocation TONGUE_2 = Reference.id("textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
+    private static final ResourceLocation TONGUE_3 = Reference.id("textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
     private final RenderType TONGUE_RENDER_TYPE_1 = RenderType.entityCutoutNoCull(TONGUE_1);
     private final RenderType TONGUE_RENDER_TYPE_2 = RenderType.entityCutoutNoCull(TONGUE_2);
     private final RenderType TONGUE_RENDER_TYPE_3 = RenderType.entityCutoutNoCull(TONGUE_3);
@@ -32,7 +32,7 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
 
     @Override
     public ResourceLocation getTextureLocation(AcidicArchvineEntity entity) {
-        return new ResourceLocation(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
+        return Reference.id("textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
     }
 
     private RenderType getEntityTongueRenderType(AcidicArchvineEntity entity) {

@@ -16,8 +16,7 @@ public class SeahorseRenderer extends MobRenderer<SeahorseEntity, SeahorseModel<
 
     @Override
     public ResourceLocation getTextureLocation(SeahorseEntity entity) {
-        return new ResourceLocation(
-                Reference.MODID,
+        return Reference.id(
                 SeahorseVisualRules.texturePath(entity.getSeahorseType(), entity.getName().getString())
         );
     }

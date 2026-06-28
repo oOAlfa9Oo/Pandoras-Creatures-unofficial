@@ -29,7 +29,7 @@ public final class PCForgeRecipeSerializers {
 
     private static <T extends RecipeSerializer<?>> void register(RegisterEvent event, String path, T serializer) {
         event.register(Registries.RECIPE_SERIALIZER, helper ->
-                helper.register(new ResourceLocation(Reference.MODID, path), serializer));
+                helper.register(Reference.id(path), serializer));
     }
 }
 

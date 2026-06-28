@@ -38,11 +38,11 @@ public final class PCForgeItems {
     }
 
     public static boolean hasItem(String id) {
-        return BuiltInRegistries.ITEM.containsKey(new ResourceLocation(Reference.MODID, id));
+        return BuiltInRegistries.ITEM.containsKey(Reference.id(id));
     }
 
     public static Item getItem(String id) {
-        ResourceLocation itemId = new ResourceLocation(Reference.MODID, id);
+        ResourceLocation itemId = Reference.id(id);
         Item value = BuiltInRegistries.ITEM.get(itemId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge item id: " + itemId);
@@ -100,26 +100,26 @@ public final class PCForgeItems {
     }
 
     private static void registerBasic(RegisterEvent.RegisterHelper<Item> helper, String id) {
-        helper.register(new ResourceLocation(Reference.MODID, id), new Item(new Item.Properties()));
+        helper.register(Reference.id(id), new Item(new Item.Properties()));
     }
 
     private static void registerSingleStack(RegisterEvent.RegisterHelper<Item> helper, String id) {
-        helper.register(new ResourceLocation(Reference.MODID, id), new Item(new Item.Properties().stacksTo(1)));
+        helper.register(Reference.id(id), new Item(new Item.Properties().stacksTo(1)));
     }
 
     private static void registerFood(RegisterEvent.RegisterHelper<Item> helper, String id, FoodProperties foodProperties) {
-        helper.register(new ResourceLocation(Reference.MODID, id), new Item(new Item.Properties().food(foodProperties)));
+        helper.register(Reference.id(id), new Item(new Item.Properties().food(foodProperties)));
     }
 
     private static void registerBlockItem(RegisterEvent.RegisterHelper<Item> helper, String id) {
         helper.register(
-                new ResourceLocation(Reference.MODID, id),
+                Reference.id(id),
                 new BlockItem(PCForgeBlocks.getSimpleBlock(id), new Item.Properties())
         );
     }
 
     private static void registerCustom(RegisterEvent.RegisterHelper<Item> helper, String id, Item item) {
-        helper.register(new ResourceLocation(Reference.MODID, id), item);
+        helper.register(Reference.id(id), item);
     }
 
     private static Item createForgeEndTrollBoxItem(String id) {
@@ -134,7 +134,7 @@ public final class PCForgeItems {
             PCSpawnEggPalette palette,
             java.util.function.Supplier<? extends net.minecraft.world.entity.EntityType<?>> entityTypeSupplier) {
         helper.register(
-                new ResourceLocation(Reference.MODID, palette.itemName()),
+                Reference.id(palette.itemName()),
                 new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(), new Item.Properties())
         );
     }

@@ -22,7 +22,7 @@ public final class PCRecipeIds {
     }
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(Reference.MODID, path);
+        return Reference.id(path);
     }
 
     public static String qualified(String path) {

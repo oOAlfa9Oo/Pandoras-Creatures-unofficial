@@ -75,7 +75,7 @@ public final class PCForgeEntities {
 
     @SuppressWarnings("unchecked")
     private static <T extends net.minecraft.world.entity.Entity> EntityType<T> entityType(String id) {
-        ResourceLocation entityId = new ResourceLocation(Reference.MODID, id);
+        ResourceLocation entityId = Reference.id(id);
         EntityType<?> value = BuiltInRegistries.ENTITY_TYPE.get(entityId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge entity type id: " + entityId);
@@ -91,54 +91,54 @@ public final class PCForgeEntities {
         registered = true;
         event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE),
+                    Reference.id(PCEntityIds.ACIDIC_ARCHVINE),
                     PCEntityBootstrap.acidicArchvineType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE).toString())
+                            .build(Reference.id(PCEntityIds.ACIDIC_ARCHVINE).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.ARACHNON),
+                    Reference.id(PCEntityIds.ARACHNON),
                     PCEntityBootstrap.arachnonType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.ARACHNON).toString())
+                            .build(Reference.id(PCEntityIds.ARACHNON).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.CRAB),
+                    Reference.id(PCEntityIds.CRAB),
                     PCEntityBootstrap.crabType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.CRAB).toString())
+                            .build(Reference.id(PCEntityIds.CRAB).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.BUFFLON),
+                    Reference.id(PCEntityIds.BUFFLON),
                     PCEntityBootstrap.bufflonType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.BUFFLON).toString())
+                            .build(Reference.id(PCEntityIds.BUFFLON).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.SEAHORSE),
+                    Reference.id(PCEntityIds.SEAHORSE),
                     PCEntityBootstrap.seahorseType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.SEAHORSE).toString())
+                            .build(Reference.id(PCEntityIds.SEAHORSE).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.HELLHOUND),
+                    Reference.id(PCEntityIds.HELLHOUND),
                     PCEntityBootstrap.hellhoundType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.HELLHOUND).toString())
+                            .build(Reference.id(PCEntityIds.HELLHOUND).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL),
+                    Reference.id(PCEntityIds.END_TROLL),
                     PCEntityBootstrap.endTrollType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL).toString())
+                            .build(Reference.id(PCEntityIds.END_TROLL).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE),
+                    Reference.id(PCEntityIds.END_TROLL_BULLET_DAMAGE),
                     PCEntityBootstrap.endTrollBulletDamageType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE).toString())
+                            .build(Reference.id(PCEntityIds.END_TROLL_BULLET_DAMAGE).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON),
+                    Reference.id(PCEntityIds.END_TROLL_BULLET_POISON),
                     PCEntityBootstrap.endTrollBulletPoisonType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON).toString())
+                            .build(Reference.id(PCEntityIds.END_TROLL_BULLET_POISON).toString())
             );
             helper.register(
-                    new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER),
+                    Reference.id(PCEntityIds.END_TROLL_BULLET_WITHER),
                     PCEntityBootstrap.endTrollBulletWitherType()
-                            .build(new ResourceLocation(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER).toString())
+                            .build(Reference.id(PCEntityIds.END_TROLL_BULLET_WITHER).toString())
             );
         });
     }

@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class EndTrollBulletDamageRenderer extends EntityRenderer<EndTrollBulletDamageEntity> {
-    private static final ResourceLocation END_TROLL_BULLET_TEXTURE = new ResourceLocation(Reference.MODID, "textures/entity/end_troll/bullets/end_troll_bullet_3.png");
+    private static final ResourceLocation END_TROLL_BULLET_TEXTURE = Reference.id("textures/entity/end_troll/bullets/end_troll_bullet_3.png");
     private static final RenderType END_TROLL_BULLET_RENDER_TYPE = RenderType.entityTranslucent(END_TROLL_BULLET_TEXTURE);
     private final EndTrollBulletModel<EndTrollBulletDamageEntity> model;
 

@@ -21,7 +21,7 @@ public final class PCSoundBootstrap {
         LinkedHashMap<String, H> registeredSounds = new LinkedHashMap<>();
 
         for (String soundId : PCSoundCatalog.allSoundIds()) {
-            ResourceLocation id = new ResourceLocation(Reference.MODID, soundId);
+            ResourceLocation id = Reference.id(soundId);
             H handle = registrar.register(soundId, () -> SoundEvent.createVariableRangeEvent(id));
             registeredSounds.put(soundId, handle);
         }

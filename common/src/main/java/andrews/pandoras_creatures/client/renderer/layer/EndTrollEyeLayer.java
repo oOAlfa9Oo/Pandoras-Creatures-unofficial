@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 public class EndTrollEyeLayer<E extends EndTrollEntity, M extends EntityModel<E>> extends RenderLayer<E, M> {
-    private static final ResourceLocation END_TROLL_EYE_LAYER = new ResourceLocation(Reference.MODID, "textures/entity/end_troll/end_troll_eye_1.png");
+    private static final ResourceLocation END_TROLL_EYE_LAYER = Reference.id("textures/entity/end_troll/end_troll_eye_1.png");
 
     public EndTrollEyeLayer(RenderLayerParent<E, M> renderer) {
         super(renderer);

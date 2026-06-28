@@ -23,4 +23,12 @@ class PCRecipeIdsTest {
         assertEquals(PCBlockIds.END_TROLL_BOX, PCRecipeIds.END_TROLL_BOX);
         assertEquals("pandoras_creatures:end_troll_box_coloring", PCRecipeIds.qualified(PCRecipeIds.END_TROLL_BOX_COLORING));
     }
+
+    @Test
+    void recipeCatalogContainsExactlyExpectedIds() {
+        assertEquals(
+                Set.of("end_troll_box", "end_troll_box_coloring"),
+                Set.copyOf(PCRecipeIds.allPaths()));
+        assertEquals(2, PCRecipeIds.allPaths().size());
+    }
 }

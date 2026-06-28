@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.client.model.base;
 
 import andrews.pandoras_creatures.entities.bases.IAnimatedEntity;
-import andrews.pandoras_creatures.util.animation.Animator;
+import andrews.pandoras_creatures.client.animation.Animator;
 import com.google.common.collect.Lists;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;

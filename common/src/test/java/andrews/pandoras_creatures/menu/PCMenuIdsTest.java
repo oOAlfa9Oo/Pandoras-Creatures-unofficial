@@ -19,4 +19,12 @@ class PCMenuIdsTest {
     void menuPathsKeepExpectedSuffix() {
         assertTrue(PCMenuIds.allPaths().stream().allMatch(path -> path.endsWith("_menu")));
     }
+
+    @Test
+    void menuCatalogContainsExactlyExpectedIds() {
+        assertEquals(
+                Set.of("bufflon_menu", "end_troll_box_menu"),
+                Set.copyOf(PCMenuIds.allPaths()));
+        assertEquals(2, PCMenuIds.allPaths().size());
+    }
 }

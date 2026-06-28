@@ -27,13 +27,13 @@ public final class PCFabricBlocks {
 
         registeredBlocks = PCBlockBootstrap.registerSimpleBlocks((id, factory) -> {
             Block block = factory.get();
-            Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Reference.MODID, id), block);
+            Registry.register(BuiltInRegistries.BLOCK, Reference.id(id), block);
             return () -> block;
         });
 
         registeredEndTrollBoxBlocks = PCEndTrollBoxBootstrap.registerBlocks((id, factory) -> {
             Block block = factory.get();
-            Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(Reference.MODID, id), block);
+            Registry.register(BuiltInRegistries.BLOCK, Reference.id(id), block);
             return () -> block;
         });
     }

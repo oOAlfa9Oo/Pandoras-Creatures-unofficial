@@ -21,7 +21,7 @@ public final class PCFabricRecipeSerializers {
     private static void register(String path, RecipeSerializer<?> serializer) {
         Registry.register(
                 BuiltInRegistries.RECIPE_SERIALIZER,
-                new ResourceLocation(Reference.MODID, path),
+                Reference.id(path),
                 serializer
         );
     }

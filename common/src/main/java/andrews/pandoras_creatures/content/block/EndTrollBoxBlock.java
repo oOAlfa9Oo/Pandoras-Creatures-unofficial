@@ -51,7 +51,7 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
-    public static final ResourceLocation CONTENTS = new ResourceLocation(Reference.MODID, "contents");
+    public static final ResourceLocation CONTENTS = Reference.id("contents");
 
     @Nullable
     private final DyeColor color;

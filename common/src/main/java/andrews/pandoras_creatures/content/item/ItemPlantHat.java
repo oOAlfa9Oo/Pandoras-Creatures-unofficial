@@ -31,7 +31,7 @@ public class ItemPlantHat extends ArmorItem {
     }
 
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return new ResourceLocation(Reference.MODID, "textures/models/armor/plant_hat.png").toString();
+        return Reference.id("textures/models/armor/plant_hat.png").toString();
     }
 }
 

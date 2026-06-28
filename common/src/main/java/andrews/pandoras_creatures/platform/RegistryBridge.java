@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.platform;
 
+import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,7 +22,7 @@ public interface RegistryBridge {
     String namespace();
 
     default ResourceLocation id(String path) {
-        return new ResourceLocation(namespace(), path);
+        return Reference.id(namespace(), path);
     }
 
     Item item(String path);
