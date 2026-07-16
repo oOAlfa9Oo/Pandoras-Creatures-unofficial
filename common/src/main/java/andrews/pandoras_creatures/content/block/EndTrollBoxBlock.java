@@ -4,12 +4,10 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
-import andrews.pandoras_creatures.util.Reference;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
@@ -63,7 +61,6 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<Direction> FACING = DirectionalBlock.FACING;
-    public static final Identifier CONTENTS = Identifier.fromNamespaceAndPath(Reference.MODID, "contents");
 
     @Nullable
     private final DyeColor color;
