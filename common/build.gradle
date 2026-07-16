@@ -3,6 +3,9 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.141'
+    // Requerido por Loom cuando :fabric declara el source set de :common en su
+    // bloque `mods` (https://docs.fabricmc.net/develop/loom/classpath-groups)
+    id 'net.fabricmc.fabric-loom-companion' version "${fabric_loom_version}"
 }
 
 version = rootProject.version
