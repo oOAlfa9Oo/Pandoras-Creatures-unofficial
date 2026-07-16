@@ -1,0 +1,15 @@
+{
+  "type": "pandoras_creatures:end_troll_box_coloring",
+  "group": "end_troll_box_coloring",
+  "ingredients": [
+    {
+      "tag": "pandoras_creatures:end_troll_boxes"
+    },
+    {
+      "item": "minecraft:white_dye"
+    }
+  ],
+  "result": {
+    "item": "pandoras_creatures:white_end_troll_box"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 18.0,
+                "min": 16.0
+              },
+              "function": "minecraft:set_count"
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              }
+            }
+          ],
+          "name": "pandoras_creatures:end_troll_skin"
+        }
+      ],
+      "name": "pool_end_troll_1",
+      "rolls": 1
+    }
+  ]
+}

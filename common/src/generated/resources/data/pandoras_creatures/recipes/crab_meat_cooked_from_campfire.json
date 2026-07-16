@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "pandoras_creatures:crab_meat"
+  },
+  "result": "pandoras_creatures:crab_meat_cooked"
+}

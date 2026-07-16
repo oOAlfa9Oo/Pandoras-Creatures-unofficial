@@ -1,0 +1,19 @@
+{
+  "type": "pandoras_creatures:end_troll_box",
+  "key": {
+    "B": {
+      "tag": "pandoras_creatures:vanilla_shulker_boxes"
+    },
+    "S": {
+      "item": "pandoras_creatures:end_troll_skin"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SBS",
+    "SSS"
+  ],
+  "result": {
+    "item": "pandoras_creatures:end_troll_box"
+  }
+}
