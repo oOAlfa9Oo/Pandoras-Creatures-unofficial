@@ -8,6 +8,9 @@ import andrews.pandoras_creatures.entities.EndTrollGameTests;
 import andrews.pandoras_creatures.entities.HellhoundGameTests;
 import andrews.pandoras_creatures.entities.SeahorseGameTests;
 import andrews.pandoras_creatures.entities.projectiles.EndTrollProjectileGameTests;
+import andrews.pandoras_creatures.gametest.EndPrisonStructureGameTests;
+import andrews.pandoras_creatures.gametest.PCDataLoadGameTests;
+import andrews.pandoras_creatures.gametest.PCEntitySpawnGameTests;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -52,7 +55,20 @@ public final class PCNeoForgeGameTests {
             definition("seahorse/save_data_restores_variant_and_size", SeahorseGameTests::saveDataRestoresVariantAndSize),
             definition("seahorse/bucket_tag_restores_variant_and_size", SeahorseGameTests::bucketTagRestoresVariantAndSize),
             definition("end_troll_projectiles/projectile_save_data_restores_owner_target_and_motion", EndTrollProjectileGameTests::projectileSaveDataRestoresOwnerTargetAndMotion),
-            definition("end_troll_projectiles/poison_bullet_hit_applies_effect_and_discards", EndTrollProjectileGameTests::poisonBulletHitAppliesEffectAndDiscards)
+            definition("end_troll_projectiles/poison_bullet_hit_applies_effect_and_discards", EndTrollProjectileGameTests::poisonBulletHitAppliesEffectAndDiscards),
+            definition("end_prison_structure/structure_and_structure_set_are_loaded_from_datapack", EndPrisonStructureGameTests::structureAndStructureSetAreLoadedFromDatapack),
+            definition("end_prison_structure/structure_templates_load_with_real_size", EndPrisonStructureGameTests::structureTemplatesLoadWithRealSize),
+            definition("end_prison_structure/structure_generates_valid_start_with_pieces", EndPrisonStructureGameTests::structureGeneratesValidStartWithPieces),
+            definition("data_load/recipes_load_from_datapack", PCDataLoadGameTests::recipesLoadFromDatapack),
+            definition("data_load/loot_tables_load_from_datapack", PCDataLoadGameTests::lootTablesLoadFromDatapack),
+            definition("data_load/end_troll_box_item_tag_is_bound", PCDataLoadGameTests::endTrollBoxItemTagIsBound),
+            definition("entity_spawns/arachnon_spawns", PCEntitySpawnGameTests::arachnonSpawns),
+            definition("entity_spawns/acidic_archvine_spawns", PCEntitySpawnGameTests::acidicArchvineSpawns),
+            definition("entity_spawns/bufflon_spawns", PCEntitySpawnGameTests::bufflonSpawns),
+            definition("entity_spawns/crab_spawns", PCEntitySpawnGameTests::crabSpawns),
+            definition("entity_spawns/hellhound_spawns", PCEntitySpawnGameTests::hellhoundSpawns),
+            definition("entity_spawns/seahorse_spawns", PCEntitySpawnGameTests::seahorseSpawns),
+            definition("entity_spawns/end_troll_spawns", PCEntitySpawnGameTests::endTrollSpawns)
     );
 
     private PCNeoForgeGameTests() {
