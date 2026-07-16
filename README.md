@@ -79,7 +79,8 @@ Changes include:
 
 Project restructuring and migration planning are being tracked in:
 
-* [PLAN_REESTRUCTURACION_MULTILOADER.md](./PLAN_REESTRUCTURACION_MULTILOADER.md)
+* [docs/adr/](./docs/adr/README.md) — architecture decisions (ADRs); [docs/adr/STATUS.md](./docs/adr/STATUS.md) is the live, versioned board of resolved/pending items
+* [PLAN_REESTRUCTURACION_MULTILOADER.md](./PLAN_REESTRUCTURACION_MULTILOADER.md) (local only, gitignored)
 * [CONTRIBUTING.md](./CONTRIBUTING.md)
 * [docs/README.md](./docs/README.md)
 

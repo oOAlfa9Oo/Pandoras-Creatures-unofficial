@@ -2,7 +2,7 @@
 
 ## Scope
 
-This repository currently maintains an unofficial NeoForge 1.21.1 port of Pandoras Creatures and is being prepared for a future multiloader architecture.
+This repository maintains an unofficial **multiloader** port of Pandoras Creatures (`common` + `forge` + `fabric` + `neoforge`), targeting Minecraft 1.21.1 with a documented path toward multiversion support.
 
 The immediate priority is stability, maintainability, and traceable refactoring.
 
@@ -23,6 +23,8 @@ Before considering a change ready, run:
 .\gradlew.bat test
 ```
 
+Changes should also pass the architecture check (`verifyArchitecture`). The exact integrity gate depends on the version family, because not every loader compiles on every line; see [docs/adr/STATUS.md](docs/adr/STATUS.md) for the current command (e.g. on the 1.20.1 family: `:common:test :fabric:compileJava :forge:compileJava verifyArchitecture`).
+
 If the change affects gameplay or content loading, also run the appropriate local game validation for the affected area.
 
 ## Testing Expectations
@@ -34,18 +36,19 @@ If the change affects gameplay or content loading, also run the appropriate loca
 
 ## Documentation Rule
 
-All architectural work, migration decisions, and restructuring progress should be recorded in:
+All architectural decisions are recorded as ADRs (versioned, clonable source of truth):
 
-- [PLAN_REESTRUCTURACION_MULTILOADER.md](C:/Users/joaqu/Downloads/Pandoras-Creatures-1.21.1/PLAN_REESTRUCTURACION_MULTILOADER.md)
+- [docs/adr/](docs/adr/README.md) — the decisions themselves
+- [docs/adr/STATUS.md](docs/adr/STATUS.md) — live board of resolved/pending items and context to resume cold
 
-New technical reference documents should be placed under:
+Detailed chronological progress is kept in `PLAN_REESTRUCTURACION_MULTILOADER.md` (local only, gitignored).
 
-- [docs/](C:/Users/joaqu/Downloads/Pandoras-Creatures-1.21.1/docs/README.md)
+New technical reference documents should be placed under [docs/](docs/README.md).
 
 ## Repository Conventions
 
 - Java version: `21`
-- Loader line today: `NeoForge 1.21.1`
+- Loaders: multiloader `common` + `forge` + `fabric` + `neoforge` (target line `1.21.1`)
 - Build tool: `Gradle`
 - Test framework: `JUnit 5`
 
