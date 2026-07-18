@@ -50,7 +50,11 @@ neoForge {
 
         gameTestServer {
             type = "gameTestServer"
-            gameDirectory = rootProject.layout.projectDirectory.dir('run/gametest')
+            // Dir propio del modulo (antes run/gametest en la raiz): consistente con el
+            // resto de runs y evita el directorio raiz que quedo como placeholder
+            // inaccesible tras el incidente de archivos virtuales de Nextcloud del
+            // 2026-07-17 (ver ADR-0008).
+            gameDirectory = project.layout.projectDirectory.dir('run/gameTestServer')
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
