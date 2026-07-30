@@ -230,7 +230,7 @@ tasks.register('validateOfficialLoaders') {
     dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy',
             ':common:compileJava', ':common:test',
             ':fabric:compileJava', ':fabric:test', ':fabric:build',
-            ':forge:compileJava', ':forge:test', ':forge:build'
+            ':forge:compileJava', ':forge:test', ':forge:build', ':forge:runGameTestServer'
 }
 
 tasks.register('validateExperimentalLoaders') {
@@ -243,5 +243,5 @@ tasks.register('validateExperimentalLoaders') {
 tasks.register('validateCurrentFamily') {
     group = 'verification'
     description = 'Runs the minimum validation gate before freezing the current Minecraft family branch.'
-    dependsOn 'validateOfficialLoaders', 'buildLoaderJars'
+    dependsOn 'validateOfficialLoaders'
 }
