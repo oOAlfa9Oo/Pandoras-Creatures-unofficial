@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   push:
@@ -10,6 +10,36 @@ on:
   pull_request:
 
 jobs:
+  markdown-freeze:
+    name: Markdown freeze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reject Markdown changes
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]]; then
+            echo "No previous revision is available; skipping Markdown comparison."
+            exit 0
+          fi
+
+          changed_markdown="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- '*.md')"
+          if [[ -n "$changed_markdown" ]]; then
+            echo "Markdown files are frozen and cannot be changed:"
+            echo "$changed_markdown"
+            exit 1
+          fi
+
+          echo "No Markdown changes detected."
+
   validation:
     runs-on: ubuntu-latest
     strategy:
@@ -51,3 +81,45 @@ jobs:
           name: pandoras-creatures-${{ matrix.name }}-${{ github.sha }}
           path: ${{ matrix.name }}/build/libs/*.jar
           if-no-files-found: error
+
+  gametests:
+    name: GameTests (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: forge
+            command: ./gradlew :forge:runGameTestServer --console=plain
+            logs: forge/run/gameTestServer/logs
+          - name: neoforge
+            command: ./gradlew :neoforge:runGameTestServer --console=plain
+            logs: neoforge/run/gameTestServer/logs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Run ${{ matrix.name }} GameTests
+        run: ${{ matrix.command }}
+
+      - name: Upload ${{ matrix.name }} GameTest logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pandoras-creatures-${{ matrix.name }}-gametest-logs-${{ github.sha }}
+          path: ${{ matrix.logs }}
+          if-no-files-found: warn

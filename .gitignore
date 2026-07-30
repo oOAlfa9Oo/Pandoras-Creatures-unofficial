@@ -18,3 +18,35 @@ AUDITORIA_ESTADISTICAS_ENTIDADES.md
 BUFFLON_MIGRACION_LEVANTAMIENTO.md
 LEVANTAMIENTO_*.md
 PLAN_REESTRUCTURACION_MULTILOADER.md
+
+# Keep all new Markdown documentation local
+*.md
+
+# Local AI agent instructions and conversation archives
+_claude_chats/
+_codex_chats/
+.agents/
+.codex/
+
+# Environment files and local credentials
+.env
+.env.*
+local.properties
+*.secret
+*.token
+credentials*.json
+secrets*.json
+
+# Private keys, certificates, and credential stores
+id_rsa*
+id_ed25519*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdbx
+*.ovpn
+.npmrc
+.pypirc
