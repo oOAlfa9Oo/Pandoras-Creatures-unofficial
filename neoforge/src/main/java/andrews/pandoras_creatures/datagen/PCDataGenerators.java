@@ -21,6 +21,7 @@ import java.nio.file.Path;
 
 public final class PCDataGenerators {
     private static final String SHARED_CLIENT_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedClientOutput";
+    private static final String SHARED_DATA_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedDataOutput";
     private static final String SHARED_WORLDGEN_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedWorldgenOutput";
 
     private PCDataGenerators() {
@@ -28,12 +29,13 @@ public final class PCDataGenerators {
 
     public static void gatherServerData(GatherDataEvent.Server event) {
         PackOutput output = event.getGenerator().getPackOutput();
+        PackOutput sharedDataOutput = sharedDataOutput(output);
         PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
-        event.addProvider(new PCTagDataProvider(output));
-        event.addProvider(new PCRecipeDataProvider(output));
-        event.addProvider(new PCBlockLootTableDataProvider(output));
-        event.addProvider(new PCEntityLootTableDataProvider(output));
-        event.addProvider(new PCChestInjectionLootTableDataProvider(output));
+        event.addProvider(new PCTagDataProvider(sharedDataOutput));
+        event.addProvider(new PCRecipeDataProvider(sharedDataOutput));
+        event.addProvider(new PCBlockLootTableDataProvider(sharedDataOutput));
+        event.addProvider(new PCEntityLootTableDataProvider(sharedDataOutput));
+        event.addProvider(new PCChestInjectionLootTableDataProvider(sharedDataOutput));
         event.addProvider(new PCLootModifierDataProvider(output));
         event.addProvider(new PCWorldgenTagDataProvider(sharedWorldgenOutput));
         event.addProvider(new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
@@ -52,6 +54,10 @@ public final class PCDataGenerators {
 
     private static PackOutput sharedClientOutput(PackOutput fallbackOutput) {
         return redirectedOutput(SHARED_CLIENT_OUTPUT_PROPERTY, fallbackOutput);
+    }
+
+    private static PackOutput sharedDataOutput(PackOutput fallbackOutput) {
+        return redirectedOutput(SHARED_DATA_OUTPUT_PROPERTY, fallbackOutput);
     }
 
     private static PackOutput sharedWorldgenOutput(PackOutput fallbackOutput) {

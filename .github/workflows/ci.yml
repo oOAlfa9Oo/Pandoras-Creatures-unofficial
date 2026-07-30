@@ -21,9 +21,9 @@ jobs:
           - name: fabric
             command: ./gradlew :fabric:build --console=plain
           - name: forge
-            command: ./gradlew :forge:build --console=plain
+            command: ./gradlew :forge:build :forge:runGameTestServer --console=plain
           - name: neoforge
-            command: ./gradlew :neoforge:build --console=plain
+            command: ./gradlew :neoforge:build :neoforge:runGameTestServer --console=plain
 
     steps:
       - name: Checkout repository

@@ -19,13 +19,15 @@ sourceSets {
     main {
         java.srcDirs = [
                 project.file('src/main/java'),
-                rootProject.layout.projectDirectory.dir('common/src/main/java').asFile
+                rootProject.layout.projectDirectory.dir('common/src/main/java').asFile,
+                rootProject.layout.projectDirectory.dir('gametest/src/main/java').asFile
         ]
         resources.srcDirs = [
                 project.file('src/main/resources'),
                 project.file('src/generated/resources'),
                 rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile,
-                rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile
+                rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile,
+                rootProject.layout.projectDirectory.dir('gametest/src/main/resources').asFile
         ]
     }
     test {

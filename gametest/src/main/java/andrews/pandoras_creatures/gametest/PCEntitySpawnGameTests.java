@@ -1,0 +1,54 @@
+package andrews.pandoras_creatures.gametest;
+
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.Mob;
+
+/**
+ * Valida en un servidor real que cada criatura del mod puede spawnearse:
+ * el EntityType esta registrado, la entidad se construye, entra al mundo y queda viva.
+ * Registrada desde el catalogo compartido mediante el adaptador de cada loader.
+ */
+public final class PCEntitySpawnGameTests {
+    private static final BlockPos SPAWN_POS = new BlockPos(3, 2, 3);
+
+    private PCEntitySpawnGameTests() {
+    }
+
+    private static void assertSpawns(GameTestHelper helper, Mob mob, String name) {
+        helper.assertTrue(mob != null, name + " should spawn");
+        helper.assertTrue(mob.isAlive(), name + " should be alive after spawning");
+        helper.assertTrue(mob.level() == helper.getLevel(), name + " should be added to the test level");
+        helper.succeed();
+    }
+
+    public static void arachnonSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), SPAWN_POS), "Arachnon");
+    }
+
+    public static void acidicArchvineSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), SPAWN_POS), "Acidic Archvine");
+    }
+
+    public static void bufflonSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.BUFFLON), SPAWN_POS), "Bufflon");
+    }
+
+    public static void crabSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.CRAB), SPAWN_POS), "Crab");
+    }
+
+    public static void hellhoundSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.HELLHOUND), SPAWN_POS), "Hellhound");
+    }
+
+    public static void seahorseSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), SPAWN_POS), "Seahorse");
+    }
+
+    public static void endTrollSpawns(GameTestHelper helper) {
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), SPAWN_POS), "End Troll");
+    }
+}

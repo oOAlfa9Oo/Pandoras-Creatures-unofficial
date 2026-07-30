@@ -18,8 +18,15 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets {
     main {
-        java.srcDirs = [project.file('src/main/java')]
-        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')]
+        java.srcDirs = [
+                project.file('src/main/java'),
+                rootProject.layout.projectDirectory.dir('gametest/src/main/java').asFile
+        ]
+        resources.srcDirs = [
+                project.file('src/main/resources'),
+                project.file('src/generated/resources'),
+                rootProject.layout.projectDirectory.dir('gametest/src/main/resources').asFile
+        ]
         compileClasspath += project(':common').sourceSets.main.output
         runtimeClasspath += project(':common').sourceSets.main.output
     }
@@ -56,6 +63,8 @@ neoForge {
             type = "serverData"
             gameDirectory = rootProject.layout.projectDirectory.dir('run/data')
             systemProperty 'pandoras_creatures.sharedGeneratedClientOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            systemProperty 'pandoras_creatures.sharedGeneratedDataOutput',
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
             systemProperty 'pandoras_creatures.sharedGeneratedWorldgenOutput',
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
