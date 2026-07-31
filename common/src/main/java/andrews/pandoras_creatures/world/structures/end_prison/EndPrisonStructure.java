@@ -9,6 +9,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -102,7 +103,10 @@ public class EndPrisonStructure extends Structure {
         endTroll.setEntityStanding(false);
         endTroll.setHasScreamed(false);
         endTroll.setPersistenceRequired();
-        endTroll.setOnGround(true);
+        CompoundTag serializedState = new CompoundTag();
+        endTroll.saveWithoutId(serializedState);
+        serializedState.putBoolean("OnGround", true);
+        endTroll.load(serializedState);
         level.addFreshEntityWithPassengers(endTroll);
     }
 
