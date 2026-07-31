@@ -8,7 +8,7 @@ public final class PCBiomeSpawnCatalog {
     private static final List<SpawnDefinition> DEFINITIONS = List.of(
             new SpawnDefinition("acidic_archvine_jungle_spawns", List.of("#minecraft:is_jungle"), true, "pandoras_creatures:acidic_archvine", 140, 1, 1),
             new SpawnDefinition("acidic_archvine_nether_spawns", List.of("#minecraft:is_nether"), true, "pandoras_creatures:acidic_archvine", 55, 1, 1),
-            new SpawnDefinition("arachnon_spawns", List.of("#minecraft:is_overworld"), true, "pandoras_creatures:arachnon",
+            new SpawnDefinition("arachnon_spawns", List.of("minecraft:plains", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills"), false, "pandoras_creatures:arachnon",
                     ArachnonSpawnTuning.overworldSpawnWeight(), ArachnonSpawnTuning.minSpawnGroup(), ArachnonSpawnTuning.maxSpawnGroup()),
             new SpawnDefinition("bufflon_spawns", List.of("minecraft:snowy_plains", "minecraft:frozen_river", "minecraft:snowy_slopes"), false, "pandoras_creatures:bufflon", 3, 1, 1),
             new SpawnDefinition("crab_spawns", List.of("minecraft:beach", "minecraft:warm_ocean"), false, "pandoras_creatures:crab", 400, 2, 5),

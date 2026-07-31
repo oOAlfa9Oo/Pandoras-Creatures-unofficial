@@ -1,12 +1,16 @@
 {
   "type": "forge:add_spawns",
-  "biomes": "#minecraft:is_overworld",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:windswept_hills",
+    "minecraft:windswept_gravelly_hills"
+  ],
   "spawners": [
     {
       "type": "pandoras_creatures:arachnon",
-      "maxCount": 2,
+      "maxCount": 1,
       "minCount": 1,
-      "weight": 60
+      "weight": 20
     }
   ]
 }

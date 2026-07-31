@@ -1,9 +1,9 @@
 package andrews.pandoras_creatures.entities.arachnon;
 
 public final class ArachnonSpawnTuning {
-    private static final int OVERWORLD_SPAWN_WEIGHT = 60;
+    private static final int OVERWORLD_SPAWN_WEIGHT = 20;
     private static final int MIN_SPAWN_GROUP = 1;
-    private static final int MAX_SPAWN_GROUP = 2;
+    private static final int MAX_SPAWN_GROUP = 1;
 
     private ArachnonSpawnTuning() {
     }

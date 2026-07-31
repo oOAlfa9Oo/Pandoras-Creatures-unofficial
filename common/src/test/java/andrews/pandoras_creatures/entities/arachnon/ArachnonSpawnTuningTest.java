@@ -8,14 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ArachnonSpawnTuningTest {
     @Test
     void overworldSpawnWeightStaysInExpectedRange() {
-        assertEquals(60, ArachnonSpawnTuning.overworldSpawnWeight());
-        assertTrue(ArachnonSpawnTuning.overworldSpawnWeight() > 20);
+        assertEquals(20, ArachnonSpawnTuning.overworldSpawnWeight());
     }
 
     @Test
     void spawnGroupAllowsSmallNaturalPacks() {
         assertEquals(1, ArachnonSpawnTuning.minSpawnGroup());
-        assertEquals(2, ArachnonSpawnTuning.maxSpawnGroup());
+        assertEquals(1, ArachnonSpawnTuning.maxSpawnGroup());
         assertTrue(ArachnonSpawnTuning.maxSpawnGroup() >= ArachnonSpawnTuning.minSpawnGroup());
     }
 }
