@@ -8,6 +8,7 @@ import andrews.pandoras_creatures.entities.EndTrollGameTests;
 import andrews.pandoras_creatures.entities.HellhoundGameTests;
 import andrews.pandoras_creatures.entities.SeahorseGameTests;
 import andrews.pandoras_creatures.entities.projectiles.EndTrollProjectileGameTests;
+import andrews.pandoras_creatures.gametest.EndPrisonShipGameTests;
 import andrews.pandoras_creatures.gametest.EndPrisonStructureGameTests;
 import andrews.pandoras_creatures.gametest.PCDataLoadGameTests;
 import andrews.pandoras_creatures.gametest.PCEntitySpawnGameTests;
@@ -56,6 +57,7 @@ public final class PCGameTestCatalog {
             definition("end_prison_structure/structure_and_structure_set_are_loaded_from_datapack", EndPrisonStructureGameTests::structureAndStructureSetAreLoadedFromDatapack),
             definition("end_prison_structure/structure_templates_load_with_real_size", EndPrisonStructureGameTests::structureTemplatesLoadWithRealSize),
             definition("end_prison_structure/structure_generates_valid_start_with_pieces", EndPrisonStructureGameTests::structureGeneratesValidStartWithPieces),
+            definition("end_prison_structure/vanilla_ship_markers_create_official_contents_in_every_rotation", EndPrisonShipGameTests::vanillaShipMarkersCreateOfficialContentsInEveryRotation),
             definition("end_prison_structure/naturally_placed_end_prison_contains_end_troll", EndPrisonStructureGameTests::naturallyPlacedEndPrisonContainsEndTroll),
             definition("data_load/recipes_load_from_datapack", PCDataLoadGameTests::recipesLoadUnder1201Format),
             definition("data_load/loot_tables_load_from_datapack", PCDataLoadGameTests::lootTablesLoadUnder1201Format),

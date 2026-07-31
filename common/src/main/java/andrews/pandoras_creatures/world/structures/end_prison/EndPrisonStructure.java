@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -34,7 +33,10 @@ import java.util.Optional;
 
 public class EndPrisonStructure extends Structure {
     private static final Vec3 END_TROLL_TEMPLATE_POSITION =
-            new Vec3(18.27531668920085D, 11.0D, 20.87783590069225D);
+            new Vec3(
+                    EndPrisonBehaviorRules.END_TROLL_X,
+                    EndPrisonBehaviorRules.END_TROLL_Y,
+                    EndPrisonBehaviorRules.END_TROLL_Z);
 
     public static final MapCodec<EndPrisonStructure> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -91,14 +93,13 @@ public class EndPrisonStructure extends Structure {
             return;
         }
 
-        endTroll.moveTo(spawnPosition.x, spawnPosition.y, spawnPosition.z, 0.0F, 0.0F);
-        endTroll.finalizeSpawn(
-                level,
-                level.getCurrentDifficultyAt(spawnBlock),
-                MobSpawnType.STRUCTURE,
-                null,
-                null);
+        float yaw = EndPrisonBehaviorRules.rotatedEndTrollYaw(bodyPiece.getRotation().name());
+        endTroll.moveTo(spawnPosition.x, spawnPosition.y, spawnPosition.z, yaw, 0.0F);
+        endTroll.setHealth(EndPrisonBehaviorRules.END_TROLL_HEALTH);
+        endTroll.setEntityStanding(false);
+        endTroll.setHasScreamed(false);
         endTroll.setPersistenceRequired();
+        endTroll.setOnGround(true);
         level.addFreshEntityWithPassengers(endTroll);
     }
 
