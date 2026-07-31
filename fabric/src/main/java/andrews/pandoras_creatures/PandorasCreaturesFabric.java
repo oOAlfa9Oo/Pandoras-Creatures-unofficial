@@ -13,6 +13,7 @@ import andrews.pandoras_creatures.registry.PCFabricRecipeSerializers;
 import andrews.pandoras_creatures.registry.PCFabricSounds;
 import andrews.pandoras_creatures.registry.PCFabricStructures;
 import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.world.PCFabricWorldGeneration;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public final class PandorasCreaturesFabric implements ModInitializer {
         PCFabricRecipeSerializers.register();
         PCFabricCreativeTabs.register();
         PCFabricStructures.register();
+        PCFabricWorldGeneration.register();
         LOGGER.info("Pandoras Creatures Fabric bootstrap initialized");
     }
 }
