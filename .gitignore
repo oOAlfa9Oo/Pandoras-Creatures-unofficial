@@ -5,6 +5,7 @@ backup/
 net/
 .vscode/
 .claude/
+.codex-staging/
 src/generated/resources/.cache/
 common/src/generated/resources/.cache/
 neoforge/src/generated/resources/.cache/

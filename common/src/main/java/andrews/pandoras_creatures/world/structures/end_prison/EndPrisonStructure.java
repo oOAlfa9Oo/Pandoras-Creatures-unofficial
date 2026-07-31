@@ -9,6 +9,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -32,6 +33,8 @@ import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -104,7 +107,13 @@ public class EndPrisonStructure extends Structure {
         endTroll.setEntityStanding(false);
         endTroll.setHasScreamed(false);
         endTroll.setPersistenceRequired();
-        endTroll.setOnGround(true);
+        TagValueOutput serializedState = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, endTroll.registryAccess());
+        endTroll.saveWithoutId(serializedState);
+        serializedState.putBoolean("OnGround", true);
+        endTroll.load(TagValueInput.create(
+                ProblemReporter.DISCARDING,
+                endTroll.registryAccess(),
+                serializedState.buildResult()));
         level.addFreshEntityWithPassengers(endTroll);
     }
 
