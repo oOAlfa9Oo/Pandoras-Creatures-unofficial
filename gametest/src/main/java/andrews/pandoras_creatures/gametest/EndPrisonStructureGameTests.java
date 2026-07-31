@@ -3,6 +3,7 @@ package andrews.pandoras_creatures.gametest;
 import andrews.pandoras_creatures.entities.EndTrollEntity;
 import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import andrews.pandoras_creatures.util.Reference;
+import andrews.pandoras_creatures.world.structures.end_prison.EndPrisonPieces;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -11,9 +12,11 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -88,6 +91,65 @@ public final class EndPrisonStructureGameTests {
         helper.succeed();
     }
 
+    public static void generatedShipUsesOfficialProximity(GameTestHelper helper) {
+        ServerLevel end = helper.getLevel().getServer().getLevel(Level.END);
+        helper.assertTrue(end != null, "The End dimension must be loaded for ship proximity validation");
+        if (end == null) {
+            return;
+        }
+
+        Registry<Structure> structures = end.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        Structure endPrison = structures.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        helper.assertTrue(endPrison != null, "End Prison must exist for ship proximity validation");
+        if (endPrison == null) {
+            return;
+        }
+
+        ChunkGenerator generator = end.getChunkSource().getGenerator();
+        BlockPos assignedOrigin = helper.absolutePos(BlockPos.ZERO);
+        int baseChunkX = 1_024 + Math.floorMod(assignedOrigin.getX(), 10_000);
+        int baseChunkZ = 1_024 + Math.floorMod(assignedOrigin.getZ(), 10_000);
+        StructureStart startWithShip = null;
+        EndPrisonPieces.Piece generatedShip = null;
+        PoolElementStructurePiece bodyPiece = null;
+
+        for (int attempt = 0; attempt < 128 && generatedShip == null; attempt++) {
+            ChunkPos candidate = new ChunkPos(baseChunkX + attempt * 4, baseChunkZ);
+            StructureStart candidateStart = endPrison.generate(
+                    end.registryAccess(), generator, generator.getBiomeSource(),
+                    end.getChunkSource().randomState(), end.getStructureManager(), end.getSeed(),
+                    candidate, 0, end, biome -> true);
+            if (!candidateStart.isValid() || candidateStart.getPieces().isEmpty()
+                    || !(candidateStart.getPieces().get(0) instanceof PoolElementStructurePiece candidateBody)) {
+                continue;
+            }
+            for (net.minecraft.world.level.levelgen.structure.StructurePiece piece : candidateStart.getPieces()) {
+                if (piece instanceof EndPrisonPieces.Piece ship) {
+                    startWithShip = candidateStart;
+                    generatedShip = ship;
+                    bodyPiece = candidateBody;
+                    break;
+                }
+            }
+        }
+
+        helper.assertTrue(startWithShip != null && generatedShip != null && bodyPiece != null,
+                "A generated End Prison should include its official one-in-three ship within 128 deterministic candidates");
+        if (generatedShip == null || bodyPiece == null) {
+            return;
+        }
+
+        BlockPos expectedPosition = officialShipPosition(bodyPiece.getPosition(), bodyPiece.getRotation());
+        Rotation expectedRotation = officialShipRotation(bodyPiece.getRotation());
+        BoundingBox expectedBox = new EndPrisonPieces.Piece(end.getStructureManager(), expectedPosition, expectedRotation)
+                .getBoundingBox();
+        BoundingBox actualBox = generatedShip.getBoundingBox();
+        helper.assertTrue(sameBox(actualBox, expectedBox),
+                "Generated ship must retain the official position beside End Prison; expected=" + expectedBox
+                        + ", actual=" + actualBox + ", body=" + bodyPiece.getBoundingBox());
+        helper.succeed();
+    }
+
     public static void naturallyPlacedEndPrisonContainsEndTroll(GameTestHelper helper) {
         ServerLevel end = helper.getLevel().getServer().getLevel(Level.END);
         helper.assertTrue(end != null, "The End dimension must be loaded for natural structure validation");
@@ -125,8 +187,11 @@ public final class EndPrisonStructureGameTests {
         ChunkPos naturalStartChunk = null;
         int eligibleCandidates = 0;
         int allowedBiomeCandidates = 0;
-        for (int regionX = 3; regionX <= 12 && naturalStart == null; regionX++) {
-            for (int regionZ = -4; regionZ <= 4; regionZ++) {
+        BlockPos assignedOrigin = helper.absolutePos(BlockPos.ZERO);
+        int firstRegionX = 64 + Math.floorMod(assignedOrigin.getX(), 1_000);
+        int firstRegionZ = 64 + Math.floorMod(assignedOrigin.getZ(), 1_000);
+        for (int regionX = firstRegionX; regionX < firstRegionX + 10 && naturalStart == null; regionX++) {
+            for (int regionZ = firstRegionZ; regionZ < firstRegionZ + 9; regionZ++) {
                 ChunkPos candidate = placement.getPotentialStructureChunk(
                         end.getSeed(),
                         regionX * placement.spacing(),
@@ -202,7 +267,8 @@ public final class EndPrisonStructureGameTests {
             end.getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
             end.getEntities(
                     EntityTypeTest.forClass(EndTrollEntity.class),
-                    entity -> box.isInside(entity.blockPosition())).forEach(EndTrollEntity::discard);
+                    entity -> box.isInside(entity.blockPosition())
+            ).forEach(EndTrollEntity::discard);
             for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
                 for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
                     ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
@@ -228,12 +294,9 @@ public final class EndPrisonStructureGameTests {
                 java.util.List<? extends EndTrollEntity> structuralEndTrolls = end.getEntities(
                         EntityTypeTest.forClass(EndTrollEntity.class),
                         entity -> box.isInside(entity.blockPosition()));
-                int allEndTrolls = end.getEntities(
-                        EntityTypeTest.forClass(EndTrollEntity.class),
-                        entity -> true).size();
-                helper.assertTrue(structuralEndTrolls.size() == 1 && allEndTrolls == 1,
-                        "End Prison should create exactly one structural End Troll; in-structure=" + structuralEndTrolls.size()
-                                + ", all-end=" + allEndTrolls);
+                helper.assertTrue(structuralEndTrolls.size() == 1,
+                        "End Prison should create exactly one structural End Troll; in-structure="
+                                + structuralEndTrolls.size());
                 if (structuralEndTrolls.size() == 1) {
                     EndTrollEntity endTroll = structuralEndTrolls.get(0);
                     helper.assertTrue(endTroll.position().distanceToSqr(expectedTrollPosition) < 0.01D,
@@ -253,5 +316,28 @@ public final class EndPrisonStructureGameTests {
                 helper.succeed();
             });
         });
+    }
+
+    private static BlockPos officialShipPosition(BlockPos bodyPosition, Rotation rotation) {
+        return switch (rotation) {
+            case CLOCKWISE_90 -> new BlockPos(bodyPosition.getX() + 20, 123, bodyPosition.getZ() + 33);
+            case COUNTERCLOCKWISE_90 -> new BlockPos(bodyPosition.getX() - 20, 123, bodyPosition.getZ() - 33);
+            case CLOCKWISE_180 -> new BlockPos(bodyPosition.getX() - 5, 123, bodyPosition.getZ() + 8);
+            default -> new BlockPos(bodyPosition.getX() + 5, 123, bodyPosition.getZ() - 8);
+        };
+    }
+
+    private static Rotation officialShipRotation(Rotation rotation) {
+        return switch (rotation) {
+            case CLOCKWISE_90 -> Rotation.CLOCKWISE_180;
+            case COUNTERCLOCKWISE_90 -> Rotation.NONE;
+            case CLOCKWISE_180 -> Rotation.CLOCKWISE_90;
+            default -> Rotation.COUNTERCLOCKWISE_90;
+        };
+    }
+
+    private static boolean sameBox(BoundingBox first, BoundingBox second) {
+        return first.minX() == second.minX() && first.minY() == second.minY() && first.minZ() == second.minZ()
+                && first.maxX() == second.maxX() && first.maxY() == second.maxY() && first.maxZ() == second.maxZ();
     }
 }

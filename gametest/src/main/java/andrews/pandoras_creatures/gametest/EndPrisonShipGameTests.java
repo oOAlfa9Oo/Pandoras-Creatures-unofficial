@@ -36,7 +36,7 @@ public final class EndPrisonShipGameTests {
         if (level == null) {
             return;
         }
-        BlockPos testOrigin = new BlockPos(0, 123, 0);
+        BlockPos testOrigin = isolatedEndOrigin(helper);
         List<PlacedShip> ships = new ArrayList<>();
 
         Rotation[] rotations = {
@@ -50,23 +50,7 @@ public final class EndPrisonShipGameTests {
             ships.add(prepareShip(level, shipOrigin, rotations[index]));
         }
 
-        helper.runAfterDelay(10L, () -> {
-            for (PlacedShip ship : ships) {
-                placeShip(level, ship);
-            }
-            helper.runAfterDelay(1L, () -> {
-                try {
-                    for (PlacedShip ship : ships) {
-                        assertOfficialContents(helper, level, ship);
-                    }
-                    helper.succeed();
-                } finally {
-                    for (PlacedShip ship : ships) {
-                        setChunksForced(level, ship.box(), false);
-                    }
-                }
-            });
-        });
+        placeShipsWhenEntityChunksAreReady(helper, level, ships);
     }
 
     private static PlacedShip prepareShip(ServerLevel level, BlockPos origin, Rotation rotation) {
@@ -92,25 +76,58 @@ public final class EndPrisonShipGameTests {
 
     private static void placeShip(ServerLevel level, PlacedShip ship) {
         BoundingBox box = ship.box();
-        for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
-            for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
-                ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
-                BoundingBox chunkBox = new BoundingBox(
-                        chunkPos.getMinBlockX(),
-                        level.getMinBuildHeight(),
-                        chunkPos.getMinBlockZ(),
-                        chunkPos.getMaxBlockX(),
-                        level.getMaxBuildHeight() - 1,
-                        chunkPos.getMaxBlockZ());
-                ship.start().placeInChunk(
-                        level,
-                        level.structureManager(),
-                        level.getChunkSource().getGenerator(),
-                        level.getRandom(),
-                        chunkBox,
-                        chunkPos);
+        BlockPos center = box.getCenter();
+        ChunkPos chunkPos = new ChunkPos(center.getX() >> 4, center.getZ() >> 4);
+        ship.start().placeInChunk(
+                level,
+                level.structureManager(),
+                level.getChunkSource().getGenerator(),
+                level.getRandom(),
+                box,
+                chunkPos);
+    }
+
+    private static void placeShipsWhenEntityChunksAreReady(
+            GameTestHelper helper,
+            ServerLevel level,
+            List<PlacedShip> ships) {
+        if (!areEntityChunksTicking(level, ships)) {
+            helper.runAfterDelay(1L, () -> placeShipsWhenEntityChunksAreReady(helper, level, ships));
+            return;
+        }
+
+        try {
+            for (PlacedShip ship : ships) {
+                net.minecraft.world.phys.AABB bounds = net.minecraft.world.phys.AABB.of(ship.box()).inflate(32.0D);
+                level.getEntitiesOfClass(Shulker.class, bounds)
+                        .forEach(net.minecraft.world.entity.Entity::discard);
+                level.getEntitiesOfClass(ItemFrame.class, bounds)
+                        .forEach(net.minecraft.world.entity.Entity::discard);
+            }
+            for (PlacedShip ship : ships) {
+                placeShip(level, ship);
+                assertOfficialContents(helper, level, ship);
+            }
+            helper.succeed();
+        } finally {
+            for (PlacedShip ship : ships) {
+                setChunksForced(level, ship.box(), false);
             }
         }
+    }
+
+    private static boolean areEntityChunksTicking(ServerLevel level, List<PlacedShip> ships) {
+        for (PlacedShip ship : ships) {
+            BoundingBox box = ship.box();
+            for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
+                for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
+                    if (!level.isPositionEntityTicking(new BlockPos((chunkX << 4) + 8, 123, (chunkZ << 4) + 8))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private static void assertOfficialContents(
@@ -161,6 +178,13 @@ public final class EndPrisonShipGameTests {
                 level.setChunkForced(chunkX, chunkZ, forced);
             }
         }
+    }
+
+    private static BlockPos isolatedEndOrigin(GameTestHelper helper) {
+        BlockPos assignedOrigin = helper.absolutePos(BlockPos.ZERO);
+        int x = Math.floorMod(assignedOrigin.getX(), 50_000) * 512 - 12_800_000;
+        int z = Math.floorMod(assignedOrigin.getZ(), 50_000) * 512 - 12_800_000;
+        return new BlockPos(x, 123, z);
     }
 
     private record PlacedShip(Rotation rotation, BoundingBox box, StructureStart start) {
