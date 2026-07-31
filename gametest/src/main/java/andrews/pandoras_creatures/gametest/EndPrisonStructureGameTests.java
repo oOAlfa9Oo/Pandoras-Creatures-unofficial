@@ -53,10 +53,10 @@ public final class EndPrisonStructureGameTests {
         ServerLevel level = helper.getLevel();
 
         Optional<StructureTemplate> body = level.getStructureManager().get(PCStructureIds.id(PCStructureIds.END_PRISON_BODY_TEMPLATE));
-        Optional<StructureTemplate> ship = level.getStructureManager().get(PCStructureIds.id(PCStructureIds.END_PRISON_SHIP_TEMPLATE));
+        Optional<StructureTemplate> ship = level.getStructureManager().get(net.minecraft.resources.ResourceLocation.parse(andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.VANILLA_SHIP_TEMPLATE));
 
         helper.assertTrue(body.isPresent(), "End Prison body template NBT should load");
-        helper.assertTrue(ship.isPresent(), "End Prison ship template NBT should load");
+        helper.assertTrue(ship.isPresent(), "Vanilla End City ship template NBT should load");
         helper.assertTrue(body.isPresent() && body.get().getSize().getX() > 0 && body.get().getSize().getY() > 0,
                 "End Prison body template should have a real size");
         helper.assertTrue(ship.isPresent() && ship.get().getSize().getX() > 0 && ship.get().getSize().getY() > 0,
@@ -177,7 +177,19 @@ public final class EndPrisonStructureGameTests {
             return;
         }
 
-        ChunkPos selectedStartChunk = naturalStartChunk;
+        PoolElementStructurePiece bodyPiece = (PoolElementStructurePiece) generatedStart.getPieces().get(0);
+        net.minecraft.world.phys.Vec3 relativeTrollPosition = StructureTemplate.transform(
+                new net.minecraft.world.phys.Vec3(
+                        andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.END_TROLL_X,
+                        andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.END_TROLL_Y,
+                        andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.END_TROLL_Z),
+                net.minecraft.world.level.block.Mirror.NONE,
+                bodyPiece.getRotation(),
+                BlockPos.ZERO);
+        net.minecraft.world.phys.Vec3 expectedTrollPosition = relativeTrollPosition.add(
+                bodyPiece.getPosition().getX(),
+                bodyPiece.getPosition().getY(),
+                bodyPiece.getPosition().getZ());
         net.minecraft.world.level.levelgen.structure.BoundingBox box = generatedStart.getBoundingBox();
         for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
             for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
@@ -186,43 +198,53 @@ public final class EndPrisonStructureGameTests {
             }
         }
 
-        helper.runAfterDelay(5L, () -> {
-            StructureStart runtimeStart = end.getChunk(selectedStartChunk.x, selectedStartChunk.z)
-                    .getStartForStructure(endPrison);
-            boolean loaderGeneratedNaturally = runtimeStart != null && runtimeStart.isValid();
-            if (!loaderGeneratedNaturally) {
-                for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
-                    for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
-                        ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
-                        net.minecraft.world.level.levelgen.structure.BoundingBox chunkBox =
-                                new net.minecraft.world.level.levelgen.structure.BoundingBox(
-                                        chunkPos.getMinBlockX(),
-                                        end.getMinBuildHeight(),
-                                        chunkPos.getMinBlockZ(),
-                                        chunkPos.getMaxBlockX(),
-                                        end.getMaxBuildHeight() - 1,
-                                        chunkPos.getMaxBlockZ());
-                        generatedStart.placeInChunk(
-                                end,
-                                end.structureManager(),
-                                generator,
-                                end.getRandom(),
-                                chunkBox,
-                                chunkPos);
-                    }
+        helper.runAfterDelay(20L, () -> {
+            end.getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
+            end.getEntities(
+                    EntityTypeTest.forClass(EndTrollEntity.class),
+                    entity -> box.isInside(entity.blockPosition())).forEach(EndTrollEntity::discard);
+            for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
+                for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
+                    ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+                    net.minecraft.world.level.levelgen.structure.BoundingBox chunkBox =
+                            new net.minecraft.world.level.levelgen.structure.BoundingBox(
+                                    chunkPos.getMinBlockX(),
+                                    end.getMinBuildHeight(),
+                                    chunkPos.getMinBlockZ(),
+                                    chunkPos.getMaxBlockX(),
+                                    end.getMaxBuildHeight() - 1,
+                                    chunkPos.getMaxBlockZ());
+                    generatedStart.placeInChunk(
+                            end,
+                            end.structureManager(),
+                            generator,
+                            end.getRandom(),
+                            chunkBox,
+                            chunkPos);
                 }
             }
 
-            helper.runAfterDelay(10L, () -> {
-                int endTrolls = end.getEntities(
+            helper.runAfterDelay(1L, () -> {
+                java.util.List<? extends EndTrollEntity> structuralEndTrolls = end.getEntities(
                         EntityTypeTest.forClass(EndTrollEntity.class),
-                        entity -> box.isInside(entity.blockPosition())).size();
+                        entity -> box.isInside(entity.blockPosition()));
                 int allEndTrolls = end.getEntities(
                         EntityTypeTest.forClass(EndTrollEntity.class),
                         entity -> true).size();
-                helper.assertTrue(endTrolls == 1 && allEndTrolls == 1,
-                        "End Prison should create exactly one structural End Troll; in-structure=" + endTrolls
+                helper.assertTrue(structuralEndTrolls.size() == 1 && allEndTrolls == 1,
+                        "End Prison should create exactly one structural End Troll; in-structure=" + structuralEndTrolls.size()
                                 + ", all-end=" + allEndTrolls);
+                if (structuralEndTrolls.size() == 1) {
+                    EndTrollEntity endTroll = structuralEndTrolls.get(0);
+                    helper.assertTrue(endTroll.position().distanceToSqr(expectedTrollPosition) < 0.01D,
+                            "Structural End Troll must retain the official template position");
+                    helper.assertTrue(endTroll.getHealth() == andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.END_TROLL_HEALTH,
+                            "Structural End Troll must retain the official 200 health");
+                    helper.assertTrue(endTroll.isPersistenceRequired(),
+                            "Structural End Troll must remain persistent");
+                    helper.assertTrue(!endTroll.isEntityStanding() && !endTroll.hasScreamed(),
+                            "Structural End Troll must begin seated and without having screamed");
+                }
                 for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {
                     for (int chunkZ = box.minZ() >> 4; chunkZ <= box.maxZ() >> 4; chunkZ++) {
                         end.setChunkForced(chunkX, chunkZ, false);

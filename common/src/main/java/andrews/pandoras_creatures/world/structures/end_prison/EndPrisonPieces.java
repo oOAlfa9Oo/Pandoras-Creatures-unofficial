@@ -33,10 +33,10 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 public class EndPrisonPieces {
 
     private static final ResourceLocation SHIP_TEMPLATE =
-            PCStructureIds.id(PCStructureIds.END_PRISON_SHIP_TEMPLATE);
+            ResourceLocation.tryParse(EndPrisonBehaviorRules.VANILLA_SHIP_TEMPLATE);
 
     public static void addPieces(StructureTemplateManager templateManager, BlockPos pos, Rotation rotation, StructurePiecesBuilder builder, RandomSource random) {
-        if (random.nextInt(3) == 0) {
+        if (EndPrisonBehaviorRules.shouldAddShip(random.nextInt(EndPrisonBehaviorRules.SHIP_CHANCE_BOUND))) {
             BlockPos shipPos = getShipBlockPos(pos.getX(), pos.getZ(), rotation);
             builder.addPiece(new EndPrisonPieces.Piece(templateManager, shipPos, getShipRotation(rotation)));
         }
