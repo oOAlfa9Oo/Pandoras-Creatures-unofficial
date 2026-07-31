@@ -70,6 +70,7 @@ public final class PCGameTestCatalog {
             definition("natural_spawns/catalog_is_applied_to_runtime_biomes", PCNaturalSpawnGameTests::catalogIsAppliedToRuntimeBiomes),
             definition("natural_spawns/end_troll_is_absent_from_natural_spawn_tables", PCNaturalSpawnGameTests::endTrollIsAbsentFromNaturalSpawnTables),
             definition("natural_spawns/natural_spawn_placement_metadata_matches_contracts", PCNaturalSpawnGameTests::naturalSpawnPlacementMetadataMatchesContracts),
+            definition("natural_spawns/arachnon_completes_vanilla_natural_spawn_cycle", PCNaturalSpawnGameTests::arachnonCompletesVanillaNaturalSpawnCycle),
             definition("natural_spawns/bufflon_placement_uses_shared_rule", PCNaturalSpawnGameTests::bufflonPlacementUsesSharedRule),
             definition("natural_spawns/crab_placement_uses_shared_rule", PCNaturalSpawnGameTests::crabPlacementUsesSharedRule),
             definition("natural_spawns/hellhound_placement_uses_shared_rule", PCNaturalSpawnGameTests::hellhoundPlacementUsesSharedRule),
