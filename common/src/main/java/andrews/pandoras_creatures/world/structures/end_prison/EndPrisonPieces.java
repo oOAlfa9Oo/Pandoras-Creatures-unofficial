@@ -87,6 +87,7 @@ public class EndPrisonPieces {
 
         private static StructurePlaceSettings makeSettings(Rotation rotation) {
             return new StructurePlaceSettings()
+                    .setIgnoreEntities(true)
                     .setRotation(rotation)
                     .setMirror(Mirror.NONE)
                     .addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
