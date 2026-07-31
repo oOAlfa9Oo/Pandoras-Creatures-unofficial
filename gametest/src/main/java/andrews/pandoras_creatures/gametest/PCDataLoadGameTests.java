@@ -3,12 +3,9 @@ package andrews.pandoras_creatures.gametest;
 import andrews.pandoras_creatures.registry.PCTags;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
 
@@ -17,8 +14,6 @@ import java.util.List;
  * (recipes, loot tables, tags, advancement) realmente cargan.
  * Cubre la validacion en juego del port de datos de ADR-0007 (F3).
  */
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class PCDataLoadGameTests {
     private static final String DATA_BATCH = "data_load";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -49,7 +44,6 @@ public final class PCDataLoadGameTests {
     private PCDataLoadGameTests() {
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = DATA_BATCH)
     public static void recipesLoadUnder1201Format(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
 
@@ -60,7 +54,6 @@ public final class PCDataLoadGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = DATA_BATCH)
     public static void lootTablesLoadUnder1201Format(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
 
@@ -75,7 +68,6 @@ public final class PCDataLoadGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = DATA_BATCH)
     public static void endTrollBoxItemTagIsBound(GameTestHelper helper) {
         boolean tagLoaded = BuiltInRegistries.ITEM.getTag(PCTags.Items.END_TROLL_BOXES)
                 .map(named -> named.size() > 0)

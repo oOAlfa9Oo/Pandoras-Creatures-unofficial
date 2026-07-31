@@ -4,26 +4,22 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.advancement.PCAdvancements;
 import andrews.pandoras_creatures.entities.end_troll.EndTrollPunchAnimation;
 import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollAttackGoal;
-import andrews.pandoras_creatures.forge.registry.PCForgeEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import com.mojang.authlib.GameProfile;
 
 import java.util.UUID;
 
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class EndTrollGameTests {
     private static final String END_TROLL_BATCH = "end_troll";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -52,9 +48,8 @@ public final class EndTrollGameTests {
         };
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void saveDataRestoresStandingAndScreamState(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
 
         endTroll.setEntityStanding(true);
         endTroll.setHasScreamed(true);
@@ -62,7 +57,7 @@ public final class EndTrollGameTests {
         CompoundTag savedData = new CompoundTag();
         endTroll.addAdditionalSaveData(savedData);
 
-        EndTrollEntity restored = new EndTrollEntity(PCForgeEntities.endTroll(), helper.getLevel());
+        EndTrollEntity restored = new EndTrollEntity(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
         helper.assertTrue(restored.isEntityStanding(), "Restored End Troll should preserve standing state");
@@ -70,9 +65,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void standingAiTicksCombatCooldowns(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
         endTroll.setEntityStanding(true);
@@ -90,9 +84,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void punchAttackHurtsLivingTarget(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         float initialHealth = target.getHealth();
 
@@ -103,9 +96,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void playPunchAnimationUpdatesServerAnimationState(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
 
         endTroll.playPunchAnimation(EndTrollPunchAnimation.RIGHT);
 
@@ -114,9 +106,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void meleeGoalKeepsRunningWhilePunchAnimationIsActive(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         EndTrollAttackGoal attackGoal = new EndTrollAttackGoal(endTroll, 0.3D, false);
 
@@ -130,9 +121,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void meleeGoalKeepsRunningAtCloseRangeWithoutPath(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         EndTrollAttackGoal attackGoal = new EndTrollAttackGoal(endTroll, 0.3D, false);
 
@@ -145,9 +135,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void transformAnimationCompletesAndSetsStandingOnServer(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
 
         PandorasCreaturesCommon.platform().entities().syncAnimation(endTroll, EndTrollEntity.TRANSFORM_ANIMATION);
         for (int i = 0; i < EndTrollEntity.TRANSFORM_ANIMATION.getAnimationTickDuration(); i++) {
@@ -160,7 +149,6 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void liberationAdvancementIsLoaded(GameTestHelper helper) {
         // 1.20.1: ServerAdvancementManager#getAdvancement devuelve Advancement (AdvancementHolder es 1.20.2+)
         Advancement advancement = helper.getLevel().getServer().getAdvancements()
@@ -170,9 +158,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void invalidTargetClearsCombatAnimationDuringAiStep(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
 
         endTroll.setEntityStanding(true);
         endTroll.setHasScreamed(true);
@@ -186,9 +173,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void peacefulDifficultyClearsCombatState(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
         endTroll.setEntityStanding(true);
@@ -206,9 +192,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void deadTargetResetsEncounterStateForNextCombat(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Player firstTarget = makeSurvivalMockPlayer(helper);
 
         firstTarget.moveTo(helper.absolutePos(TARGET_POS), 0.0F, 0.0F);
@@ -233,9 +218,8 @@ public final class EndTrollGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_BATCH)
     public static void freshPlayerAfterDeathStartsFreshEncounter(GameTestHelper helper) {
-        EndTrollEntity endTroll = helper.spawn(PCForgeEntities.endTroll(), END_TROLL_POS);
+        EndTrollEntity endTroll = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), END_TROLL_POS);
         Player firstTarget = makeSurvivalMockPlayer(helper);
         Player secondTarget = makeSurvivalMockPlayer(helper);
 

@@ -10,6 +10,7 @@ version = rootProject.version
 group = rootProject.group
 evaluationDependsOn(':common')
 def commonMainSourceSet = project(':common').sourceSets.main
+def gameTestRunDir = layout.buildDirectory.dir('run/gameTestServer')
 
 base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
@@ -22,8 +23,8 @@ sourceSets {
         // Consume el output compilado de :common (igual que neoforge/fabric) en vez de
         // reabsorber su fuente. El dev-run encuentra common via `mods { source ... }` mas abajo.
         // Ver ADR-0003.
-        java.srcDirs = [project.file('src/main/java')]
-        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')] + commonMainSourceSet.resources.srcDirs
+        java.srcDirs = [project.file('src/main/java'), rootProject.file('gametest/src/main/java')]
+        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources'), rootProject.file('gametest/src/main/resources')] + commonMainSourceSet.resources.srcDirs
         compileClasspath += commonMainSourceSet.output
         runtimeClasspath += commonMainSourceSet.output
     }
@@ -64,9 +65,11 @@ minecraft {
         }
 
         gameTestServer {
+            workingDirectory = gameTestRunDir.get().asFile
             // Sin esta property Forge no habilita los GameTests del mod
             // (https://docs.minecraftforge.net/en/1.20.1/misc/gametest/)
             property 'forge.enabledGameTestNamespaces', mod_id
+            jvmArgs '-Xms256m', '-Xmx1g'
         }
 
         data {
@@ -142,6 +145,13 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    doFirst {
+        delete gameTestRunDir.get().dir('world')
+        gameTestRunDir.get().asFile.mkdirs()
+    }
 }
 
 idea {

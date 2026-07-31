@@ -9,13 +9,15 @@ group = mod_group_id
 
 def commonSourceRoots = [
         layout.projectDirectory.dir('common/src/main/java').asFile,
-        layout.projectDirectory.dir('common/src/test/java').asFile
+        layout.projectDirectory.dir('common/src/test/java').asFile,
+        layout.projectDirectory.dir('gametest/src/main/java').asFile
 ]
 
 def commonResourceRoots = [
         layout.projectDirectory.dir('common/src/main/resources').asFile,
         layout.projectDirectory.dir('common/src/generated/resources').asFile,
-        layout.projectDirectory.dir('common/src/test/resources').asFile
+        layout.projectDirectory.dir('common/src/test/resources').asFile,
+        layout.projectDirectory.dir('gametest/src/main/resources').asFile
 ]
 
 def forbiddenLoaderImports = [
@@ -208,8 +210,8 @@ tasks.register('runForgeServer') {
 
 tasks.register('runGameTestServer') {
     group = 'verification'
-    description = 'Runs the NeoForge GameTest server from the workspace root.'
-    dependsOn ':neoforge:runGameTestServer'
+    description = 'Runs the GameTest servers for the official loaders of the current Minecraft family.'
+    dependsOn ':fabric:runGameTestServer', ':forge:runGameTestServer'
 }
 
 tasks.register('runData') {
@@ -229,7 +231,7 @@ tasks.register('validateOfficialLoaders') {
     description = 'Runs the blocking validation gate for the official loaders of the current Minecraft family.'
     dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy',
             ':common:compileJava', ':common:test',
-            ':fabric:compileJava', ':fabric:test', ':fabric:build',
+            ':fabric:compileJava', ':fabric:test', ':fabric:build', ':fabric:runGameTestServer',
             ':forge:compileJava', ':forge:test', ':forge:build', ':forge:runGameTestServer'
 }
 

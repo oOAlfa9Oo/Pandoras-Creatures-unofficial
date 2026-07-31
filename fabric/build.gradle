@@ -10,6 +10,7 @@ version = rootProject.version
 group = rootProject.group
 evaluationDependsOn(':common')
 def commonMainSourceSet = project(':common').sourceSets.main
+def gameTestRunDir = layout.buildDirectory.dir('run/fabric-gametest')
 
 base {
     archivesName = "${mod_id}-fabric-${minecraft_version}"
@@ -19,8 +20,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets {
     main {
-        java.srcDirs = [project.file('src/main/java')]
-        resources.srcDirs = [project.file('src/main/resources')] + commonMainSourceSet.resources.srcDirs
+        java.srcDirs = [project.file('src/main/java'), rootProject.file('gametest/src/main/java')]
+        resources.srcDirs = [project.file('src/main/resources'), rootProject.file('gametest/src/main/resources')] + commonMainSourceSet.resources.srcDirs
         compileClasspath += commonMainSourceSet.output
         runtimeClasspath += commonMainSourceSet.output
     }
@@ -49,6 +50,14 @@ loom {
         server {
             server()
             runDir = 'run/fabric-server'
+        }
+
+        gameTestServer {
+            server()
+            runDir = 'build/run/fabric-gametest'
+            vmArg '-Dfabric-api.gametest'
+            vmArg '-Xms256m'
+            vmArg '-Xmx1g'
         }
     }
 }
@@ -117,6 +126,13 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    doFirst {
+        delete gameTestRunDir.get().dir('world')
+        gameTestRunDir.get().asFile.mkdirs()
+    }
 }
 
 idea {

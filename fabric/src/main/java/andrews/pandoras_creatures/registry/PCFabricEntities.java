@@ -123,6 +123,16 @@ public final class PCFabricEntities {
                 )
         );
 
+        SpawnPlacements.register(
+                BUFFLON,
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnBufflon(
+                        level.getRawBrightness(pos, 0),
+                        level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)
+                )
+        );
+
         registerBiomeSpawns();
     }
 

@@ -13,6 +13,7 @@ import andrews.pandoras_creatures.forge.registry.PCForgeRecipeSerializers;
 import andrews.pandoras_creatures.forge.registry.PCForgeSounds;
 import andrews.pandoras_creatures.forge.registry.PCForgeStructures;
 import andrews.pandoras_creatures.forge.registry.entity.PCForgeEntitySpawnPlacements;
+import andrews.pandoras_creatures.forge.test.PCForgeGameTests;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -41,6 +42,7 @@ public final class PandorasCreaturesForge {
         PCForgeRecipeSerializers.register(modEventBus);
         PCForgeCreativeTabs.register(modEventBus);
         PCForgeStructures.register(modEventBus);
+        PCForgeGameTests.register(modEventBus);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> registerClient(modEventBus));
         LOGGER.info("Pandoras Creatures Forge bootstrap initialized");
     }

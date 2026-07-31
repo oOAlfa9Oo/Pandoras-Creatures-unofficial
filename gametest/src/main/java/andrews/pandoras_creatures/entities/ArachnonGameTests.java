@@ -2,11 +2,11 @@ package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.arachnon.ArachnonAttackRules;
 import andrews.pandoras_creatures.entities.arachnon.ArachnonSpawnTuning;
-import andrews.pandoras_creatures.forge.registry.PCForgeEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.registry.entity.PCEntitySpawnRules;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.Difficulty;
@@ -17,11 +17,7 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class ArachnonGameTests {
     private static final String ARACHNON_BATCH = "arachnon";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -31,9 +27,8 @@ public final class ArachnonGameTests {
     private ArachnonGameTests() {
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = ARACHNON_BATCH)
     public static void doHurtTargetStartsAttackTimerAndDamagesTarget(GameTestHelper helper) {
-        ArachnonEntity arachnon = helper.spawn(PCForgeEntities.arachnon(), ARACHNON_POS);
+        ArachnonEntity arachnon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), ARACHNON_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
         boolean hurt = arachnon.doHurtTarget(target);
@@ -44,9 +39,8 @@ public final class ArachnonGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = ARACHNON_BATCH)
     public static void aiStepTicksAttackTimerDown(GameTestHelper helper) {
-        ArachnonEntity arachnon = helper.spawn(PCForgeEntities.arachnon(), ARACHNON_POS);
+        ArachnonEntity arachnon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), ARACHNON_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         arachnon.doHurtTarget(target);
 
@@ -56,7 +50,6 @@ public final class ArachnonGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = ARACHNON_BATCH)
     public static void overworldMonsterSpawnListIncludesArachnon(GameTestHelper helper) {
         BlockPos spawnPos = helper.absolutePos(ARACHNON_POS);
         helper.assertTrue(helper.getLevel().getBiome(spawnPos).is(BiomeTags.IS_OVERWORLD),
@@ -67,7 +60,7 @@ public final class ArachnonGameTests {
                 .getMobs(MobCategory.MONSTER)
                 .unwrap()
                 .stream()
-                .filter(candidate -> candidate.type == PCForgeEntities.arachnon())
+                .filter(candidate -> candidate.type == PCGameTestRegistry.entityType(PCEntityIds.ARACHNON))
                 .findFirst()
                 .orElse(null);
 
@@ -78,7 +71,6 @@ public final class ArachnonGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = ARACHNON_BATCH)
     public static void spawnPlacementMatchesSharedArachnonRule(GameTestHelper helper) {
         BlockPos spawnPos = helper.absolutePos(ARACHNON_POS.offset(10, 0, 10));
 
@@ -91,7 +83,7 @@ public final class ArachnonGameTests {
         helper.runAfterDelay(2L, () -> {
             int brightness = helper.getLevel().getRawBrightness(spawnPos, 0);
             boolean expected = PCEntitySpawnRules.canSpawnArachnon(helper.getLevel().getDifficulty() != Difficulty.PEACEFUL, brightness);
-            boolean actual = SpawnPlacements.checkSpawnRules(PCForgeEntities.arachnon(), helper.getLevel(), MobSpawnType.NATURAL, spawnPos, helper.getLevel().getRandom());
+            boolean actual = SpawnPlacements.checkSpawnRules(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), helper.getLevel(), MobSpawnType.NATURAL, spawnPos, helper.getLevel().getRandom());
 
             helper.assertTrue((actual) == (expected), "Arachnon spawn placement should mirror the shared spawn rule at brightness " + brightness + ": expected " + (expected) + ", got " + (actual));
             helper.succeed();

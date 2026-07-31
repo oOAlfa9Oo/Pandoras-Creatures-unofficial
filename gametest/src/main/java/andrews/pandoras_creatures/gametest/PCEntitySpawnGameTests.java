@@ -1,20 +1,16 @@
 package andrews.pandoras_creatures.gametest;
 
-import andrews.pandoras_creatures.forge.registry.PCForgeEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 /**
  * Valida en un servidor real que cada criatura del mod puede spawnearse:
  * el EntityType esta registrado, la entidad se construye, entra al mundo y queda viva.
  */
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class PCEntitySpawnGameTests {
     private static final String SPAWN_BATCH = "entity_spawns";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -30,38 +26,31 @@ public final class PCEntitySpawnGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void arachnonSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.arachnon(), SPAWN_POS), "Arachnon");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), SPAWN_POS), "Arachnon");
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void acidicArchvineSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.acidicArchvine(), SPAWN_POS), "Acidic Archvine");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), SPAWN_POS), "Acidic Archvine");
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void bufflonSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.bufflon(), SPAWN_POS), "Bufflon");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.BUFFLON), SPAWN_POS), "Bufflon");
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void crabSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.crab(), SPAWN_POS), "Crab");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.CRAB), SPAWN_POS), "Crab");
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void hellhoundSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.hellhound(), SPAWN_POS), "Hellhound");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.HELLHOUND), SPAWN_POS), "Hellhound");
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void seahorseSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.seahorse(), SPAWN_POS), "Seahorse");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), SPAWN_POS), "Seahorse");
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = SPAWN_BATCH)
     public static void endTrollSpawns(GameTestHelper helper) {
-        assertSpawns(helper, helper.spawn(PCForgeEntities.endTroll(), SPAWN_POS), "End Troll");
+        assertSpawns(helper, helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), SPAWN_POS), "End Troll");
     }
 }
