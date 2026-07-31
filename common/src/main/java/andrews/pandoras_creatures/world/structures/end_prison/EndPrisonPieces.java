@@ -14,6 +14,7 @@ import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -85,6 +86,7 @@ public class EndPrisonPieces {
 
         private static StructurePlaceSettings makeSettings(Rotation rotation) {
             return new StructurePlaceSettings()
+                    .setIgnoreEntities(true)
                     .setRotation(rotation)
                     .setMirror(Mirror.NONE)
                     .addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
@@ -104,19 +106,17 @@ public class EndPrisonPieces {
                     container.setLootTable(BuiltInLootTables.END_CITY_TREASURE);
                     container.setLootTableSeed(random.nextLong());
                 }
-            } else if (name.startsWith("Sentry")) {
-                if (level instanceof ServerLevel serverLevel) {
-                    Shulker shulker = EntityType.SHULKER.create(serverLevel);
+            } else if (box.isInside(pos) && Level.isInSpawnableBounds(pos)) {
+                if (name.startsWith("Sentry")) {
+                    Shulker shulker = EntityType.SHULKER.create(level.getLevel());
                     if (shulker != null) {
-                        shulker.moveTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
-                        serverLevel.addFreshEntity(shulker);
+                        shulker.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                        level.addFreshEntity(shulker);
                     }
-                }
-            } else if (name.startsWith("Elytra")) {
-                if (level instanceof ServerLevel serverLevel) {
-                    ItemFrame itemFrame = new ItemFrame(serverLevel, pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
+                } else if (name.startsWith("Elytra")) {
+                    ItemFrame itemFrame = new ItemFrame(level.getLevel(), pos, this.placeSettings.getRotation().rotate(Direction.SOUTH));
                     itemFrame.setItem(new ItemStack(Items.ELYTRA), false);
-                    serverLevel.addFreshEntity(itemFrame);
+                    level.addFreshEntity(itemFrame);
                 }
             }
         }
