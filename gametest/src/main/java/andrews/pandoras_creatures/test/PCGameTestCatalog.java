@@ -8,11 +8,13 @@ import andrews.pandoras_creatures.entities.EndTrollGameTests;
 import andrews.pandoras_creatures.entities.HellhoundGameTests;
 import andrews.pandoras_creatures.entities.SeahorseGameTests;
 import andrews.pandoras_creatures.entities.projectiles.EndTrollProjectileGameTests;
+import andrews.pandoras_creatures.gametest.EndTrollBoxGameTests;
 import andrews.pandoras_creatures.gametest.EndPrisonShipGameTests;
 import andrews.pandoras_creatures.gametest.EndPrisonStructureGameTests;
 import andrews.pandoras_creatures.gametest.PCDataLoadGameTests;
 import andrews.pandoras_creatures.gametest.PCEntitySpawnGameTests;
 import andrews.pandoras_creatures.gametest.PCNaturalSpawnGameTests;
+import andrews.pandoras_creatures.gametest.PCPlantGameTests;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 import java.util.List;
@@ -50,6 +52,7 @@ public final class PCGameTestCatalog {
             definition("end_prison_structure/structure_and_structure_set_are_loaded_from_datapack", EndPrisonStructureGameTests::structureAndStructureSetAreLoadedFromDatapack),
             definition("end_prison_structure/structure_templates_load_with_real_size", EndPrisonStructureGameTests::structureTemplatesLoadWithRealSize),
             definition("end_prison_structure/structure_generates_valid_start_with_pieces", EndPrisonStructureGameTests::structureGeneratesValidStartWithPieces),
+            definition("end_prison_structure/generated_ship_uses_official_proximity", EndPrisonStructureGameTests::generatedShipUsesOfficialProximity),
             definition("end_prison_structure/vanilla_ship_markers_create_official_contents_in_every_rotation", EndPrisonShipGameTests::vanillaShipMarkersCreateOfficialContentsInEveryRotation),
             definition("end_prison_structure/naturally_placed_end_prison_contains_end_troll", EndPrisonStructureGameTests::naturallyPlacedEndPrisonContainsEndTroll),
             definition("data_load/recipes_load_from_datapack", PCDataLoadGameTests::recipesLoadFromDatapack),
@@ -62,7 +65,13 @@ public final class PCGameTestCatalog {
             definition("entity_spawns/hellhound_spawns", PCEntitySpawnGameTests::hellhoundSpawns),
             definition("entity_spawns/seahorse_spawns", PCEntitySpawnGameTests::seahorseSpawns),
             definition("entity_spawns/end_troll_spawns", PCEntitySpawnGameTests::endTrollSpawns),
-            definition("natural_spawns/arachnon_completes_vanilla_natural_spawn_cycle", PCNaturalSpawnGameTests::arachnonCompletesVanillaNaturalSpawnCycle)
+            definition("natural_spawns/arachnon_completes_vanilla_natural_spawn_cycle", PCNaturalSpawnGameTests::arachnonCompletesVanillaNaturalSpawnCycle),
+            definition("plants/runtime_biomes_contain_official_plant_features", PCPlantGameTests::runtimeBiomesContainOfficialPlantFeatures),
+            definition("plants/configured_features_place_every_official_plant", PCPlantGameTests::configuredFeaturesPlaceEveryOfficialPlant),
+            definition("plants/official_plants_remain_single_stage_decorations", PCPlantGameTests::officialPlantsRemainSingleStageDecorations),
+            definition("end_troll_box/menu_accepts_normal_and_shift_click_insertion", EndTrollBoxGameTests::menuAcceptsNormalAndShiftClickInsertion),
+            definition("end_troll_box/menu_rejects_nested_portable_boxes", EndTrollBoxGameTests::menuRejectsNestedPortableBoxes),
+            definition("end_troll_box/inventory_survives_block_entity_save_and_load", EndTrollBoxGameTests::inventorySurvivesBlockEntitySaveAndLoad)
     );
 
     private PCGameTestCatalog() {

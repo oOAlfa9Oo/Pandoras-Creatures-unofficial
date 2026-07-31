@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "pandoras_creatures:end_troll_box/menu_accepts_normal_and_shift_click_insertion",
+  "environment": "minecraft:default",
+  "structure": "pandoras_creatures:gametest/bufflon_arena",
+  "max_ticks": 100
+}

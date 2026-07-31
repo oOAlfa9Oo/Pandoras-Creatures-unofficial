@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "pandoras_creatures:end_troll_box/inventory_survives_block_entity_save_and_load",
+  "environment": "minecraft:default",
+  "structure": "pandoras_creatures:gametest/bufflon_arena",
+  "max_ticks": 100
+}

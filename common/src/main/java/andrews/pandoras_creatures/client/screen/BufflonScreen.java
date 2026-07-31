@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
     private static final Identifier BUFFLON_GUI_TEXTURES = Identifier.fromNamespaceAndPath(Reference.MODID, "textures/gui/menus/bufflon_menu.png");
+    private static final int EMPTY_EQUIPMENT_PREVIEW_OVERLAY = 0x999E613E;
 
     private final BufflonAccess bufflon;
     private final LivingEntity bufflonEntity;
@@ -115,8 +116,8 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 BufflonMenuLayout.ENTITY_RENDER_SCALE, this.mousePosx, this.mousePosY, this.bufflonEntity);
 
         if (!bufflon.isBufflonSaddled()) {
-            guiGraphics.fakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(PCItemIds.BUFFLON_SADDLE)),
-                    this.leftPos + BufflonMenuLayout.SADDLE_SLOT_X, this.topPos + BufflonMenuLayout.SADDLE_SLOT_Y);
+            extractEmptyEquipmentPreview(guiGraphics, PCItemIds.BUFFLON_SADDLE,
+                    BufflonMenuLayout.SADDLE_SLOT_X, BufflonMenuLayout.SADDLE_SLOT_Y);
         }
 
         if (!bufflon.hasBufflonBackAttachment()) {
@@ -125,8 +126,8 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
                 case 2 -> PCItemIds.BUFFLON_SMALL_STORAGE;
                 default -> PCItemIds.BUFFLON_LARGE_STORAGE;
             };
-            guiGraphics.fakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(itemId)),
-                    this.leftPos + BufflonMenuLayout.BACK_ATTACHMENT_SLOT_X, this.topPos + BufflonMenuLayout.BACK_ATTACHMENT_SLOT_Y);
+            extractEmptyEquipmentPreview(guiGraphics, itemId,
+                    BufflonMenuLayout.BACK_ATTACHMENT_SLOT_X, BufflonMenuLayout.BACK_ATTACHMENT_SLOT_Y);
         }
 
         super.extractContents(guiGraphics, mouseX, mouseY, partialTicks);
@@ -145,5 +146,13 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BUFFLON_GUI_TEXTURES, posX + BufflonMenuLayout.STORAGE_BACKGROUND_X,
                     posY + BufflonMenuLayout.STORAGE_BACKGROUND_Y + (i * BufflonMenuLayout.SLOT_SPACING), 0.0F, 238.0F, 162, 18, 256, 256);
         }
+    }
+
+    private void extractEmptyEquipmentPreview(GuiGraphicsExtractor guiGraphics, String itemId, int slotX, int slotY) {
+        int x = this.leftPos + slotX;
+        int y = this.topPos + slotY;
+        guiGraphics.fakeItem(new ItemStack(PandorasCreaturesCommon.platform().registry().item(itemId)),
+                x, y);
+        guiGraphics.fill(x, y, x + 16, y + 16, EMPTY_EQUIPMENT_PREVIEW_OVERLAY);
     }
 }

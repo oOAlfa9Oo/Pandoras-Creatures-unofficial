@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "pandoras_creatures:plants/runtime_biomes_contain_official_plant_features",
+  "environment": "minecraft:default",
+  "structure": "pandoras_creatures:gametest/bufflon_arena",
+  "max_ticks": 100
+}
