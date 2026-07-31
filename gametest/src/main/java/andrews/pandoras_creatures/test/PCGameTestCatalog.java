@@ -12,6 +12,7 @@ import andrews.pandoras_creatures.gametest.EndPrisonShipGameTests;
 import andrews.pandoras_creatures.gametest.EndPrisonStructureGameTests;
 import andrews.pandoras_creatures.gametest.PCDataLoadGameTests;
 import andrews.pandoras_creatures.gametest.PCEntitySpawnGameTests;
+import andrews.pandoras_creatures.gametest.PCNaturalSpawnGameTests;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 import java.util.List;
@@ -60,7 +61,8 @@ public final class PCGameTestCatalog {
             definition("entity_spawns/crab_spawns", PCEntitySpawnGameTests::crabSpawns),
             definition("entity_spawns/hellhound_spawns", PCEntitySpawnGameTests::hellhoundSpawns),
             definition("entity_spawns/seahorse_spawns", PCEntitySpawnGameTests::seahorseSpawns),
-            definition("entity_spawns/end_troll_spawns", PCEntitySpawnGameTests::endTrollSpawns)
+            definition("entity_spawns/end_troll_spawns", PCEntitySpawnGameTests::endTrollSpawns),
+            definition("natural_spawns/arachnon_completes_vanilla_natural_spawn_cycle", PCNaturalSpawnGameTests::arachnonCompletesVanillaNaturalSpawnCycle)
     );
 
     private PCGameTestCatalog() {

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "pandoras_creatures:natural_spawns/arachnon_completes_vanilla_natural_spawn_cycle",
+  "environment": "minecraft:default",
+  "structure": "pandoras_creatures:gametest/bufflon_arena",
+  "max_ticks": 100
+}
