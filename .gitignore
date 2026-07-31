@@ -6,6 +6,7 @@ backup/
 net/
 .vscode/
 .claude/
+.codex-staging/
 docs/*
 !docs/adr/
 # Junk / quarantine artifacts
