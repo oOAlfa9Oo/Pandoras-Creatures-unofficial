@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
 
@@ -20,8 +18,6 @@ import java.util.List;
  * Valida en un servidor real que los datos del mod (recipes, loot tables, tags)
  * cargan desde datapack en el formato de esta familia (1.21.1).
  */
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class PCDataLoadGameTests {
     private static final String DATA_BATCH = "data_load";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";

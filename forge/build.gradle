@@ -28,8 +28,8 @@ sourceSets {
         // - El userdev de Forge 52 tampoco une source sets de otro proyecto declarados
         //   en `mods {}`: las clases de common se copian ya compiladas al classes dir
         //   del mod via processResources (abajo).
-        java.srcDirs = [project.file('src/main/java')]
-        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')] + commonMainSourceSet.resources.srcDirs
+        java.srcDirs = [project.file('src/main/java'), rootProject.file('gametest/src/main/java')]
+        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources'), rootProject.file('gametest/src/main/resources')] + commonMainSourceSet.resources.srcDirs
         compileClasspath += commonMainSourceSet.output
     }
     test {
@@ -71,9 +71,10 @@ minecraft {
         }
 
         gameTestServer {
-            // Forge 52 filtra los tests comparando esta property contra el NOMBRE del
-            // test (prefijado por @GameTestHolder). Sin ella no corre ningun test.
+            // Forge 52 filters tests using this namespace property.
             property 'forge.enabledGameTestNamespaces', mod_id
+            workingDirectory = file('build/run/gameTestServer')
+            jvmArgs '-Xms256m', '-Xmx1g'
         }
 
         data {
@@ -85,6 +86,18 @@ minecraft {
                     '--existing', rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
         }
     }
+}
+
+
+def prepareGameTestServer = tasks.register('prepareGameTestServer') {
+    doLast {
+        delete layout.buildDirectory.dir('run/gameTestServer/world')
+        layout.buildDirectory.dir('run/gameTestServer').get().asFile.mkdirs()
+    }
+}
+
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    dependsOn prepareGameTestServer
 }
 
 repositories {

@@ -18,8 +18,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 sourceSets {
     main {
-        java.srcDirs = [project.file('src/main/java')]
-        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources')]
+        java.srcDirs = [project.file('src/main/java'), rootProject.file('gametest/src/main/java')]
+        resources.srcDirs = [project.file('src/main/resources'), project.file('src/generated/resources'), rootProject.file('gametest/src/main/resources')]
         compileClasspath += project(':common').sourceSets.main.output
         runtimeClasspath += project(':common').sourceSets.main.output
     }
@@ -54,8 +54,10 @@ neoForge {
             // resto de runs y evita el directorio raiz que quedo como placeholder
             // inaccesible tras el incidente de archivos virtuales de Nextcloud del
             // 2026-07-17 (ver ADR-0008).
-            gameDirectory = project.layout.projectDirectory.dir('run/gameTestServer')
+            gameDirectory = project.layout.buildDirectory.dir('run/gameTestServer')
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+            jvmArgument '-Xms256m'
+            jvmArgument '-Xmx1g'
         }
 
         data {
@@ -79,6 +81,18 @@ neoForge {
             sourceSet sourceSets.main
         }
     }
+}
+
+
+def prepareGameTestServer = tasks.register('prepareGameTestServer') {
+    doLast {
+        delete layout.buildDirectory.dir('run/gameTestServer/world')
+        layout.buildDirectory.dir('run/gameTestServer').get().asFile.mkdirs()
+    }
+}
+
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    dependsOn prepareGameTestServer
 }
 
 configurations {

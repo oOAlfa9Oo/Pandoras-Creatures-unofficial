@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   push:
@@ -90,12 +90,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - name: fabric
+            command: ./gradlew :fabric:runGameTestServer --console=plain
+            logs: fabric/build/run/fabric-gametest/logs
           - name: forge
             command: ./gradlew :forge:runGameTestServer --console=plain
-            logs: forge/run/gameTestServer/logs
+            logs: forge/build/run/gameTestServer/logs
           - name: neoforge
             command: ./gradlew :neoforge:runGameTestServer --console=plain
-            logs: neoforge/run/gameTestServer/logs
+            logs: neoforge/build/run/gameTestServer/logs
 
     steps:
       - name: Checkout repository

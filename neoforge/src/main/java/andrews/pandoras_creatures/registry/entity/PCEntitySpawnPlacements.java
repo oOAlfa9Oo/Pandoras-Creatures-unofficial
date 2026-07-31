@@ -72,11 +72,6 @@ public final class PCEntitySpawnPlacements {
                                 level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)),
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
-        event.register(PCEntities.END_TROLL.get(),
-                SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, level, spawnType, pos, random) -> true,
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
 }

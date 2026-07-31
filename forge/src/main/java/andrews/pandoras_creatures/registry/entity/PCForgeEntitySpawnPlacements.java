@@ -89,12 +89,5 @@ public final class PCForgeEntitySpawnPlacements {
                 SpawnPlacementRegisterEvent.Operation.REPLACE
         );
 
-        event.register(
-                PCForgeEntities.endTroll(),
-                SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, level, spawnType, pos, random) -> true,
-                SpawnPlacementRegisterEvent.Operation.REPLACE
-        );
     }
 }

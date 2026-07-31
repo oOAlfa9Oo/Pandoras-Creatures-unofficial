@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities;
 
-import andrews.pandoras_creatures.registry.PCEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -9,11 +10,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class SeahorseGameTests {
     private static final String SEAHORSE_BATCH = "seahorse";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -24,14 +21,14 @@ public final class SeahorseGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = SEAHORSE_BATCH)
     public static void saveDataRestoresVariantAndSize(GameTestHelper helper) {
-        SeahorseEntity seahorse = new SeahorseEntity(PCEntities.SEAHORSE.get(), helper.getLevel());
+        SeahorseEntity seahorse = new SeahorseEntity(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), helper.getLevel());
         seahorse.setSeahorseType(8);
         seahorse.setSeahorseSize(5);
 
         CompoundTag savedData = new CompoundTag();
         seahorse.addAdditionalSaveData(savedData);
 
-        SeahorseEntity restored = new SeahorseEntity(PCEntities.SEAHORSE.get(), helper.getLevel());
+        SeahorseEntity restored = new SeahorseEntity(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
         helper.assertValueEqual(restored.getSeahorseType(), 8, "restored seahorse type");
@@ -41,7 +38,7 @@ public final class SeahorseGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = SEAHORSE_BATCH)
     public static void bucketTagRestoresVariantAndSize(GameTestHelper helper) {
-        SeahorseEntity seahorse = helper.spawn(PCEntities.SEAHORSE.get(), SEAHORSE_POS);
+        SeahorseEntity seahorse = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), SEAHORSE_POS);
         seahorse.setSeahorseType(6);
         seahorse.setSeahorseSize(4);
 
@@ -51,7 +48,7 @@ public final class SeahorseGameTests {
         CustomData customData = bucket.get(DataComponents.BUCKET_ENTITY_DATA);
         helper.assertTrue(customData != null, "Seahorse bucket should contain entity data");
 
-        SeahorseEntity restored = new SeahorseEntity(PCEntities.SEAHORSE.get(), helper.getLevel());
+        SeahorseEntity restored = new SeahorseEntity(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), helper.getLevel());
         restored.loadFromBucketTag(customData.copyTag());
 
         helper.assertValueEqual(restored.getSeahorseType(), 6, "bucket seahorse type");

@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.entities;
 
-import andrews.pandoras_creatures.registry.PCEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -8,11 +9,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class AcidicArchvineGameTests {
     private static final String ACIDIC_ARCHVINE_BATCH = "acidic_archvine";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -24,13 +21,13 @@ public final class AcidicArchvineGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = ACIDIC_ARCHVINE_BATCH)
     public static void saveDataRestoresArchvineType(GameTestHelper helper) {
-        AcidicArchvineEntity archvine = new AcidicArchvineEntity(PCEntities.ACIDIC_ARCHVINE.get(), helper.getLevel());
+        AcidicArchvineEntity archvine = new AcidicArchvineEntity(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), helper.getLevel());
         archvine.setArchvineType(3);
 
         CompoundTag savedData = new CompoundTag();
         archvine.addAdditionalSaveData(savedData);
 
-        AcidicArchvineEntity restored = new AcidicArchvineEntity(PCEntities.ACIDIC_ARCHVINE.get(), helper.getLevel());
+        AcidicArchvineEntity restored = new AcidicArchvineEntity(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
         helper.assertValueEqual(restored.getArchvineType(), 3, "restored archvine type");
@@ -39,7 +36,7 @@ public final class AcidicArchvineGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = ACIDIC_ARCHVINE_BATCH)
     public static void biteAttackDamagesLivingTarget(GameTestHelper helper) {
-        AcidicArchvineEntity archvine = helper.spawn(PCEntities.ACIDIC_ARCHVINE.get(), ARCHVINE_POS);
+        AcidicArchvineEntity archvine = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), ARCHVINE_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         float initialHealth = target.getHealth();
 

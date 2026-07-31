@@ -1,7 +1,8 @@
 package andrews.pandoras_creatures.entities.projectiles;
 
 import andrews.pandoras_creatures.entities.EndTrollEntity;
-import andrews.pandoras_creatures.registry.PCEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,11 +13,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.phys.EntityHitResult;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class EndTrollProjectileGameTests {
     private static final String END_TROLL_PROJECTILE_BATCH = "end_troll_projectiles";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -28,7 +25,7 @@ public final class EndTrollProjectileGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_PROJECTILE_BATCH)
     public static void projectileSaveDataRestoresOwnerTargetAndMotion(GameTestHelper helper) {
-        EndTrollEntity owner = helper.spawn(PCEntities.END_TROLL.get(), OWNER_POS);
+        EndTrollEntity owner = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), OWNER_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         EndTrollBulletPoisonEntity bullet = new EndTrollBulletPoisonEntity(helper.getLevel(), owner, target, Direction.Axis.X);
 
@@ -40,7 +37,7 @@ public final class EndTrollProjectileGameTests {
         CompoundTag savedData = new CompoundTag();
         bullet.addAdditionalSaveData(savedData);
 
-        EndTrollBulletPoisonEntity restored = new EndTrollBulletPoisonEntity(PCEntities.END_TROLL_BULLET_POISON.get(), helper.getLevel());
+        EndTrollBulletPoisonEntity restored = new EndTrollBulletPoisonEntity(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL_BULLET_POISON), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
         helper.assertTrue(owner.getUUID().equals(restored.ownerUniqueId), "Restored projectile should preserve owner UUID");
@@ -54,7 +51,7 @@ public final class EndTrollProjectileGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_PROJECTILE_BATCH)
     public static void poisonBulletHitAppliesEffectAndDiscards(GameTestHelper helper) {
-        EndTrollEntity owner = helper.spawn(PCEntities.END_TROLL.get(), OWNER_POS);
+        EndTrollEntity owner = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), OWNER_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         EndTrollBulletPoisonEntity bullet = new EndTrollBulletPoisonEntity(helper.getLevel(), owner, target, Direction.Axis.X);
 

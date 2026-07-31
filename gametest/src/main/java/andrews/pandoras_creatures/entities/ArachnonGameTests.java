@@ -1,18 +1,15 @@
 package andrews.pandoras_creatures.entities;
 
 import andrews.pandoras_creatures.entities.arachnon.ArachnonAttackRules;
-import andrews.pandoras_creatures.registry.PCEntities;
+import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder(Reference.MODID)
-@PrefixGameTestTemplate(false)
 public final class ArachnonGameTests {
     private static final String ARACHNON_BATCH = "arachnon";
     private static final String SHARED_TEMPLATE = "gametest/bufflon_arena";
@@ -24,7 +21,7 @@ public final class ArachnonGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = ARACHNON_BATCH)
     public static void doHurtTargetStartsAttackTimerAndDamagesTarget(GameTestHelper helper) {
-        ArachnonEntity arachnon = helper.spawn(PCEntities.ARACHNON.get(), ARACHNON_POS);
+        ArachnonEntity arachnon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), ARACHNON_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
         boolean hurt = arachnon.doHurtTarget(target);
@@ -37,7 +34,7 @@ public final class ArachnonGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = ARACHNON_BATCH)
     public static void aiStepTicksAttackTimerDown(GameTestHelper helper) {
-        ArachnonEntity arachnon = helper.spawn(PCEntities.ARACHNON.get(), ARACHNON_POS);
+        ArachnonEntity arachnon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), ARACHNON_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         arachnon.doHurtTarget(target);
 

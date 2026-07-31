@@ -13,11 +13,13 @@ import andrews.pandoras_creatures.forge.registry.PCForgeRecipeSerializers;
 import andrews.pandoras_creatures.forge.registry.PCForgeSounds;
 import andrews.pandoras_creatures.forge.registry.PCForgeStructures;
 import andrews.pandoras_creatures.forge.registry.entity.PCForgeEntitySpawnPlacements;
+import andrews.pandoras_creatures.test.PCForgeGameTests;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ public final class PandorasCreaturesForge {
 
     public PandorasCreaturesForge() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(PCForgeGameTests::register);
 
         PandorasCreaturesCommon.initialize(ForgePlatformServices.INSTANCE);
         PCForgeNetwork.initialize();
