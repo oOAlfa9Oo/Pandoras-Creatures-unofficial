@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "function": "pandoras_creatures:end_prison_structure/vanilla_ship_markers_create_official_contents_in_every_rotation",
+  "environment": "minecraft:default",
+  "structure": "pandoras_creatures:gametest/bufflon_arena",
+  "max_ticks": 100
+}
