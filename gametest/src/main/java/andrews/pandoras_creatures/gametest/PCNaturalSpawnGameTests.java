@@ -15,7 +15,9 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Difficulty;
@@ -298,7 +300,8 @@ public final class PCNaturalSpawnGameTests {
         ServerPlayer player = new ServerPlayer(
                 helper.getLevel().getServer(),
                 helper.getLevel(),
-                new GameProfile(UUID.randomUUID(), "natural-spawn-test-player")) {
+                new GameProfile(UUID.randomUUID(), "natural-spawn-test-player"),
+                ClientInformation.createDefault()) {
             @Override
             public boolean isSpectator() {
                 return false;
@@ -311,8 +314,13 @@ public final class PCNaturalSpawnGameTests {
         };
         player.setPos(spawnPos.getX() + 32.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
         Connection connection = new Connection(PacketFlow.SERVERBOUND);
-        new EmbeddedChannel(connection);
-        helper.getLevel().getServer().getPlayerList().placeNewPlayer(connection, player);
+        EmbeddedChannel channel = new EmbeddedChannel(connection);
+        // 1.20.2: la fase de "configuration" espera el atributo de protocolo del canal ya
+        // inicializado (ConnectionProtocol$CodecData); sin esto placeNewPlayer revienta con NPE
+        // al leerlo. Metodo real confirmado en Connection.class (setInitialProtocolAttributes).
+        Connection.setInitialProtocolAttributes(channel);
+        helper.getLevel().getServer().getPlayerList().placeNewPlayer(connection, player,
+                CommonListenerCookie.createInitial(player.getGameProfile()));
         return player;
     }
 

@@ -7,7 +7,7 @@ import andrews.pandoras_creatures.entities.goals.end_troll.EndTrollAttackGoal;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -150,9 +150,9 @@ public final class EndTrollGameTests {
     }
 
     public static void liberationAdvancementIsLoaded(GameTestHelper helper) {
-        // 1.20.1: ServerAdvancementManager#getAdvancement devuelve Advancement (AdvancementHolder es 1.20.2+)
-        Advancement advancement = helper.getLevel().getServer().getAdvancements()
-                .getAdvancement(Reference.id(PCAdvancements.FREE_THE_END_TROLL));
+        // 1.20.2+: ServerAdvancementManager#get devuelve AdvancementHolder (antes Advancement via getAdvancement)
+        AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements()
+                .get(Reference.id(PCAdvancements.FREE_THE_END_TROLL));
 
         helper.assertTrue(advancement != null, "End Troll liberation advancement should be present in the loaded advancement tree");
         helper.succeed();
