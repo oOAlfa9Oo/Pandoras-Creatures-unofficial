@@ -5,7 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.PlayerTeam;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
@@ -43,7 +43,7 @@ public final class BufflonOwnership {
     }
 
     @Nullable
-    public static Team getInheritedTeam(boolean isTamed, @Nullable LivingEntity owner) {
+    public static PlayerTeam getInheritedTeam(boolean isTamed, @Nullable LivingEntity owner) {
         return shouldUseOwnerRelations(isTamed, owner != null) ? owner.getTeam() : null;
     }
 

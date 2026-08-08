@@ -43,22 +43,22 @@ public final class PCBlockBootstrap {
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.HORSETAIL, registrar.register(PCBlockIds.HORSETAIL,
-                () -> new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
+                () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                         .noCollission()
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.DHANIA, registrar.register(PCBlockIds.DHANIA,
-                () -> new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
+                () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                         .noCollission()
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.HILL_BLOOM, registrar.register(PCBlockIds.HILL_BLOOM,
-                () -> new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
+                () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                         .noCollission()
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.PANDORIC_SHARD, registrar.register(PCBlockIds.PANDORIC_SHARD,
-                () -> new Block(BlockBehaviour.Properties.copy(Blocks.END_STONE)
+                () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
                         .noOcclusion()
                         .lightLevel(state -> 10))));
 

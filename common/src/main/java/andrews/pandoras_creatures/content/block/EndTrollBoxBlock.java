@@ -4,6 +4,7 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -40,6 +41,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+    public static final MapCodec<EndTrollBoxBlock> CODEC = simpleCodec(props -> new EndTrollBoxBlock(null, props));
+
+    @Override
+    public MapCodec<EndTrollBoxBlock> codec() {
+        return CODEC;
+    }
+
     protected static final VoxelShape FLOOR_AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
     protected static final VoxelShape CEILING_AABB = Block.box(1.0D, 2.0D, 1.0D, 15.0D, 16.0D, 15.0D);
     protected static final VoxelShape NORTH_AABB = Block.box(1.0D, 1.0D, 2.0D, 15.0D, 15.0D, 16.0D);

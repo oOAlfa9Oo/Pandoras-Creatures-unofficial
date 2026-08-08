@@ -15,13 +15,16 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class EndTrollBoxRecipe extends ShapedRecipe {
-    public EndTrollBoxRecipe(String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, boolean showNotification) {
-        super(group, category, width, height, ingredients, result, showNotification);
+    public EndTrollBoxRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
+        super(group, category, pattern, result, showNotification);
     }
 
     @Override
@@ -63,12 +66,14 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxRecipe> {
         private static final ShapedRecipe.Serializer VANILLA = new ShapedRecipe.Serializer();
-        // 1.20.2: RecipeSerializer paso de fromJson(ResourceLocation,JsonObject) a codec().
-        // Se delega en el Codec vanilla y se envuelve el resultado en el tipo propio (xmap).
-        private static final Codec<EndTrollBoxRecipe> CODEC = VANILLA.codec().xmap(
-                recipe -> new EndTrollBoxRecipe(recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification()),
+        // 1.20.4: ver EndTrollBoxColoringRecipe.Serializer para el detalle de por que hace
+        // falta MapCodec.assumeMapUnsafe() antes del xmap (Recipe.CODEC hace un dispatch por
+        // "type" que necesita reconocer el codec como "map-shaped" para fusionar sus campos
+        // al nivel superior del JSON en vez de esperar un campo anidado "value").
+        private static final Codec<EndTrollBoxRecipe> CODEC = PCMapCodecs.assumeMap(VANILLA.codec()).xmap(
+                recipe -> new EndTrollBoxRecipe(recipe.getGroup(), recipe.category(), new ShapedRecipePattern(recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), Optional.empty()), recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification()),
                 recipe -> recipe
-        );
+        ).codec();
 
         @Override
         public Codec<EndTrollBoxRecipe> codec() {
@@ -79,7 +84,7 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
         @Override
         public EndTrollBoxRecipe fromNetwork(FriendlyByteBuf buffer) {
             ShapedRecipe recipe = VANILLA.fromNetwork(buffer);
-            return recipe == null ? null : new EndTrollBoxRecipe(recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification());
+            return recipe == null ? null : new EndTrollBoxRecipe(recipe.getGroup(), recipe.category(), new ShapedRecipePattern(recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), Optional.empty()), recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification());
         }
 
         @Override

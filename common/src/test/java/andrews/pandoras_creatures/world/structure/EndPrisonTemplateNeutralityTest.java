@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.world.structure;
 
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ class EndPrisonTemplateNeutralityTest {
     void entitiesAreSpawnedByTheSharedStructureContract() throws IOException {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(TEMPLATE)) {
             assertNotNull(input, "Missing End Prison body template");
-            var root = NbtIo.readCompressed(input);
+            var root = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
             ListTag entities = root.getList("entities", Tag.TAG_COMPOUND);
             assertEquals(0, entities.size(),
                     "End Prison entities must be created by EndPrisonStructure, not loader-specific NBT");

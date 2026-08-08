@@ -65,13 +65,17 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxColoringRecipe> {
         private static final ShapelessRecipe.Serializer VANILLA = new ShapelessRecipe.Serializer();
-        // 1.20.2: RecipeSerializer paso de fromJson(ResourceLocation,JsonObject) a codec().
-        // Se delega en el Codec vanilla y se envuelve el resultado en el tipo propio (xmap),
-        // en vez de re-derivar la construccion interna del codec de Mojang.
-        private static final Codec<EndTrollBoxColoringRecipe> CODEC = VANILLA.codec().xmap(
+        // 1.20.4: Recipe.CODEC hace RECIPE_SERIALIZER.byNameCodec().dispatch(...). Cuando el
+        // codec de esta rama del dispatch no es reconocible como "map-shaped" (p.ej. porque se
+        // le aplico un Codec.xmap encima, que lo envuelve en un tipo opaco), Mojang cae a un
+        // fallback que espera un campo anidado "value" en vez de fusionar los campos al nivel
+        // superior del JSON -- produce "Not a JSON object: null" porque ese campo no existe.
+        // PCMapCodecs.assumeMap() preserva la forma "map" del codec vanilla antes del xmap,
+        // para que el dispatch siga fusionando los campos igual que con el tipo vanilla.
+        private static final Codec<EndTrollBoxColoringRecipe> CODEC = PCMapCodecs.assumeMap(VANILLA.codec()).xmap(
                 recipe -> new EndTrollBoxColoringRecipe(recipe.getGroup(), recipe.category(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.getIngredients()),
                 recipe -> recipe
-        );
+        ).codec();
 
         @Override
         public Codec<EndTrollBoxColoringRecipe> codec() {

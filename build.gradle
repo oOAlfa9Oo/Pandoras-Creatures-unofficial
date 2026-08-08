@@ -114,6 +114,10 @@ tasks.register('verifyFamilyPolicy') {
                 '1.20.2': [
                         official    : ['fabric', 'forge'],
                         experimental: ['neoforge']
+                ],
+                '1.20.4': [
+                        official    : ['fabric', 'forge'],
+                        experimental: ['neoforge']
                 ]
         ]
 

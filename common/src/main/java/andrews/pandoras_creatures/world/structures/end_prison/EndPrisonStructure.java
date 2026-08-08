@@ -120,7 +120,8 @@ public class EndPrisonStructure extends Structure {
                 pos,
                 false,
                 Optional.empty(),
-                80
+                80,
+                net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup.EMPTY
         );
 
         if (jigsawResult.isEmpty()) {

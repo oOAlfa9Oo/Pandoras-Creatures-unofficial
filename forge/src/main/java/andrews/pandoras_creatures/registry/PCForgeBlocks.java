@@ -91,25 +91,25 @@ public final class PCForgeBlocks {
             );
             helper.register(
                     Reference.id(PCBlockIds.HORSETAIL),
-                    new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
+                    new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
                     Reference.id(PCBlockIds.DHANIA),
-                    new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
+                    new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
                     Reference.id(PCBlockIds.HILL_BLOOM),
-                    new PCPlantBlock(BlockBehaviour.Properties.copy(Blocks.GRASS)
+                    new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
                     Reference.id(PCBlockIds.PANDORIC_SHARD),
-                    new Block(BlockBehaviour.Properties.copy(Blocks.END_STONE)
+                    new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
                             .noOcclusion()
                             .lightLevel(state -> 10))
             );
