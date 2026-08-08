@@ -111,7 +111,7 @@ tasks.register('verifyFamilyPolicy') {
 
     doLast {
         def expectedPolicy = [
-                '1.20.1': [
+                '1.20.2': [
                         official    : ['fabric', 'forge'],
                         experimental: ['neoforge']
                 ]
