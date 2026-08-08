@@ -4,11 +4,10 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.content.block.EndTrollBoxBlock;
 import andrews.pandoras_creatures.registry.PCTags;
 import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -21,8 +20,8 @@ import net.minecraft.world.level.block.ShulkerBoxBlock;
 import org.jetbrains.annotations.Nullable;
 
 public class EndTrollBoxRecipe extends ShapedRecipe {
-    public EndTrollBoxRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result) {
-        super(id, group, category, width, height, ingredients, result);
+    public EndTrollBoxRecipe(String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, boolean showNotification) {
+        super(group, category, width, height, ingredients, result, showNotification);
     }
 
     @Override
@@ -64,18 +63,23 @@ public class EndTrollBoxRecipe extends ShapedRecipe {
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxRecipe> {
         private static final ShapedRecipe.Serializer VANILLA = new ShapedRecipe.Serializer();
+        // 1.20.2: RecipeSerializer paso de fromJson(ResourceLocation,JsonObject) a codec().
+        // Se delega en el Codec vanilla y se envuelve el resultado en el tipo propio (xmap).
+        private static final Codec<EndTrollBoxRecipe> CODEC = VANILLA.codec().xmap(
+                recipe -> new EndTrollBoxRecipe(recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification()),
+                recipe -> recipe
+        );
 
         @Override
-        public EndTrollBoxRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            ShapedRecipe recipe = VANILLA.fromJson(recipeId, json);
-            return new EndTrollBoxRecipe(recipeId, recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY));
+        public Codec<EndTrollBoxRecipe> codec() {
+            return CODEC;
         }
 
         @Nullable
         @Override
-        public EndTrollBoxRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            ShapedRecipe recipe = VANILLA.fromNetwork(recipeId, buffer);
-            return recipe == null ? null : new EndTrollBoxRecipe(recipeId, recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY));
+        public EndTrollBoxRecipe fromNetwork(FriendlyByteBuf buffer) {
+            ShapedRecipe recipe = VANILLA.fromNetwork(buffer);
+            return recipe == null ? null : new EndTrollBoxRecipe(recipe.getGroup(), recipe.category(), recipe.getWidth(), recipe.getHeight(), recipe.getIngredients(), recipe.getResultItem(RegistryAccess.EMPTY), recipe.showNotification());
         }
 
         @Override

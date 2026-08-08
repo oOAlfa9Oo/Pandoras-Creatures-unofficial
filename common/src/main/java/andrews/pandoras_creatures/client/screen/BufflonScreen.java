@@ -109,8 +109,20 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
             renderBufflonInventorySlots(guiGraphics, this.leftPos, this.topPos, attachmentType.getStorageRows());
         }
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X,
-                this.topPos + BufflonMenuLayout.ENTITY_RENDER_Y, BufflonMenuLayout.ENTITY_RENDER_SIZE,
+        // 1.20.2: renderEntityInInventoryFollowsMouse cambio de (x,y,size,mouseX,mouseY,entity) a
+        // (x1,y1,x2,y2,size,scale,mouseX,mouseY,entity) -- ahora recibe una caja (usada tanto para el
+        // scissor como para calcular el centro de render) en vez de un solo punto, mas un float `scale`
+        // nuevo que antes no existia. `size` conserva su significado viejo (confirmado por bytecode: sigue
+        // en la misma posicion, mismo tipo). Se centra la caja en el punto viejo con medio-ancho =
+        // ENTITY_RENDER_SIZE y scale=1.0F (neutro, preserva el tamano visual previo). PENDIENTE: validar
+        // visualmente con un cliente real -- el mouse sigue siendo posicion absoluta (sin cambio, verificado
+        // por bytecode), pero la proporcion caja/tamano es una eleccion razonable, no un valor confirmado.
+        int bufflonRenderCenterX = this.leftPos + BufflonMenuLayout.ENTITY_RENDER_X;
+        int bufflonRenderCenterY = this.topPos + BufflonMenuLayout.ENTITY_RENDER_Y;
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics,
+                bufflonRenderCenterX - BufflonMenuLayout.ENTITY_RENDER_SIZE, bufflonRenderCenterY - BufflonMenuLayout.ENTITY_RENDER_SIZE,
+                bufflonRenderCenterX + BufflonMenuLayout.ENTITY_RENDER_SIZE, bufflonRenderCenterY + BufflonMenuLayout.ENTITY_RENDER_SIZE,
+                BufflonMenuLayout.ENTITY_RENDER_SIZE, 1.0F,
                 this.mousePosx, this.mousePosY, this.bufflonEntity);
 
         if (!bufflon.isBufflonSaddled()) {
@@ -141,7 +153,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.mousePosx = (float) mouseX;
         this.mousePosY = (float) mouseY;
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }

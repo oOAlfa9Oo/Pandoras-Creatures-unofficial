@@ -1,8 +1,7 @@
 package andrews.pandoras_creatures.advancement;
 
 import andrews.pandoras_creatures.util.Reference;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.server.level.ServerPlayer;
 
 public final class PCAdvancements {
@@ -13,7 +12,7 @@ public final class PCAdvancements {
     }
 
     public static void award(ServerPlayer player, String path) {
-        Advancement advancement = player.server.getAdvancements().getAdvancement(Reference.id(path));
+        AdvancementHolder advancement = player.server.getAdvancements().get(Reference.id(path));
         if (advancement != null) {
             player.getAdvancements().award(advancement, IMPOSSIBLE_CRITERION);
         }
