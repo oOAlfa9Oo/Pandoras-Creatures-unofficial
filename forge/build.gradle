@@ -8,6 +8,8 @@ plugins {
 
 version = rootProject.version
 group = rootProject.group
+evaluationDependsOn(':common')
+def commonMainSourceSet = project(':common').sourceSets.main
 
 base {
     archivesName = "${mod_id}-forge-${minecraft_version}"
@@ -17,22 +19,31 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 sourceSets {
     main {
+        // Consume el output compilado de :common (igual que neoforge/fabric) en vez de
+        // reabsorber su fuente. Ver ADR-0010 (backport de ADR-0003/ADR-0008 a 26.1).
+        // FG 7.0.32 SI soporta mods{source} por-run (SlimeLauncherOptionsNested.ModConfig,
+        // verificado por bytecode), pero declarar doble fuente (sourceSets.main +
+        // commonMainSourceSet) A LA VEZ que runtimeClasspath += common.output revienta con
+        // ResolutionException (paquete exportado por 2 modulos JPMS a la vez: "pandoras_creatures"
+        // via mods{} y "main" via runtimeClasspath) -- igual causa raiz que ADR-0008 en 1.21.1.
+        // Fix: common NO va en runtimeClasspath del main; sus clases ya compiladas se copian
+        // al classes dir del mod via processResources (abajo), y mods{} declara una sola fuente.
         java.srcDirs = [
                 project.file('src/main/java'),
-                rootProject.layout.projectDirectory.dir('common/src/main/java').asFile,
                 rootProject.layout.projectDirectory.dir('gametest/src/main/java').asFile
         ]
         resources.srcDirs = [
                 project.file('src/main/resources'),
                 project.file('src/generated/resources'),
-                rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile,
-                rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile,
                 rootProject.layout.projectDirectory.dir('gametest/src/main/resources').asFile
-        ]
+        ] + commonMainSourceSet.resources.srcDirs
+        compileClasspath += commonMainSourceSet.output
     }
     test {
         java.srcDirs = [project.file('src/test/java')]
         resources.srcDirs = [project.file('src/test/resources')]
+        compileClasspath += commonMainSourceSet.output
+        runtimeClasspath += commonMainSourceSet.output
     }
 }
 
@@ -40,6 +51,9 @@ sourceSets.main.output.resourcesDir = tasks.named('compileJava', JavaCompile).ge
 
 tasks.named('processResources', ProcessResources).configure {
     destinationDir = tasks.named('compileJava', JavaCompile).get().destinationDirectory.get().asFile
+    // Clases de :common (ya compiladas alli) dentro del dir de clases del mod para el
+    // dev-run; common se compila una unica vez en :common (objetivo de ADR-0010).
+    from(commonMainSourceSet.output.classesDirs)
 }
 
 minecraft {
@@ -47,6 +61,13 @@ minecraft {
         configureEach {
             workingDir = layout.projectDirectory.dir("run/${name}")
             systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+            // Una sola fuente: las clases de common ya estan copiadas (compiladas) en el
+            // classes dir de forge. Ver ADR-0010.
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
         }
 
         register('client')
@@ -84,6 +105,11 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.14.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('jar', Jar).configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(commonMainSourceSet.output)
 }
 
 tasks.withType(ProcessResources).configureEach {
