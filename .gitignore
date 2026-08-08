@@ -13,6 +13,7 @@ graphify-out/
 src/generated/resources/.cache/
 common/src/generated/resources/.cache/
 neoforge/src/generated/resources/.cache/
+forge/src/generated/resources/.cache/
 build_error.txt
 build_output.txt
 *.log
