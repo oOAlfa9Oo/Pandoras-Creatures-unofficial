@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.forge;
 
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
+import andrews.pandoras_creatures.forge.datagen.PCForgeDataGenerators;
 import andrews.pandoras_creatures.forge.network.PCForgeNetwork;
 import andrews.pandoras_creatures.forge.test.PCForgeGameTests;
 import andrews.pandoras_creatures.forge.platform.ForgePlatformServices;
@@ -32,6 +33,7 @@ public final class PandorasCreaturesForge {
 
         PandorasCreaturesCommon.initialize(ForgePlatformServices.INSTANCE);
         PCForgeGameTests.register(modEventBus);
+        PCForgeDataGenerators.register(modEventBus);
         PCForgeNetwork.initialize();
         PCForgeSounds.register(modEventBus);
         PCForgeEntities.register(modEventBus);

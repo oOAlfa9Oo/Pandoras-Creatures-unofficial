@@ -82,6 +82,18 @@ minecraft {
 
         register('data') {
             workingDir = layout.projectDirectory.dir('run/data')
+            systemProperty 'pandoras_creatures.sharedGeneratedClientOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            systemProperty 'pandoras_creatures.sharedGeneratedWorldgenOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            systemProperty 'pandoras_creatures.sharedGeneratedDataOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            // El biome modifier provider siempre escribe una copia tipada "neoforge:" ademas
+            // de la "forge:" compartida (ver PCBiomeModifierDataProvider). En forge esa copia
+            // no tiene consumidor y no debe empaquetarse: se redirige fuera del sourceSet de
+            // recursos de forge (build/ no se publica).
+            systemProperty 'pandoras_creatures.discardedNeoforgeOnlyOutput',
+                    layout.buildDirectory.dir('generated/discarded-neoforge-only').get().asFile.absolutePath
             args '--mod', mod_id, '--all',
                     '--output', file('src/generated/resources').absolutePath,
                     '--existing', file('src/main/resources').absolutePath,
