@@ -24,6 +24,9 @@ import java.nio.file.Path;
 public final class PCDataGenerators {
     private static final String SHARED_CLIENT_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedClientOutput";
     private static final String SHARED_WORLDGEN_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedWorldgenOutput";
+    // ADR-0006 Etapa 1: providers movidos a common (sin API de loader) escriben aca, no en el
+    // dir propio de neoforge, para que su salida quede versionada en el core compartido.
+    private static final String SHARED_DATA_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedDataOutput";
 
     private PCDataGenerators() {
     }
@@ -32,7 +35,8 @@ public final class PCDataGenerators {
         PackOutput output = event.getGenerator().getPackOutput();
         PackOutput sharedClientOutput = sharedClientOutput(output);
         PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
-        event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(output));
+        PackOutput sharedDataOutput = sharedDataOutput(output);
+        event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(sharedDataOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(output));
@@ -56,6 +60,10 @@ public final class PCDataGenerators {
 
     private static PackOutput sharedWorldgenOutput(PackOutput fallbackOutput) {
         return redirectedOutput(SHARED_WORLDGEN_OUTPUT_PROPERTY, fallbackOutput);
+    }
+
+    private static PackOutput sharedDataOutput(PackOutput fallbackOutput) {
+        return redirectedOutput(SHARED_DATA_OUTPUT_PROPERTY, fallbackOutput);
     }
 
     private static PackOutput redirectedOutput(String propertyName, PackOutput fallbackOutput) {

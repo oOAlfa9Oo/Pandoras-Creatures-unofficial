@@ -67,6 +67,9 @@ neoForge {
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
             systemProperty 'pandoras_creatures.sharedGeneratedWorldgenOutput',
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            // ADR-0006 Etapa 1: providers movidos a common (ej. PCTagDataProvider) escriben aca.
+            systemProperty 'pandoras_creatures.sharedGeneratedDataOutput',
+                    rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
             programArguments.addAll '--mod', mod_id, '--all',
                     '--output', project.file('src/generated/resources/').getAbsolutePath(),
                     '--existing', project.file('src/main/resources/').getAbsolutePath(),
