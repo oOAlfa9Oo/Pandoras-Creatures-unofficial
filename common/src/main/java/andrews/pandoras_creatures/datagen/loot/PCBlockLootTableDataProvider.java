@@ -1,15 +1,14 @@
 package andrews.pandoras_creatures.datagen.loot;
 
-import andrews.pandoras_creatures.registry.PCBlocks;
+import andrews.pandoras_creatures.registry.block.PCBlockIds;
+import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +24,13 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cachedOutput) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        addSimpleBlockLoot(futures, cachedOutput, PCBlocks.ARACHNON_CRYSTAL.get());
-        addSimpleBlockLoot(futures, cachedOutput, PCBlocks.HORSETAIL.get());
-        addSimpleBlockLoot(futures, cachedOutput, PCBlocks.DHANIA.get());
-        addSimpleBlockLoot(futures, cachedOutput, PCBlocks.HILL_BLOOM.get());
-        addContainerBlockLoot(futures, cachedOutput, PCBlocks.END_TROLL_BOX.get());
-        for (Block block : PCBlocks.getEndTrollBoxBlockArray()) {
-            if (block != PCBlocks.END_TROLL_BOX.get()) {
-                addContainerBlockLoot(futures, cachedOutput, block);
-            }
+        addSimpleBlockLoot(futures, cachedOutput, PCBlockIds.ARACHNON_CRYSTAL);
+        addSimpleBlockLoot(futures, cachedOutput, PCBlockIds.HORSETAIL);
+        addSimpleBlockLoot(futures, cachedOutput, PCBlockIds.DHANIA);
+        addSimpleBlockLoot(futures, cachedOutput, PCBlockIds.HILL_BLOOM);
+        addContainerBlockLoot(futures, cachedOutput, PCBlockIds.END_TROLL_BOX);
+        for (var color : PCEndTrollBoxPalette.orderedColors()) {
+            addContainerBlockLoot(futures, cachedOutput, PCEndTrollBoxPalette.blockName(color));
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -43,15 +40,15 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
         return "Pandoras Creatures Block Loot Tables";
     }
 
-    private void addSimpleBlockLoot(List<CompletableFuture<?>> futures, CachedOutput cachedOutput, Block block) {
-        futures.add(DataProvider.saveStable(cachedOutput, createSimpleDropTable(block), lootPathProvider.json(blockId(block))));
+    private void addSimpleBlockLoot(List<CompletableFuture<?>> futures, CachedOutput cachedOutput, String blockId) {
+        futures.add(DataProvider.saveStable(cachedOutput, createSimpleDropTable(blockId), lootPathProvider.json(id(blockId))));
     }
 
-    private void addContainerBlockLoot(List<CompletableFuture<?>> futures, CachedOutput cachedOutput, Block block) {
-        futures.add(DataProvider.saveStable(cachedOutput, createContainerDropTable(block), lootPathProvider.json(blockId(block))));
+    private void addContainerBlockLoot(List<CompletableFuture<?>> futures, CachedOutput cachedOutput, String blockId) {
+        futures.add(DataProvider.saveStable(cachedOutput, createContainerDropTable(blockId), lootPathProvider.json(id(blockId))));
     }
 
-    private static JsonObject createSimpleDropTable(Block block) {
+    private static JsonObject createSimpleDropTable(String blockId) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:block");
         JsonObject pool = new JsonObject();
@@ -59,7 +56,7 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
 
         JsonObject entry = new JsonObject();
         entry.addProperty("type", "minecraft:item");
-        entry.addProperty("name", blockId(block).toString());
+        entry.addProperty("name", id(blockId).toString());
 
         JsonArray entries = new JsonArray();
         entries.add(entry);
@@ -71,7 +68,7 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject createContainerDropTable(Block block) {
+    private static JsonObject createContainerDropTable(String blockId) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:block");
 
@@ -91,7 +88,7 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
         JsonObject entry = new JsonObject();
         entry.addProperty("type", "minecraft:item");
         entry.add("functions", functions);
-        entry.addProperty("name", blockId(block).toString());
+        entry.addProperty("name", id(blockId).toString());
 
         JsonArray entries = new JsonArray();
         entries.add(entry);
@@ -105,10 +102,6 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
         pools.add(pool);
         root.add("pools", pools);
         return root;
-    }
-
-    private static ResourceLocation blockId(Block block) {
-        return BuiltInRegistries.BLOCK.getKey(block);
     }
 
     private static ResourceLocation id(String path) {

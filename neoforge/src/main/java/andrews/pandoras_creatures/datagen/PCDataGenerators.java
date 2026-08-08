@@ -37,10 +37,10 @@ public final class PCDataGenerators {
         PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
         PackOutput sharedDataOutput = sharedDataOutput(output);
         event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(sharedDataOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(output));
+        event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(sharedDataOutput));
+        event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(sharedDataOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCLootModifierDataProvider(output));
         event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));

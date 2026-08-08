@@ -1,15 +1,13 @@
 package andrews.pandoras_creatures.datagen.loot;
 
-import andrews.pandoras_creatures.registry.PCItems;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +21,11 @@ public final class PCChestInjectionLootTableDataProvider implements DataProvider
             new LootInjectionDefinition("bufflon_nether_bridge", 1.0D, 2.0D, 4.0D, 68),
             new LootInjectionDefinition("bufflon_simple_dungeon", 1.0D, 2.0D, 7.0D, 72)
     };
-    private static final Item[] BUFFLON_CHEST_ITEMS = new Item[]{
-            PCItems.BUFFLON_SADDLE.get(),
-            PCItems.BUFFLON_PLAYER_SEATS.get(),
-            PCItems.BUFFLON_SMALL_STORAGE.get(),
-            PCItems.BUFFLON_LARGE_STORAGE.get()
+    private static final String[] BUFFLON_CHEST_ITEM_IDS = new String[]{
+            PCItemIds.BUFFLON_SADDLE,
+            PCItemIds.BUFFLON_PLAYER_SEATS,
+            PCItemIds.BUFFLON_SMALL_STORAGE,
+            PCItemIds.BUFFLON_LARGE_STORAGE
     };
 
     private final PackOutput.PathProvider lootPathProvider;
@@ -57,11 +55,11 @@ public final class PCChestInjectionLootTableDataProvider implements DataProvider
         pool.add("rolls", createUniformNumberProvider(definition.minRolls(), definition.maxRolls()));
 
         JsonArray entries = new JsonArray();
-        for (Item item : BUFFLON_CHEST_ITEMS) {
+        for (String itemId : BUFFLON_CHEST_ITEM_IDS) {
             JsonObject entry = new JsonObject();
             entry.addProperty("type", "minecraft:item");
             entry.addProperty("weight", definition.itemWeight());
-            entry.addProperty("name", BuiltInRegistries.ITEM.getKey(item).toString());
+            entry.addProperty("name", id(itemId).toString());
             entries.add(entry);
         }
 
