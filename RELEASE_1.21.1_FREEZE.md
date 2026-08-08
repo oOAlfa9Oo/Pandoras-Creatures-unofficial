@@ -69,9 +69,9 @@ Despues de ejecutar `validateCurrentFamily`, los jars distribuibles esperados so
 
 Fuente original revisada:
 
-- `C:\Users\joaqu\Downloads\Pandoras-Creatures-1.16.5\src\main\java\andrews\pandoras_creatures\registry\PCFeatures.java`
-- `C:\Users\joaqu\Downloads\Pandoras-Creatures-1.16.5\src\main\java\andrews\pandoras_creatures\registry\util\PCBiomeAdditions.java`
-- `C:\Users\joaqu\Downloads\Pandoras-Creatures-1.16.5\src\main\java\andrews\pandoras_creatures\objects\blocks\PCBlockBush.java`
+- `andrews/pandoras_creatures/registry/PCFeatures.java` (fuente 1.16.5, revisada localmente)
+- `andrews/pandoras_creatures/registry/util/PCBiomeAdditions.java` (fuente 1.16.5, revisada localmente)
+- `andrews/pandoras_creatures/objects/blocks/PCBlockBush.java` (fuente 1.16.5, revisada localmente)
 
 Hallazgo:
 
@@ -91,9 +91,9 @@ Regla final 1.21.1:
 
 Fuente original revisada:
 
-- `C:\Users\joaqu\Downloads\Pandoras-Creatures-1.16.5\src\main\java\andrews\pandoras_creatures\entities\CrabEntity.java`
-- `C:\Users\joaqu\Downloads\Pandoras-Creatures-1.16.5\src\main\java\andrews\pandoras_creatures\entities\bases\AnimatedWaterMobEntity.java`
-- `C:\Users\joaqu\Downloads\Pandoras-Creatures-1.16.5\src\main\java\andrews\pandoras_creatures\registry\util\SpawnConditions.java`
+- `andrews/pandoras_creatures/entities/CrabEntity.java` (fuente 1.16.5, revisada localmente)
+- `andrews/pandoras_creatures/entities/bases/AnimatedWaterMobEntity.java` (fuente 1.16.5, revisada localmente)
+- `andrews/pandoras_creatures/registry/util/SpawnConditions.java` (fuente 1.16.5, revisada localmente)
 
 Hallazgo:
 
