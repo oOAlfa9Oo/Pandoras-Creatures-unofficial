@@ -13,16 +13,19 @@ import andrews.pandoras_creatures.datagen.worldgen.PCStructureDataProvider;
 import andrews.pandoras_creatures.datagen.worldgen.PCStructureSetDataProvider;
 import andrews.pandoras_creatures.datagen.worldgen.PCTemplatePoolDataProvider;
 import andrews.pandoras_creatures.datagen.worldgen.PCWorldgenTagDataProvider;
+import andrews.pandoras_creatures.forge.datagen.model.PCForgeBlockStateModelDataProvider;
+import andrews.pandoras_creatures.forge.datagen.model.PCForgeItemModelDataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.data.event.GatherDataEvent;
 
 import java.nio.file.Path;
 
 /**
- * Entry point para los providers de datagen que ya viven en common (ADR-0006 Etapa 1 -- sin
- * API de loader). Los providers que siguen atados a neoforge (modelos, loot modifiers) no
- * tienen equivalente aca todavia; forge sigue empaquetando su salida ya comiteada en common
- * via la composicion de sourceSet (ver forge/build.gradle).
+ * Entry point de datagen para forge: los 13 providers de ADR-0006 Etapa 1 (ya en common, sin
+ * API de loader) mas los 2 providers de modelos forge-especificos (forge/datagen/model, misma
+ * API que neoforge pero paquete distinto -- no pueden vivir en common). PCLootModifierDataProvider
+ * queda sin equivalente aca (bloqueado por verifyArchitecture); forge sigue empaquetando su
+ * salida ya comiteada en common via la composicion de sourceSet (ver forge/build.gradle).
  */
 public final class PCForgeDataGenerators {
     private static final String SHARED_CLIENT_OUTPUT_PROPERTY = "pandoras_creatures.sharedGeneratedClientOutput";
@@ -55,6 +58,8 @@ public final class PCForgeDataGenerators {
         event.getGenerator().addProvider(event.includeServer(), new PCStructureDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeServer(), new PCStructureSetDataProvider(sharedWorldgenOutput));
         event.getGenerator().addProvider(event.includeClient(), new PCLanguageDataProvider(sharedClientOutput));
+        event.getGenerator().addProvider(event.includeClient(), new PCForgeBlockStateModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
+        event.getGenerator().addProvider(event.includeClient(), new PCForgeItemModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
     }
 
     private static PackOutput sharedClientOutput(PackOutput fallbackOutput) {
