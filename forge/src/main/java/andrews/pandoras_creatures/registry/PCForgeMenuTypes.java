@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.forge.registry;
 
+import andrews.pandoras_creatures.forge.client.network.ForgeBufflonMenuOpenClientHandler;
 import andrews.pandoras_creatures.menu.BufflonMenu;
 import andrews.pandoras_creatures.menu.EndTrollBoxMenu;
 import andrews.pandoras_creatures.menu.PCMenuIds;
@@ -48,9 +49,12 @@ public final class PCForgeMenuTypes {
 
         registered = true;
         event.register(ForgeRegistries.Keys.MENU_TYPES, helper -> {
+            // 1.20.2+: ClientboundOpenScreenPacket ya no lleva datos extra (NetworkHooks.openScreen
+            // fue eliminado); `data` llega null aqui. El entityId se sincroniza aparte via
+            // BufflonMenuOpenPayload, enviado antes de openMenu() -- ver ForgeMenuBridge.
             helper.register(
                     Reference.id(PCMenuIds.BUFFLON),
-                    IForgeMenuType.create((windowId, inventory, data) -> new BufflonMenu(windowId, inventory, data.readInt()))
+                    IForgeMenuType.create((windowId, inventory, data) -> new BufflonMenu(windowId, inventory, ForgeBufflonMenuOpenClientHandler.consumePendingEntityId()))
             );
             helper.register(
                     Reference.id(PCMenuIds.END_TROLL_BOX),
