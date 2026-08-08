@@ -6,8 +6,9 @@ net/
 .vscode/
 .claude/
 .codex-staging/
-# Directorio de trabajo de graphify (ADR-0009); solo los 3 outputs finales
-# (graph.html, graph.json, GRAPH_REPORT.md) se versionan, en docs/graphs/.
+# Internal notes and generated reports (non-.md formats too)
+docs/adr/
+docs/graphs/
 graphify-out/
 src/generated/resources/.cache/
 common/src/generated/resources/.cache/
