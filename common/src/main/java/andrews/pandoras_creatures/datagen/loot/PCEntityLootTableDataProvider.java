@@ -2,16 +2,14 @@ package andrews.pandoras_creatures.datagen.loot;
 
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
-import andrews.pandoras_creatures.registry.PCItems;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +22,25 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     private static final EntityLootDefinition[] DEFINITIONS = new EntityLootDefinition[]{
             new EntityLootDefinition(PCEntityIds.ACIDIC_ARCHVINE, List.of(
                     new LootPoolDefinition("pool_acidic_archvine_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCItems.ACIDIC_ARCHVINE_TONGUE.get(), 1.0D, 1.0D, false, false, 0.0D, 0.0D))
+                            new ItemDropDefinition(id(PCItemIds.ACIDIC_ARCHVINE_TONGUE), 1.0D, 1.0D, false, false, 0.0D, 0.0D))
             )),
             new EntityLootDefinition(PCEntityIds.ARACHNON, List.of(
                     new LootPoolDefinition("pool_arachnon_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCBlocksAndVanilla.ARACHNON_CRYSTAL_ID, 1.0D, 1.0D, false, true, 0.0D, 1.0D))
+                            new ItemDropDefinition(id(PCBlockIds.ARACHNON_CRYSTAL), 1.0D, 1.0D, false, true, 0.0D, 1.0D))
             )),
             new EntityLootDefinition(PCEntityIds.BUFFLON, List.of(
                     new LootPoolDefinition("pool_bufflon_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCItems.BUFFLON_HIDE.get(), 1.0D, 3.0D, false, true, 0.0D, 1.0D)),
+                            new ItemDropDefinition(id(PCItemIds.BUFFLON_HIDE), 1.0D, 3.0D, false, true, 0.0D, 1.0D)),
                     new LootPoolDefinition("pool_bufflon_2", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCItems.BUFFLON_BEEF.get(), 1.0D, 4.0D, true, true, 0.0D, 1.0D))
+                            new ItemDropDefinition(id(PCItemIds.BUFFLON_BEEF), 1.0D, 4.0D, true, true, 0.0D, 1.0D))
             )),
             new EntityLootDefinition(PCEntityIds.CRAB, List.of(
                     new LootPoolDefinition("pool_crab_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCItems.CRAB_MEAT.get(), 1.0D, 2.0D, true, true, 0.0D, 1.0D))
+                            new ItemDropDefinition(id(PCItemIds.CRAB_MEAT), 1.0D, 2.0D, true, true, 0.0D, 1.0D))
             )),
             new EntityLootDefinition(PCEntityIds.END_TROLL, List.of(
                     new LootPoolDefinition("pool_end_troll_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCItems.END_TROLL_SKIN.get(), 16.0D, 18.0D, false, true, 1.0D, 2.0D))
+                            new ItemDropDefinition(id(PCItemIds.END_TROLL_SKIN), 16.0D, 18.0D, false, true, 1.0D, 2.0D))
             )),
             new EntityLootDefinition(PCEntityIds.HELLHOUND, List.of(
                     new LootPoolDefinition("pool_hellhound_1", 1.0D, 1.0D,
@@ -50,7 +48,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
             )),
             new EntityLootDefinition(PCEntityIds.SEAHORSE, List.of(
                     new LootPoolDefinition("pool_seahorse_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(PCItems.SEAHORSE.get(), 1.0D, 1.0D, true, false, 0.0D, 0.0D))
+                            new ItemDropDefinition(id(PCItemIds.SEAHORSE), 1.0D, 1.0D, true, false, 0.0D, 0.0D))
             ))
     };
 
@@ -166,16 +164,5 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
 
     private record ItemDropDefinition(Identifier itemId, double minCount, double maxCount, boolean smeltWhenOnFire,
                                       boolean affectedByLooting, double lootingMin, double lootingMax) {
-        private ItemDropDefinition(Item item, double minCount, double maxCount, boolean smeltWhenOnFire,
-                                   boolean affectedByLooting, double lootingMin, double lootingMax) {
-            this(BuiltInRegistries.ITEM.getKey(item), minCount, maxCount, smeltWhenOnFire, affectedByLooting, lootingMin, lootingMax);
-        }
-    }
-
-    private static final class PCBlocksAndVanilla {
-        private static final Identifier ARACHNON_CRYSTAL_ID = id(PCBlockIds.ARACHNON_CRYSTAL);
-
-        private PCBlocksAndVanilla() {
-        }
     }
 }

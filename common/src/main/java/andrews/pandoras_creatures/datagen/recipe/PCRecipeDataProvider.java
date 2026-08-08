@@ -1,23 +1,19 @@
 package andrews.pandoras_creatures.datagen.recipe;
 
-import andrews.pandoras_creatures.registry.PCBlocks;
-import andrews.pandoras_creatures.registry.PCItems;
+import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -27,15 +23,15 @@ import java.util.concurrent.CompletableFuture;
 
 public final class PCRecipeDataProvider implements DataProvider {
     private static final CookingRecipeDefinition[] COOKING_RECIPES = new CookingRecipeDefinition[]{
-            new CookingRecipeDefinition("bufflon_beef_cooked", "minecraft:smelting", PCItems.BUFFLON_BEEF.get(), PCItems.BUFFLON_BEEF_COOKED.get(), 0.35F, 200),
-            new CookingRecipeDefinition("bufflon_beef_cooked_from_smoking", "minecraft:smoking", PCItems.BUFFLON_BEEF.get(), PCItems.BUFFLON_BEEF_COOKED.get(), 0.35F, 100),
-            new CookingRecipeDefinition("bufflon_beef_cooked_from_campfire", "minecraft:campfire_cooking", PCItems.BUFFLON_BEEF.get(), PCItems.BUFFLON_BEEF_COOKED.get(), 0.35F, 600),
-            new CookingRecipeDefinition("crab_meat_cooked", "minecraft:smelting", PCItems.CRAB_MEAT.get(), PCItems.CRAB_MEAT_COOKED.get(), 0.35F, 200),
-            new CookingRecipeDefinition("crab_meat_cooked_from_smoking", "minecraft:smoking", PCItems.CRAB_MEAT.get(), PCItems.CRAB_MEAT_COOKED.get(), 0.35F, 100),
-            new CookingRecipeDefinition("crab_meat_cooked_from_campfire", "minecraft:campfire_cooking", PCItems.CRAB_MEAT.get(), PCItems.CRAB_MEAT_COOKED.get(), 0.35F, 600),
-            new CookingRecipeDefinition("seahorse_cooked", "minecraft:smelting", PCItems.SEAHORSE.get(), PCItems.SEAHORSE_COOKED.get(), 0.35F, 200),
-            new CookingRecipeDefinition("seahorse_cooked_from_smoking", "minecraft:smoking", PCItems.SEAHORSE.get(), PCItems.SEAHORSE_COOKED.get(), 0.35F, 100),
-            new CookingRecipeDefinition("seahorse_cooked_from_campfire", "minecraft:campfire_cooking", PCItems.SEAHORSE.get(), PCItems.SEAHORSE_COOKED.get(), 0.35F, 600)
+            new CookingRecipeDefinition("bufflon_beef_cooked", "minecraft:smelting", PCItemIds.BUFFLON_BEEF, PCItemIds.BUFFLON_BEEF_COOKED, 0.35F, 200),
+            new CookingRecipeDefinition("bufflon_beef_cooked_from_smoking", "minecraft:smoking", PCItemIds.BUFFLON_BEEF, PCItemIds.BUFFLON_BEEF_COOKED, 0.35F, 100),
+            new CookingRecipeDefinition("bufflon_beef_cooked_from_campfire", "minecraft:campfire_cooking", PCItemIds.BUFFLON_BEEF, PCItemIds.BUFFLON_BEEF_COOKED, 0.35F, 600),
+            new CookingRecipeDefinition("crab_meat_cooked", "minecraft:smelting", PCItemIds.CRAB_MEAT, PCItemIds.CRAB_MEAT_COOKED, 0.35F, 200),
+            new CookingRecipeDefinition("crab_meat_cooked_from_smoking", "minecraft:smoking", PCItemIds.CRAB_MEAT, PCItemIds.CRAB_MEAT_COOKED, 0.35F, 100),
+            new CookingRecipeDefinition("crab_meat_cooked_from_campfire", "minecraft:campfire_cooking", PCItemIds.CRAB_MEAT, PCItemIds.CRAB_MEAT_COOKED, 0.35F, 600),
+            new CookingRecipeDefinition("seahorse_cooked", "minecraft:smelting", PCItemIds.SEAHORSE, PCItemIds.SEAHORSE_COOKED, 0.35F, 200),
+            new CookingRecipeDefinition("seahorse_cooked_from_smoking", "minecraft:smoking", PCItemIds.SEAHORSE, PCItemIds.SEAHORSE_COOKED, 0.35F, 100),
+            new CookingRecipeDefinition("seahorse_cooked_from_campfire", "minecraft:campfire_cooking", PCItemIds.SEAHORSE, PCItemIds.SEAHORSE_COOKED, 0.35F, 600)
     };
 
     private final PackOutput.PathProvider recipePathProvider;
@@ -65,35 +61,35 @@ public final class PCRecipeDataProvider implements DataProvider {
         recipes.put(PCRecipeIds.id(PCRecipeIds.END_TROLL_BOX), createEndTrollBoxRecipe());
         PCEndTrollBoxPalette.orderedColors().forEach(color -> {
             String recipeName = PCEndTrollBoxPalette.blockName(color);
-            recipes.put(id(recipeName), createEndTrollBoxColoringRecipe(color, PCBlocks.getEndTrollBox(color).asItem()));
+            recipes.put(id(recipeName), createEndTrollBoxColoringRecipe(color, recipeName));
         });
     }
 
     private static void addBasicCraftingRecipes(Map<Identifier, JsonObject> recipes) {
-        recipes.put(id("herb_bundle"), createShapelessRecipe(PCItems.HERB_BUNDLE.get(), 3,
-                itemIngredient(PCBlocks.HORSETAIL.get()),
-                itemIngredient(PCBlocks.DHANIA.get()),
-                itemIngredient(PCBlocks.HILL_BLOOM.get())));
+        recipes.put(id("herb_bundle"), createShapelessRecipe(id(PCItemIds.HERB_BUNDLE), 3,
+                itemIngredient(PCBlockIds.HORSETAIL),
+                itemIngredient(PCBlockIds.DHANIA),
+                itemIngredient(PCBlockIds.HILL_BLOOM)));
 
-        recipes.put(id("bufflon_hide"), createShapelessRecipe(Items.LEATHER, 3, itemIngredient(PCItems.BUFFLON_HIDE.get())));
-        recipes.put(id("bufflon_beef"), createShapelessRecipe(Items.BEEF, 2, itemIngredient(PCItems.BUFFLON_BEEF.get())));
+        recipes.put(id("bufflon_hide"), createShapelessRecipe(vanillaId("leather"), 3, itemIngredient(PCItemIds.BUFFLON_HIDE)));
+        recipes.put(id("bufflon_beef"), createShapelessRecipe(vanillaId("beef"), 2, itemIngredient(PCItemIds.BUFFLON_BEEF)));
 
-        recipes.put(id("plant_hat"), createShapedRecipe(PCItems.PLANT_HAT.get(),
+        recipes.put(id("plant_hat"), createShapedRecipe(PCItemIds.PLANT_HAT,
                 List.of("LLL", "SSS", "THT"),
                 Map.of(
                         "L", tagIngredient("minecraft:leaves"),
-                        "S", itemIngredient(Items.STICK),
-                        "T", itemIngredient(PCItems.ACIDIC_ARCHVINE_TONGUE.get()),
-                        "H", itemIngredient(Items.LEATHER_HELMET)
+                        "S", itemIngredient(vanillaId("stick")),
+                        "T", itemIngredient(PCItemIds.ACIDIC_ARCHVINE_TONGUE),
+                        "H", itemIngredient(vanillaId("leather_helmet"))
                 )));
 
-        recipes.put(id("arachnon_hammer"), createShapedRecipe(PCItems.ARACHNON_HAMMER.get(),
+        recipes.put(id("arachnon_hammer"), createShapedRecipe(PCItemIds.ARACHNON_HAMMER,
                 List.of("AAA", "ADA", "LIL"),
                 Map.of(
-                        "A", itemIngredient(PCBlocks.ARACHNON_CRYSTAL.get()),
-                        "D", itemIngredient(Items.DIAMOND),
-                        "L", itemIngredient(Items.LEATHER),
-                        "I", itemIngredient(Items.IRON_INGOT)
+                        "A", itemIngredient(PCBlockIds.ARACHNON_CRYSTAL),
+                        "D", itemIngredient(vanillaId("diamond")),
+                        "L", itemIngredient(vanillaId("leather")),
+                        "I", itemIngredient(vanillaId("iron_ingot"))
                 )));
     }
 
@@ -109,14 +105,14 @@ public final class PCRecipeDataProvider implements DataProvider {
         root.add("pattern", toJsonArray(List.of("SSS", "SBS", "SSS")));
 
         JsonObject key = new JsonObject();
-        key.add("S", itemIngredient(PCItems.END_TROLL_SKIN.get()));
+        key.add("S", itemIngredient(PCItemIds.END_TROLL_SKIN));
         key.add("B", tagIngredient("pandoras_creatures:vanilla_shulker_boxes"));
         root.add("key", key);
-        root.add("result", resultObject(PCBlocks.END_TROLL_BOX.get().asItem(), 1));
+        root.add("result", resultObject(PCBlockIds.END_TROLL_BOX, 1));
         return root;
     }
 
-    private static JsonObject createEndTrollBoxColoringRecipe(DyeColor color, Item output) {
+    private static JsonObject createEndTrollBoxColoringRecipe(DyeColor color, String outputId) {
         JsonObject root = new JsonObject();
         root.addProperty("type", PCRecipeIds.qualified(PCRecipeIds.END_TROLL_BOX_COLORING));
         root.addProperty("group", PCRecipeIds.END_TROLL_BOX_COLORING_GROUP);
@@ -125,11 +121,11 @@ public final class PCRecipeDataProvider implements DataProvider {
         ingredients.add(tagIngredient("pandoras_creatures:end_troll_boxes"));
         ingredients.add(tagIngredient("c:dyes/" + color.getName()));
         root.add("ingredients", ingredients);
-        root.add("result", resultObject(output, 1));
+        root.add("result", resultObject(outputId, 1));
         return root;
     }
 
-    private static JsonObject createShapelessRecipe(ItemLike output, int count, JsonElement... ingredients) {
+    private static JsonObject createShapelessRecipe(Identifier output, int count, JsonElement... ingredients) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:crafting_shapeless");
         JsonArray jsonIngredients = new JsonArray();
@@ -137,11 +133,11 @@ public final class PCRecipeDataProvider implements DataProvider {
             jsonIngredients.add(ingredient);
         }
         root.add("ingredients", jsonIngredients);
-        root.add("result", resultObject(output.asItem(), count));
+        root.add("result", resultObject(output, count));
         return root;
     }
 
-    private static JsonObject createShapedRecipe(ItemLike output, List<String> pattern, Map<String, JsonElement> keys) {
+    private static JsonObject createShapedRecipe(String output, List<String> pattern, Map<String, JsonElement> keys) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:crafting_shaped");
         root.add("pattern", toJsonArray(pattern));
@@ -149,22 +145,26 @@ public final class PCRecipeDataProvider implements DataProvider {
         JsonObject key = new JsonObject();
         keys.forEach(key::add);
         root.add("key", key);
-        root.add("result", resultObject(output.asItem(), 1));
+        root.add("result", resultObject(output, 1));
         return root;
     }
 
     private static JsonObject createCookingRecipe(CookingRecipeDefinition definition) {
         JsonObject root = new JsonObject();
         root.addProperty("type", definition.type());
-        root.add("ingredient", itemIngredient(definition.ingredient()));
-        root.add("result", resultObject(definition.result(), 1));
+        root.add("ingredient", itemIngredient(definition.ingredientId()));
+        root.add("result", resultObject(definition.resultId(), 1));
         root.addProperty("experience", definition.experience());
         root.addProperty("cookingtime", definition.cookingTime());
         return root;
     }
 
-    private static JsonElement itemIngredient(ItemLike itemLike) {
-        return new JsonPrimitive(itemId(itemLike.asItem()));
+    private static JsonElement itemIngredient(String itemId) {
+        return itemIngredient(id(itemId));
+    }
+
+    private static JsonElement itemIngredient(Identifier itemId) {
+        return new JsonPrimitive(itemId.toString());
     }
 
     private static JsonElement tagIngredient(String tag) {
@@ -177,24 +177,28 @@ public final class PCRecipeDataProvider implements DataProvider {
         return array;
     }
 
-    private static JsonObject resultObject(Item item, int count) {
+    private static JsonObject resultObject(String itemId, int count) {
+        return resultObject(id(itemId), count);
+    }
+
+    private static JsonObject resultObject(Identifier itemId, int count) {
         JsonObject result = new JsonObject();
-        result.addProperty("id", itemId(item));
+        result.addProperty("id", itemId.toString());
         if (count != 1) {
             result.addProperty("count", count);
         }
         return result;
     }
 
-    private static String itemId(Item item) {
-        return BuiltInRegistries.ITEM.getKey(item).toString();
-    }
-
     private static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(Reference.MODID, path);
     }
 
-    private record CookingRecipeDefinition(String name, String type, Item ingredient, Item result, float experience,
+    private static Identifier vanillaId(String path) {
+        return Identifier.withDefaultNamespace(path);
+    }
+
+    private record CookingRecipeDefinition(String name, String type, String ingredientId, String resultId, float experience,
                                            int cookingTime) {
     }
 }
