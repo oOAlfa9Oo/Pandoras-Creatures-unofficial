@@ -8,7 +8,6 @@ net/
 .claude/
 .codex-staging/
 docs/*
-!docs/adr/
 # Junk / quarantine artifacts
 *.tar
 .git.broken/
