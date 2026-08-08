@@ -36,11 +36,11 @@ If the change affects gameplay or content loading, also run the appropriate loca
 
 All architectural work, migration decisions, and restructuring progress should be recorded in:
 
-- [PLAN_REESTRUCTURACION_MULTILOADER.md](C:/Users/joaqu/Downloads/Pandoras-Creatures-1.21.1/PLAN_REESTRUCTURACION_MULTILOADER.md)
+- `PLAN_REESTRUCTURACION_MULTILOADER.md` (local only, gitignored)
 
 New technical reference documents should be placed under:
 
-- [docs/](C:/Users/joaqu/Downloads/Pandoras-Creatures-1.21.1/docs/README.md)
+- [docs/](docs/README.md)
 
 ## Repository Conventions
 
