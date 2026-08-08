@@ -6,6 +6,10 @@ net/
 .vscode/
 .claude/
 .codex-staging/
+# Internal notes and generated reports (non-.md formats too)
+docs/adr/
+docs/graphs/
+graphify-out/
 src/generated/resources/.cache/
 common/src/generated/resources/.cache/
 neoforge/src/generated/resources/.cache/
