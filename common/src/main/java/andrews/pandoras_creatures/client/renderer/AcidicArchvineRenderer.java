@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.renderer;
 
 import andrews.pandoras_creatures.client.model.AcidicArchvineModel;
 import andrews.pandoras_creatures.client.model.base.PCModelLayers;
+import andrews.pandoras_creatures.client.renderer.state.AcidicArchvineRenderState;
 import andrews.pandoras_creatures.entities.AcidicArchvineEntity;
 import andrews.pandoras_creatures.util.Reference;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, AcidicArchvineModel<AcidicArchvineEntity>> {
+public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, AcidicArchvineRenderState, AcidicArchvineModel<AcidicArchvineRenderState>> {
     private static final ResourceLocation TONGUE_1 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_1.png");
     private static final ResourceLocation TONGUE_2 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_2.png");
     private static final ResourceLocation TONGUE_3 = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_tongue_3.png");
@@ -31,19 +32,42 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AcidicArchvineEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + entity.getArchvineType() + ".png");
+    public AcidicArchvineRenderState createRenderState() {
+        return new AcidicArchvineRenderState();
     }
 
-    private RenderType getEntityTongueRenderType(AcidicArchvineEntity entity) {
-        return switch (entity.getArchvineType()) {
+    @Override
+    public void extractRenderState(AcidicArchvineEntity entity, AcidicArchvineRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.archvineType = entity.getArchvineType();
+        state.tickCount = entity.tickCount;
+        state.gameTimeWithPartialTick = (float) entity.level().getGameTime() + partialTick;
+        state.hasTargetedEntity = entity.hasTargetedEntity();
+        state.attackState = entity.getAttackState();
+        state.entityRotation = (float) Math.toRadians(state.yRot)
+                - (float) Math.toRadians(Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot));
+
+        LivingEntity target = entity.getTargetedEntity();
+        state.hasTarget = target != null;
+        if (target != null) {
+            state.targetPosition = getPosition(target, (double) target.getBbHeight() * 0.5D, partialTick);
+        }
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(AcidicArchvineRenderState state) {
+        return ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/acidic_archvine/acidic_archvine_" + state.archvineType + ".png");
+    }
+
+    private RenderType getEntityTongueRenderType(int archvineType) {
+        return switch (archvineType) {
             case 2 -> TONGUE_RENDER_TYPE_2;
             case 3 -> TONGUE_RENDER_TYPE_3;
             default -> TONGUE_RENDER_TYPE_1;
         };
     }
 
-    private Vec3 getPosition(LivingEntity entity, double heightOffset, float partialTicks) {
+    private static Vec3 getPosition(LivingEntity entity, double heightOffset, float partialTicks) {
         double x = Mth.lerp(partialTicks, entity.xOld, entity.getX());
         double y = Mth.lerp(partialTicks, entity.yOld, entity.getY()) + heightOffset;
         double z = Mth.lerp(partialTicks, entity.zOld, entity.getZ());
@@ -51,21 +75,20 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
     }
 
     @Override
-    public void render(AcidicArchvineEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    public void render(AcidicArchvineRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        super.render(state, poseStack, buffer, packedLight);
 
-        LivingEntity target = entity.getTargetedEntity();
-        if (target != null) {
+        if (state.hasTarget) {
             float f = 1.0F;
-            float f1 = (float) entity.level().getGameTime() + partialTicks;
+            float f1 = state.gameTimeWithPartialTick;
             float f2 = f1 * 0.5F % 1.0F;
-            float f3 = entity.getEyeHeight();
+            float f3 = state.eyeHeight;
 
             poseStack.pushPose();
             poseStack.translate(0.0D, (double) f3, 0.0D);
 
-            Vec3 vec3d = this.getPosition(target, (double) target.getBbHeight() * 0.5D, partialTicks);
-            Vec3 vec3d1 = this.getPosition(entity, (double) f3, partialTicks);
+            Vec3 vec3d = state.targetPosition;
+            Vec3 vec3d1 = new Vec3(state.x, state.y + f3, state.z);
             Vec3 vec3d2 = vec3d.subtract(vec3d1);
             float f4 = (float) (vec3d2.length() + 1.0D);
             vec3d2 = vec3d2.normalize();
@@ -100,7 +123,7 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
             float f29 = -1.0F + f2;
             float f30 = f4 * 2.5F + f29;
 
-            VertexConsumer vertexConsumer = buffer.getBuffer(getEntityTongueRenderType(entity));
+            VertexConsumer vertexConsumer = buffer.getBuffer(getEntityTongueRenderType(state.archvineType));
             PoseStack.Pose pose = poseStack.last();
             Matrix4f matrix4f = pose.pose();
 
@@ -114,7 +137,7 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
             vertexThingy(vertexConsumer, matrix4f, pose, f25, f4, f26, j, k, l, 0.0F, f30);
 
             float f31 = 0.0F;
-            if (entity.tickCount % 2 == 0) {
+            if (state.tickCount % 2 == 0) {
                 f31 = 0.5F;
             }
 

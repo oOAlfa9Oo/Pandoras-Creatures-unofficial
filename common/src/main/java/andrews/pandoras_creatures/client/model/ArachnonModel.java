@@ -1,10 +1,8 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
-import andrews.pandoras_creatures.entities.ArachnonEntity;
+import andrews.pandoras_creatures.client.renderer.state.ArachnonRenderState;
 import andrews.pandoras_creatures.entities.arachnon.ArachnonVisualRules;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -15,7 +13,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 /**
  * ArachnonModel - Complete model migrated from the original 1.16.5 Tabula source.
  */
-public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
+public class ArachnonModel<T extends ArachnonRenderState> extends PCEntityModel<T> {
     private final ModelPart body;
     private final ModelPart body2;
     private final ModelPart shoulders_front;
@@ -555,20 +553,24 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
+    public void setupAnim(T state) {
+        super.setupAnim(state);
+
+        // ModelPart.x/y/z estan en "pixeles" (se dividen por 16 en translateAndRotate), mientras
+        // que renderYOffset()/renderScale() estaban pensados para PoseStack.translate/scale
+        // directo -- se multiplica por 16 para preservar la magnitud real (ver SeahorseModel).
         float arachnonScale = ArachnonVisualRules.renderScale();
-        poseStack.translate(0.0D, ArachnonVisualRules.renderYOffset(), 0.0D);
-        poseStack.scale(arachnonScale, arachnonScale, arachnonScale);
-        this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        poseStack.popPose();
-    }
+        this.root().xScale = arachnonScale;
+        this.root().yScale = arachnonScale;
+        this.root().zScale = arachnonScale;
+        this.root().y += (float) ArachnonVisualRules.renderYOffset() * 16.0F;
 
-    @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        float limbSwing = state.walkAnimationPos;
+        float limbSwingAmount = state.walkAnimationSpeed;
+        float netHeadYaw = state.yRot;
+        float headPitch = state.xRot;
 
-        if(entity.isEntityMoving()) //Walk Animation
+        if(state.isEntityMoving) //Walk Animation
             	{
             		float globalHeight = 1;
             		float globalSpeed = 1.5F;
@@ -616,14 +618,14 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
             		shake(body3, 0.2F * globalSpeed, 0.1F * globalDegree, true, 0.0F, 0.0F, limbSwing, limbSwingAmount);
 
             		//Front Right Leg
-            		if(entity.getAttackTimer() == 0)
+            		if(state.attackTimer == 0)
                 	{
             			shake(leg_front_right_rotation_point, 0.2F * globalSpeed, 0.5F * globalDegree, false, 0.3F, 0.0F, limbSwing, limbSwingAmount);
             			flap(leg_front_right2, 0.2F * globalSpeed, 0.5F * globalDegree, true, -0.8F, 0.34F, limbSwing, limbSwingAmount);
                 	}
             		else
             		{
-            			limbSwing = entity.tickCount;
+            			limbSwing = state.tickCount;
                 		limbSwingAmount = 1;
 
                 		leg_front_right_rotation_point.xRot += -83;
@@ -645,7 +647,7 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
             		this.head.zRot = (netHeadYaw * ((float)Math.PI / 180)) / 4;
             	    this.neck.xRot = (headPitch * ((float)Math.PI / 180F)) / 2;
 
-            		limbSwing = entity.tickCount;
+            		limbSwing = state.tickCount;
             		limbSwingAmount = 1;
 
             		bounce(body, 0.2F * globalSpeed, 0.25F * globalHeight, false, limbSwing, limbSwingAmount);
@@ -674,13 +676,13 @@ public class ArachnonModel<T extends ArachnonEntity> extends PCEntityModel<T> {
             		swing(body3, 0.2F * globalSpeed, 0.02F * globalDegree, false, 0.5F, 0.0F, limbSwing, limbSwingAmount);
 
             		//Front Right Leg
-            		if(entity.getAttackTimer() == 0)
+            		if(state.attackTimer == 0)
                 	{
             			flap(leg_front_right2, 0.15F * globalSpeed, 0.05F * globalDegree, false, 2.5F, -0.1F, limbSwing, limbSwingAmount);
                 	}
             		else
             		{
-            			limbSwing = entity.tickCount;
+            			limbSwing = state.tickCount;
                 		limbSwingAmount = 1;
 
                 		leg_front_right_rotation_point.xRot += -83;

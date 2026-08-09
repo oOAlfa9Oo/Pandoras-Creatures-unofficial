@@ -18,7 +18,9 @@ public class HellHoundAttack extends PCMeleeAttackGoal {
         double reach = this.getAttackReachSqr(enemy);
         if (distToEnemySqr <= reach && this.attackTick <= 0) {
             this.attackTick = 10;
-            this.attacker.doHurtTarget(enemy);
+            if (this.attacker.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                this.attacker.doHurtTarget(serverLevel, enemy);
+            }
         }
     }
 

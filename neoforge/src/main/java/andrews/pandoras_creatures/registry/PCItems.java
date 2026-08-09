@@ -135,7 +135,7 @@ public final class PCItems {
     }
 
     private static DeferredHolder<Item, Item> registerBasicItem(String name) {
-        return ITEMS.register(name, () -> new Item(new Item.Properties()));
+        return ITEMS.register(name, () -> new Item(new Item.Properties().setId(PCItemIds.key(name))));
     }
 
     private static <T extends Item> DeferredHolder<Item, T> registerCustomItem(String name, Supplier<T> factory) {
@@ -163,7 +163,7 @@ public final class PCItems {
     }
 
     private static DeferredHolder<Item, BlockItem> registerBlockItem(String name, Supplier<? extends Block> blockSupplier) {
-        return ITEMS.register(name, () -> new BlockItem(blockSupplier.get(), new Item.Properties()));
+        return ITEMS.register(name, () -> new BlockItem(blockSupplier.get(), new Item.Properties().setId(PCItemIds.key(name))));
     }
 
 }

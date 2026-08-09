@@ -4,6 +4,7 @@ import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.entities.bucket.BucketEntityDataKeys;
 import andrews.pandoras_creatures.entities.crab.CrabVariantCatalog;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +19,8 @@ import java.util.List;
 
 public class ItemCrabBucket extends ItemMobBucket {
     public ItemCrabBucket() {
-        super(() -> PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.CRAB), () -> Fluids.WATER, new Properties().stacksTo(1));
+        super(() -> PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.CRAB), () -> Fluids.WATER,
+                new Properties().stacksTo(1).setId(PCItemIds.key(PCItemIds.CRAB_BUCKET)));
     }
 
     @Override

@@ -33,7 +33,7 @@ public final class PCForgeBlocks {
 
     public static Block getSimpleBlock(String id) {
         ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        Block value = BuiltInRegistries.BLOCK.get(blockId);
+        Block value = BuiltInRegistries.BLOCK.getValue(blockId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge block id: " + blockId);
         }
@@ -52,7 +52,7 @@ public final class PCForgeBlocks {
 
     public static Block getEndTrollBox(@Nullable DyeColor color) {
         ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEndTrollBoxBootstrap.blockId(color));
-        Block value = BuiltInRegistries.BLOCK.get(blockId);
+        Block value = BuiltInRegistries.BLOCK.getValue(blockId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge end troll box block id: " + blockId);
         }
@@ -84,6 +84,7 @@ public final class PCForgeBlocks {
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.ARACHNON_CRYSTAL),
                     new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
+                            .setId(PCBlockIds.key(PCBlockIds.ARACHNON_CRYSTAL))
                             .strength(1.5F, 6.0F)
                             .lightLevel(state -> 9)
                             .requiresCorrectToolForDrops()
@@ -92,24 +93,28 @@ public final class PCForgeBlocks {
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.HORSETAIL),
                     new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                            .setId(PCBlockIds.key(PCBlockIds.HORSETAIL))
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.DHANIA),
                     new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                            .setId(PCBlockIds.key(PCBlockIds.DHANIA))
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.HILL_BLOOM),
                     new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                            .setId(PCBlockIds.key(PCBlockIds.HILL_BLOOM))
                             .noCollission()
                             .noOcclusion())
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockIds.PANDORIC_SHARD),
                     new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
+                            .setId(PCBlockIds.key(PCBlockIds.PANDORIC_SHARD))
                             .noOcclusion()
                             .lightLevel(state -> 10))
             );

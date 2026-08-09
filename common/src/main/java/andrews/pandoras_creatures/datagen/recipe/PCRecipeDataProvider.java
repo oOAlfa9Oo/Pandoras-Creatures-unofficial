@@ -6,6 +6,7 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.recipe.PCRecipeIds;
 import andrews.pandoras_creatures.util.Reference;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -123,11 +124,11 @@ public final class PCRecipeDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject createShapelessRecipe(ResourceLocation output, int count, JsonObject... ingredients) {
+    private static JsonObject createShapelessRecipe(ResourceLocation output, int count, JsonElement... ingredients) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:crafting_shapeless");
         JsonArray jsonIngredients = new JsonArray();
-        for (JsonObject ingredient : ingredients) {
+        for (JsonElement ingredient : ingredients) {
             jsonIngredients.add(ingredient);
         }
         root.add("ingredients", jsonIngredients);
@@ -135,7 +136,7 @@ public final class PCRecipeDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject createShapedRecipe(String output, List<String> pattern, Map<String, JsonObject> keys) {
+    private static JsonObject createShapedRecipe(String output, List<String> pattern, Map<String, ? extends JsonElement> keys) {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:crafting_shaped");
         root.add("pattern", toJsonArray(pattern));
@@ -157,20 +158,16 @@ public final class PCRecipeDataProvider implements DataProvider {
         return root;
     }
 
-    private static JsonObject itemIngredient(String itemId) {
+    private static com.google.gson.JsonPrimitive itemIngredient(String itemId) {
         return itemIngredient(id(itemId));
     }
 
-    private static JsonObject itemIngredient(ResourceLocation itemId) {
-        JsonObject ingredient = new JsonObject();
-        ingredient.addProperty("item", itemId.toString());
-        return ingredient;
+    private static com.google.gson.JsonPrimitive itemIngredient(ResourceLocation itemId) {
+        return new com.google.gson.JsonPrimitive(itemId.toString());
     }
 
-    private static JsonObject tagIngredient(String tag) {
-        JsonObject ingredient = new JsonObject();
-        ingredient.addProperty("tag", tag);
-        return ingredient;
+    private static com.google.gson.JsonPrimitive tagIngredient(String tag) {
+        return new com.google.gson.JsonPrimitive("#" + tag);
     }
 
     private static JsonArray toJsonArray(List<String> values) {

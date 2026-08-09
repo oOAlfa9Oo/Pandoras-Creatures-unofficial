@@ -1,6 +1,11 @@
 package andrews.pandoras_creatures.registry.item;
 
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import java.util.List;
 
@@ -40,6 +45,10 @@ public final class PCItemIds {
 
     public static String spawnEggId(String entityId) {
         return entityId + "_spawn_egg";
+    }
+
+    public static ResourceKey<Item> key(String path) {
+        return ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Reference.MODID, path));
     }
 
     public static List<String> allPaths() {

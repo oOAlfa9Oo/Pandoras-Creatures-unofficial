@@ -6,9 +6,11 @@ import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineAttackS
 import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineTargetingRules;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -18,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
@@ -42,7 +45,8 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
         this.targetClass = target;
         this.targetChance = chance;
         this.setFlags(EnumSet.of(Goal.Flag.TARGET));
-        this.targetEntitySelector = TargetingConditions.forCombat().range(this.getFollowDistance()).selector(predicate);
+        this.targetEntitySelector = TargetingConditions.forCombat().range(this.getFollowDistance())
+                .selector(predicate == null ? null : (candidate, level) -> predicate.test(candidate));
     }
 
     @Override
@@ -60,7 +64,10 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
     }
 
     protected void findNearestTarget() {
-        this.nearestTarget = this.mob.level().getNearestEntity(
+        if (!(this.mob.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        this.nearestTarget = serverLevel.getNearestEntity(
                 this.mob.level().getEntitiesOfClass(this.targetClass, this.getTargetableArea(this.getFollowDistance()), e -> true),
                 this.targetEntitySelector,
                 this.mob,
@@ -139,8 +146,10 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
                                 this.mob.getX(),
                                 this.mob.getY() - 0.5,
                                 this.mob.getZ(),
+                                Set.<Relative>of(),
                                 serverPlayer.getYRot(),
-                                serverPlayer.getXRot()
+                                serverPlayer.getXRot(),
+                                false
                         );
                     } else {
                         this.nearestTarget.teleportTo(this.mob.getX(), this.mob.getY() - 0.5, this.mob.getZ());
@@ -153,8 +162,8 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
                     }
                 }
 
-                if (this.biteCooldown <= 0) {
-                    this.mob.doHurtTarget(this.nearestTarget);
+                if (this.biteCooldown <= 0 && this.mob.level() instanceof ServerLevel serverLevel) {
+                    this.mob.doHurtTarget(serverLevel, this.nearestTarget);
                     this.mob.playSound(PandorasCreaturesCommon.platform().registry().sound(PCSoundCatalog.ACIDIC_ARCHVINE_ATTACK), 1.0F, 1.0F);
                     this.biteCooldown = AcidicArchvineTargetingRules.BITE_COOLDOWN_TICKS;
                 }

@@ -45,6 +45,6 @@ public class BufflonStateButton extends Button {
             textureU = TEXTURE_U_SELECTED;
         }
 
-        guiGraphics.blit(TEXTURE, this.getX(), this.getY(), textureU, this.textureV, this.width, this.height);
+        guiGraphics.blit(net.minecraft.client.renderer.RenderType::guiTextured, TEXTURE, this.getX(), this.getY(), textureU, this.textureV, this.width, this.height, 256, 256);
     }
 }

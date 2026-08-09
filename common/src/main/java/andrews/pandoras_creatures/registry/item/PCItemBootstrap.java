@@ -64,7 +64,8 @@ public final class PCItemBootstrap {
                 throw new IllegalArgumentException("No block supplier available for simple block item id: " + id);
             }
 
-            registeredItems.put(id, registrar.register(id, () -> new BlockItem(blockSupplier.get(), new Item.Properties())));
+            registeredItems.put(id, registrar.register(id, () -> new BlockItem(blockSupplier.get(),
+                    new Item.Properties().setId(PCItemIds.key(id)))));
         }
 
         return Collections.unmodifiableMap(registeredItems);
@@ -109,7 +110,8 @@ public final class PCItemBootstrap {
 
             registeredItems.put(palette.itemName(), registrar.register(
                     palette.itemName(),
-                    () -> new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(), new Item.Properties())
+                    () -> new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(),
+                            new Item.Properties().setId(PCItemIds.key(palette.itemName())))
             ));
         }
 
@@ -131,20 +133,20 @@ public final class PCItemBootstrap {
     private static <H extends Supplier<? extends Item>> void registerBasicItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id) {
-        items.put(id, registrar.register(id, () -> new Item(new Item.Properties())));
+        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().setId(PCItemIds.key(id)))));
     }
 
     private static <H extends Supplier<? extends Item>> void registerFoodItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id,
             FoodProperties foodProperties) {
-        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().food(foodProperties))));
+        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().food(foodProperties).setId(PCItemIds.key(id)))));
     }
 
     private static <H extends Supplier<? extends Item>> void registerSingleStackItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             String id) {
-        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().stacksTo(1))));
+        items.put(id, registrar.register(id, () -> new Item(new Item.Properties().stacksTo(1).setId(PCItemIds.key(id)))));
     }
 
     private static <H extends Supplier<? extends Item>, T extends Item> void registerCustomItem(Map<String, H> items,
@@ -163,6 +165,7 @@ public final class PCItemBootstrap {
             throw new IllegalArgumentException("No block supplier available for end troll box item id: " + id);
         }
 
-        items.put(id, registrar.register(id, () -> new EndTrollBoxItem(blockSupplier.get(), new Item.Properties().stacksTo(1).fireResistant())));
+        items.put(id, registrar.register(id, () -> new EndTrollBoxItem(blockSupplier.get(),
+                new Item.Properties().stacksTo(1).fireResistant().setId(PCItemIds.key(id)))));
     }
 }

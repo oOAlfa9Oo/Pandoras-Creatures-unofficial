@@ -24,7 +24,7 @@ public final class ArachnonGameTests {
         ArachnonEntity arachnon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), ARACHNON_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
-        boolean hurt = arachnon.doHurtTarget(target);
+        boolean hurt = arachnon.doHurtTarget((net.minecraft.server.level.ServerLevel) arachnon.level(), target);
 
         helper.assertTrue(hurt, "Arachnon attack should damage the target");
         helper.assertValueEqual(arachnon.getAttackTimer(), ArachnonAttackRules.ATTACK_TIMER_TICKS, "arachnon attack timer");
@@ -36,7 +36,7 @@ public final class ArachnonGameTests {
     public static void aiStepTicksAttackTimerDown(GameTestHelper helper) {
         ArachnonEntity arachnon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ARACHNON), ARACHNON_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
-        arachnon.doHurtTarget(target);
+        arachnon.doHurtTarget((net.minecraft.server.level.ServerLevel) arachnon.level(), target);
 
         arachnon.aiStep();
 

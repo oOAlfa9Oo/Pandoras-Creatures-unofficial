@@ -1,23 +1,24 @@
 package andrews.pandoras_creatures.client.model.base;
 
-import andrews.pandoras_creatures.entities.bases.IAnimatedEntity;
 import andrews.pandoras_creatures.util.animation.Animator;
 import com.google.common.collect.Lists;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Base class for animated entity models in NeoForge 1.21.1
- * Adapted from the original PCEntityModel for the new model system
+ * Base class for animated entity models.
+ * 1.21.2+ movio el setupAnim de EntityModel de (Entity, floats...) a (RenderState) -- ver
+ * net.minecraft.client.renderer.entity.state.EntityRenderState y sus subclases, verificado
+ * contra la fuente real de 1.21.3. El campo "entity" vivo ya no esta disponible durante el
+ * render; cada modelo concreto ahora lee de su propio RenderState (poblado en
+ * Renderer#extractRenderState, que si tiene acceso a la Entity).
  */
-public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends EntityModel<E> {
-    protected final ModelPart root;
-    protected E entity;
+public abstract class PCEntityModel<S extends EntityRenderState> extends EntityModel<S> {
     protected Animator animator = new Animator();
 
     // Store default values for animation reset
@@ -26,7 +27,7 @@ public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends 
     protected final List<ModelPart> animatedParts = Lists.newArrayList();
 
     public PCEntityModel(ModelPart root) {
-        this.root = root;
+        super(root);
     }
 
     /**
@@ -59,15 +60,8 @@ public abstract class PCEntityModel<E extends Entity & IAnimatedEntity> extends 
     }
 
     @Override
-    public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.entity = entity;
+    public void setupAnim(S state) {
         revertToDefaultBoxValues();
-    }
-
-    public void animateModel(E animatedEntity) {}
-
-    public ModelPart root() {
-        return this.root;
     }
 
     // ===============================================================================

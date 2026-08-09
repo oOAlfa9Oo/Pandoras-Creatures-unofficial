@@ -1,11 +1,8 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
-import andrews.pandoras_creatures.entities.BufflonEntity;
-import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentType;
+import andrews.pandoras_creatures.client.renderer.state.BufflonRenderState;
 import andrews.pandoras_creatures.entities.bufflon.BufflonStorageVisuals;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -13,7 +10,7 @@ import net.minecraft.client.model.geom.builders.*;
 /**
  * BufflonModel - Complete model with all accessory parts migrated from 1.16.5
  */
-public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
+public class BufflonModel<T extends BufflonRenderState> extends PCEntityModel<T> {
     // Main body
     private final ModelPart body;
     private final ModelPart body_top;
@@ -1072,17 +1069,17 @@ public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    public void setupAnim(T entity) {
+        super.setupAnim(entity);
+        float limbSwing = entity.walkAnimationPos;
+        float limbSwingAmount = entity.walkAnimationSpeed;
+        float ageInTicks = entity.ageInTicks;
+        float netHeadYaw = entity.yRot;
+        float headPitch = entity.xRot;
 
         // Process model part visibility
-        this.front_seat_base.visible = entity.isSaddled();
-        this.storage_base.visible = entity.hasBackAttachment();
+        this.front_seat_base.visible = entity.isSaddled;
+        this.storage_base.visible = entity.hasBackAttachment;
 
         // Set all back attachment parts invisible before selecting which one to show
         this.seats_base.visible = false;
@@ -1100,7 +1097,7 @@ public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
         this.storage_box_5.visible = false;
         this.storage_box_6.visible = false;
 
-        switch (entity.getBackAttachment()) {
+        switch (entity.backAttachment) {
             case PLAYER_SEATS -> this.seats_base.visible = true;
             case SMALL_STORAGE -> {
                 this.smallstorage_base.visible = true;
@@ -1115,9 +1112,9 @@ public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
             }
         }
 
-        if (entity.isSitting() && !entity.isVehicle()) {
+        if (entity.isSitting && !entity.isVehicle) {
             animateSitting(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else if (!entity.isMoving()) {
+        } else if (!entity.isMoving) {
             animateIdle(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         } else {
             animateWalking(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
@@ -1125,14 +1122,14 @@ public class BufflonModel<T extends BufflonEntity> extends PCEntityModel<T> {
     }
 
     private void processSmallStorageBoxVisibility(T entity) {
-        int visibleBoxes = BufflonStorageVisuals.getVisibleBoxCount(entity.getBackAttachment(), entity.getOccupiedStorageSlotCount());
+        int visibleBoxes = BufflonStorageVisuals.getVisibleBoxCount(entity.backAttachment, entity.occupiedStorageSlotCount);
         this.smallstorage_box_1.visible = visibleBoxes >= 1;
         this.smallstorage_box_2.visible = visibleBoxes >= 2;
         this.smallstorage_box_3.visible = visibleBoxes >= 3;
     }
 
     private void processLargeStorageBoxVisibility(T entity) {
-        int visibleBoxes = BufflonStorageVisuals.getVisibleBoxCount(entity.getBackAttachment(), entity.getOccupiedStorageSlotCount());
+        int visibleBoxes = BufflonStorageVisuals.getVisibleBoxCount(entity.backAttachment, entity.occupiedStorageSlotCount);
         this.storage_box_1.visible = visibleBoxes >= 1;
         this.storage_box_2.visible = visibleBoxes >= 2;
         this.storage_box_3.visible = visibleBoxes >= 3;

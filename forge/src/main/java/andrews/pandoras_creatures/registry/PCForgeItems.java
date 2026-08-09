@@ -43,7 +43,7 @@ public final class PCForgeItems {
 
     public static Item getItem(String id) {
         ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        Item value = BuiltInRegistries.ITEM.get(itemId);
+        Item value = BuiltInRegistries.ITEM.getValue(itemId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge item id: " + itemId);
         }
@@ -100,21 +100,21 @@ public final class PCForgeItems {
     }
 
     private static void registerBasic(RegisterEvent.RegisterHelper<Item> helper, String id) {
-        helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), new Item(new Item.Properties()));
+        helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), new Item(new Item.Properties().setId(PCItemIds.key(id))));
     }
 
     private static void registerSingleStack(RegisterEvent.RegisterHelper<Item> helper, String id) {
-        helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), new Item(new Item.Properties().stacksTo(1)));
+        helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), new Item(new Item.Properties().stacksTo(1).setId(PCItemIds.key(id))));
     }
 
     private static void registerFood(RegisterEvent.RegisterHelper<Item> helper, String id, FoodProperties foodProperties) {
-        helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), new Item(new Item.Properties().food(foodProperties)));
+        helper.register(ResourceLocation.fromNamespaceAndPath(Reference.MODID, id), new Item(new Item.Properties().food(foodProperties).setId(PCItemIds.key(id))));
     }
 
     private static void registerBlockItem(RegisterEvent.RegisterHelper<Item> helper, String id) {
         helper.register(
                 ResourceLocation.fromNamespaceAndPath(Reference.MODID, id),
-                new BlockItem(PCForgeBlocks.getSimpleBlock(id), new Item.Properties())
+                new BlockItem(PCForgeBlocks.getSimpleBlock(id), new Item.Properties().setId(PCItemIds.key(id)))
         );
     }
 
@@ -125,7 +125,7 @@ public final class PCForgeItems {
     private static Item createForgeEndTrollBoxItem(String id) {
         return new ForgeEndTrollBoxItem(
                 PCForgeBlocks.getEndTrollBox(PCEndTrollBoxPalette.colorForBlockName(id)),
-                new Item.Properties().stacksTo(1).fireResistant()
+                new Item.Properties().stacksTo(1).fireResistant().setId(PCItemIds.key(id))
         );
     }
 
@@ -135,7 +135,8 @@ public final class PCForgeItems {
             java.util.function.Supplier<? extends net.minecraft.world.entity.EntityType<?>> entityTypeSupplier) {
         helper.register(
                 ResourceLocation.fromNamespaceAndPath(Reference.MODID, palette.itemName()),
-                new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(), new Item.Properties())
+                new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(),
+                        new Item.Properties().setId(PCItemIds.key(palette.itemName())))
         );
     }
 

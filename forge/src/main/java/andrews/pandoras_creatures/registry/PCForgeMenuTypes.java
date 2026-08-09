@@ -34,7 +34,7 @@ public final class PCForgeMenuTypes {
     @SuppressWarnings("unchecked")
     private static <T extends net.minecraft.world.inventory.AbstractContainerMenu> MenuType<T> menuType(String id) {
         ResourceLocation menuId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        MenuType<?> value = BuiltInRegistries.MENU.get(menuId);
+        MenuType<?> value = BuiltInRegistries.MENU.getValue(menuId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge menu type id: " + menuId);
         }

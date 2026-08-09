@@ -18,7 +18,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -39,11 +39,11 @@ public final class PCNaturalSpawnGameTests {
     }
 
     public static void catalogIsAppliedToRuntimeBiomes(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
 
         for (PCBiomeSpawnCatalog.SpawnDefinition definition : PCBiomeSpawnCatalog.definitions()) {
             EntityType<?> entityType = entityType(definition.entityTypeId());
-            List<Holder.Reference<Biome>> selectedBiomes = biomes.holders()
+            List<Holder.Reference<Biome>> selectedBiomes = biomes.listElements()
                     .filter(biome -> definition.biomes().stream().anyMatch(selector -> matches(biome, selector)))
                     .toList();
 
@@ -65,14 +65,14 @@ public final class PCNaturalSpawnGameTests {
     }
 
     public static void endTrollIsAbsentFromNaturalSpawnTables(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
         EntityType<?> endTroll = PCGameTestRegistry.entityType(PCEntityIds.END_TROLL);
 
         boolean declaredNaturally = PCBiomeSpawnCatalog.definitions().stream()
                 .anyMatch(definition -> definition.entityTypeId().equals("pandoras_creatures:" + PCEntityIds.END_TROLL));
         helper.assertTrue(!declaredNaturally, "End Troll must not be declared in the shared natural spawn catalog");
 
-        for (Holder.Reference<Biome> biome : biomes.holders().toList()) {
+        for (Holder.Reference<Biome> biome : biomes.listElements().toList()) {
             boolean present = biome.value().getMobSettings()
                     .getMobs(endTroll.getCategory())
                     .unwrap()
@@ -128,7 +128,7 @@ public final class PCNaturalSpawnGameTests {
                 helper.assertTrue(SpawnPlacements.isSpawnPositionOk(arachnon, helper.getLevel(), spawnPos),
                         "Arachnon ground placement should accept the fixture position");
                 helper.assertTrue(SpawnPlacements.checkSpawnRules(
-                                arachnon, helper.getLevel(), MobSpawnType.NATURAL, spawnPos, helper.getLevel().getRandom()),
+                                arachnon, helper.getLevel(), EntitySpawnReason.NATURAL, spawnPos, helper.getLevel().getRandom()),
                         "Arachnon natural spawn rule should accept the dark fixture position; raw brightness="
                                 + helper.getLevel().getRawBrightness(spawnPos, 0));
                 helper.assertTrue(helper.getLevel().noCollision(arachnon.getSpawnAABB(
@@ -234,7 +234,7 @@ public final class PCNaturalSpawnGameTests {
         boolean actual = SpawnPlacements.checkSpawnRules(
                 PCGameTestRegistry.entityType(entityId),
                 helper.getLevel(),
-                MobSpawnType.NATURAL,
+                EntitySpawnReason.NATURAL,
                 pos,
                 helper.getLevel().getRandom());
         helper.assertTrue(actual == expected, entityId + " runtime placement should match its shared rule");

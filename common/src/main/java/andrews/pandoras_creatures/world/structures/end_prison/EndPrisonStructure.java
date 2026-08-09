@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.StructureManager;
@@ -92,7 +93,7 @@ public class EndPrisonStructure extends Structure {
 
         EntityType<EndTrollEntity> type =
                 PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.END_TROLL);
-        EndTrollEntity endTroll = type.create(level.getLevel());
+        EndTrollEntity endTroll = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
         if (endTroll == null) {
             return;
         }

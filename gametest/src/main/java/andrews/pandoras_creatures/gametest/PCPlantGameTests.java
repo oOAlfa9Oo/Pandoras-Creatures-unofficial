@@ -32,12 +32,12 @@ public final class PCPlantGameTests {
     }
 
     public static void runtimeBiomesContainOfficialPlantFeatures(GameTestHelper helper) {
-        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+        Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
 
         for (PCBiomeFeatureCatalog.FeatureDefinition definition : PCBiomeFeatureCatalog.definitions()) {
             ResourceKey<PlacedFeature> featureKey = ResourceKey.create(
                     Registries.PLACED_FEATURE, ResourceLocation.parse(definition.featureId()));
-            List<Holder.Reference<Biome>> selectedBiomes = biomes.holders()
+            List<Holder.Reference<Biome>> selectedBiomes = biomes.listElements()
                     .filter(biome -> definition.biomes().stream().anyMatch(selector -> matches(biome, selector)))
                     .toList();
 
@@ -77,8 +77,8 @@ public final class PCPlantGameTests {
         BlockPos origin = helper.absolutePos(relativeOrigin);
         Block expectedBlock = PandorasCreaturesCommon.platform().registry().block(plant.blockId());
         Registry<ConfiguredFeature<?, ?>> features = helper.getLevel().registryAccess()
-                .registryOrThrow(Registries.CONFIGURED_FEATURE);
-        ConfiguredFeature<?, ?> configuredFeature = features.get(ResourceLocation.fromNamespaceAndPath(
+                .lookupOrThrow(Registries.CONFIGURED_FEATURE);
+        ConfiguredFeature<?, ?> configuredFeature = features.getValue(ResourceLocation.fromNamespaceAndPath(
                 "pandoras_creatures", plant.featureId()));
         helper.assertTrue(configuredFeature != null, "Configured plant feature should load: " + plant.featureId());
 

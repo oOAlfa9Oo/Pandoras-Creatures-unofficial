@@ -57,7 +57,9 @@ public final class PCDataLoadGameTests {
         MinecraftServer server = helper.getLevel().getServer();
 
         for (String recipeId : EXPECTED_RECIPES) {
-            helper.assertTrue(server.getRecipeManager().byKey(modId(recipeId)).isPresent(),
+            helper.assertTrue(server.getRecipeManager()
+                            .byKey(ResourceKey.create(Registries.RECIPE, modId(recipeId)))
+                            .isPresent(),
                     "Recipe should load from datapack: " + recipeId);
         }
         helper.succeed();
@@ -82,7 +84,7 @@ public final class PCDataLoadGameTests {
 
     @GameTest(template = SHARED_TEMPLATE, batch = DATA_BATCH)
     public static void endTrollBoxItemTagIsBound(GameTestHelper helper) {
-        boolean tagLoaded = BuiltInRegistries.ITEM.getTag(PCTags.Items.END_TROLL_BOXES)
+        boolean tagLoaded = BuiltInRegistries.ITEM.get(PCTags.Items.END_TROLL_BOXES)
                 .map(named -> named.size() > 0)
                 .orElse(false);
 

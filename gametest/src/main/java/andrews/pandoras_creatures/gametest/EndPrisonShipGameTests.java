@@ -57,8 +57,8 @@ public final class EndPrisonShipGameTests {
         StructureTemplateManager templates = level.getStructureManager();
         EndPrisonPieces.Piece piece = new EndPrisonPieces.Piece(templates, origin, rotation);
         BoundingBox box = piece.getBoundingBox();
-        Structure structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE)
-                .get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Structure structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
+                .getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         StructureStart start = new StructureStart(
                 structure,
                 new ChunkPos(origin.getX() >> 4, origin.getZ() >> 4),

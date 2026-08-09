@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
+import andrews.pandoras_creatures.client.renderer.state.EndTrollRenderState;
 import andrews.pandoras_creatures.entities.EndTrollEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -15,7 +16,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 /**
  * EndTrollModel - Complete model migrated from the original 1.16.5 Tabula source.
  */
-public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
+public class EndTrollModel<T extends EndTrollRenderState> extends PCEntityModel<T> {
     private final ModelPart movement_base;
     private final ModelPart bottom_body;
     private final ModelPart stomach;
@@ -1203,15 +1204,20 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    public void setupAnim(T entity) {
+        super.setupAnim(entity);
+        float limbSwing = entity.walkAnimationPos;
+        float limbSwingAmount = entity.walkAnimationSpeed;
+        float ageInTicks = entity.ageInTicks;
+        float netHeadYaw = entity.yRot;
+        float headPitch = entity.xRot;
         revertToDefaultBoxValues();
 
         if(entity.isAnimationPlaying(EndTrollEntity.BLANK_ANIMATION) || entity.isAnimationPlaying(EndTrollEntity.SHOOT_ANIMATION) || entity.isAnimationPlaying(EndTrollEntity.RIGHT_PUNCH_ANIMATION) || entity.isAnimationPlaying(EndTrollEntity.LEFT_PUNCH_ANIMATION) || entity.isAnimationPlaying(EndTrollEntity.DOUBLE_PUNCH_ANIMATION))
         {
-            if(!entity.isEntityStanding())
+            if(!entity.isEntityStanding)
             {
-                if(entity.isEntityMovingHorizontally())//Entity moving while not standing
+                if(entity.isEntityMovingHorizontally)//Entity moving while not standing
                 {
                     float globalSpeed = 4.0F;
                     float globalHeight = 1.0F;
@@ -1363,9 +1369,9 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
                 this.hand_right_thumb_1.zRot = (float) Math.toRadians(14.0F);
                 this.hand_right_thumb_2.zRot = (float) Math.toRadians(18.0F);
 
-                if(entity.isEntityMovingHorizontally())
+                if(entity.isEntityMovingHorizontally)
                 {
-                    if(entity.isEntityStanding())
+                    if(entity.isEntityStanding)
                     {
                         this.eye.yRot += (netHeadYaw * ((float)Math.PI / 180) / 1.2F);
                         this.eye.xRot += (headPitch * ((float)Math.PI / 180) / 1.2F);
@@ -1412,7 +1418,7 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
                     limbSwing = entity.tickCount;
                     limbSwingAmount = 1;
 
-                    if(entity.isEntityStanding())
+                    if(entity.isEntityStanding)
                     {
                         this.eye.yRot += (netHeadYaw * ((float)Math.PI / 180) / 1.2F);
                         this.eye.xRot += (headPitch * ((float)Math.PI / 180) / 1.2F);
@@ -1457,7 +1463,7 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
 
             swing(head_top, 0.3F, 0.03F, false, 1.2F, -0.05F, limbSwing, limbSwingAmount);
 
-            if(entity.getAnimationTick() > 0 && entity.getAnimationTick() <= 19)
+            if(entity.animationTick > 0 && entity.animationTick <= 19)
             {
                 shake(left_eyelid_base, 2.0F, 0.005F, false, 0.0F, 0.02F, limbSwing, limbSwingAmount);
                 shake(right_eyelid_base, 2.0F, 0.005F, true, 0.0F, -0.02F, limbSwing, limbSwingAmount);
@@ -1474,9 +1480,8 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
         this.animateModel(entity);
     }
 
-    @Override
     public void animateModel(T animatedEntity) {
-        this.animator.updateAnimations(animatedEntity);
+        this.animator.updateAnimations(animatedEntity.playingAnimation, animatedEntity.animationTick);
 
         if(animatedEntity.isAnimationPlaying(EndTrollEntity.TRANSFORM_ANIMATION))
         {
@@ -2043,8 +2048,4 @@ public class EndTrollModel<T extends EndTrollEntity> extends PCEntityModel<T> {
 
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.movement_base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
 }

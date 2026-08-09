@@ -45,6 +45,7 @@ final class FabricEntityBridge implements EntityBridge {
 
     @Override
     public boolean canEntityGrief(Entity entity) {
-        return entity.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        return entity.level() instanceof net.minecraft.server.level.ServerLevel serverLevel
+                && serverLevel.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
     }
 }

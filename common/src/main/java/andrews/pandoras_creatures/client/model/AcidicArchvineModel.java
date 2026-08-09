@@ -1,17 +1,13 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
-import andrews.pandoras_creatures.entities.AcidicArchvineEntity;
+import andrews.pandoras_creatures.client.renderer.state.AcidicArchvineRenderState;
 import andrews.pandoras_creatures.entities.acidic_archvine.AcidicArchvineAttackState;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.util.Mth;
 
-public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntityModel<T> {
+public class AcidicArchvineModel<T extends AcidicArchvineRenderState> extends PCEntityModel<T> {
     // Base and roots
     private final ModelPart base;
     private final ModelPart base_top;
@@ -130,7 +126,6 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
     private final ModelPart acid_blob_holder;
     private final ModelPart acid_blob;
 
-    private float partialTicks;
 
     public AcidicArchvineModel(ModelPart root) {
         super(root);
@@ -639,35 +634,29 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        poseStack.translate(0, 1.5F, 0);
-        poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+    public void setupAnim(T state) {
+        super.setupAnim(state);
 
-        this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.tongue_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        // ModelPart.x/y/z/xRot estan en "pixeles"/radianes; reemplaza el viejo
+        // poseStack.translate(0, 1.5F, 0) + mulPose(Axis.XP.rotationDegrees(180)) del
+        // renderToBuffer eliminado (ver SeahorseModel para el patron).
+        this.root().y += 1.5F * 16.0F;
+        this.root().xRot = (float) Math.PI;
 
-        poseStack.popPose();
-    }
+        float limbSwing = state.walkAnimationPos;
+        float limbSwingAmount = state.walkAnimationSpeed;
+        float ageInTicks = state.ageInTicks;
+        float netHeadYaw = state.yRot;
+        float headPitch = state.xRot;
 
-    @Override
-    public void prepareMobModel(T entity, float limbSwing, float limbSwingAmount, float partialTick) {
-        super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
-        this.partialTicks = partialTick;
-    }
+        this.tongue_1.visible = !state.hasTargetedEntity;
 
-    @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
-        this.tongue_1.visible = !entity.hasTargetedEntity();
-
-        if (entity.getAttackState() == AcidicArchvineAttackState.IDLE) {
-            animateIdle(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else if (entity.getAttackState() == AcidicArchvineAttackState.GRABBING) {
-            animateGrabbing(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else if (entity.getAttackState() == AcidicArchvineAttackState.CHEWING) {
-            animateChewing(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        if (state.attackState == AcidicArchvineAttackState.IDLE) {
+            animateIdle(state, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        } else if (state.attackState == AcidicArchvineAttackState.GRABBING) {
+            animateGrabbing(state, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        } else if (state.attackState == AcidicArchvineAttackState.CHEWING) {
+            animateChewing(state, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         }
     }
 
@@ -680,7 +669,7 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
 
         revertToDefaultBoxValues();
 
-        float entityRotation = (float) Math.toRadians(netHeadYaw) - (float) Math.toRadians(Mth.rotLerp(this.partialTicks, entity.yBodyRotO, entity.yBodyRot));
+        float entityRotation = entity.entityRotation;
         base.yRot = entityRotation;
 
         // Leaf animations
@@ -760,7 +749,7 @@ public class AcidicArchvineModel<T extends AcidicArchvineEntity> extends PCEntit
 
         revertToDefaultBoxValues();
 
-        float entityRotation = (float) Math.toRadians(netHeadYaw) - (float) Math.toRadians(Mth.rotLerp(this.partialTicks, entity.yBodyRotO, entity.yBodyRot));
+        float entityRotation = entity.entityRotation;
         base.yRot = entityRotation;
 
         // Open heads wide

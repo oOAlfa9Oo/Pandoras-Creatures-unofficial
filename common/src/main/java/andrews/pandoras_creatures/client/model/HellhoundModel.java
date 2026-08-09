@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
-import andrews.pandoras_creatures.entities.HellhoundEntity;
+import andrews.pandoras_creatures.client.renderer.state.HellhoundRenderState;
 import andrews.pandoras_creatures.entities.hellhound.HellhoundChargeState;
 import andrews.pandoras_creatures.entities.hellhound.HellhoundVisualRules;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
-public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> {
+public class HellhoundModel<T extends HellhoundRenderState> extends PCEntityModel<T> {
     private final ModelPart body;
     private final ModelPart body2;
     private final ModelPart body3;
@@ -339,17 +339,34 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
     }
 
     @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    public void setupAnim(T state) {
+        super.setupAnim(state);
 
-        if (entity.isEntityMoving()) {
-            if (HellhoundChargeState.isCharging(entity.getIsCharging())) {
-                animateCharging(entity, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
+        // ModelPart.x/y/z estan en "pixeles" (se dividen por 16 en translateAndRotate), mientras
+        // que renderYOffset()/renderScale() estaban pensados para PoseStack.translate/scale
+        // directo -- se multiplica por 16 para preservar la magnitud real (ver SeahorseModel).
+        float hellhoundScale = HellhoundVisualRules.renderScale(state.hellhoundType);
+        float yOffset = HellhoundVisualRules.renderYOffset(state.hellhoundType);
+        if (hellhoundScale != 1.0F || yOffset != 0.0F) {
+            this.root().xScale = hellhoundScale;
+            this.root().yScale = hellhoundScale;
+            this.root().zScale = hellhoundScale;
+            this.root().y += yOffset * 16.0F;
+        }
+
+        float limbSwing = state.walkAnimationPos;
+        float limbSwingAmount = state.walkAnimationSpeed;
+        float netHeadYaw = state.yRot;
+        float headPitch = state.xRot;
+
+        if (state.isEntityMoving) {
+            if (HellhoundChargeState.isCharging(state.isCharging)) {
+                animateCharging(state, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
             } else {
-                animateWalking(entity, limbSwing, limbSwingAmount, netHeadYaw);
+                animateWalking(state, limbSwing, limbSwingAmount, netHeadYaw);
             }
         } else {
-            animateIdle(entity, netHeadYaw, headPitch);
+            animateIdle(state, netHeadYaw, headPitch);
         }
     }
 
@@ -514,16 +531,4 @@ public class HellhoundModel<T extends HellhoundEntity> extends PCEntityModel<T> 
         swing(tail_1, 0.4F * globalSpeed, 0.1F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        float hellhoundScale = HellhoundVisualRules.renderScale(entity.getHellhoundType());
-        float yOffset = HellhoundVisualRules.renderYOffset(entity.getHellhoundType());
-        if (hellhoundScale != 1.0F || yOffset != 0.0F) {
-            poseStack.translate(0, yOffset, 0);
-            poseStack.scale(hellhoundScale, hellhoundScale, hellhoundScale);
-        }
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, color);
-        poseStack.popPose();
-    }
 }

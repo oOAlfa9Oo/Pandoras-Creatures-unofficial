@@ -1,10 +1,7 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
-import andrews.pandoras_creatures.entities.CrabEntity;
-import andrews.pandoras_creatures.entities.crab.CrabBehaviorRules;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import andrews.pandoras_creatures.client.renderer.state.CrabRenderState;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -12,7 +9,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
-public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
+public class CrabModel<T extends CrabRenderState> extends PCEntityModel<T> {
     private final ModelPart Body;
     private final ModelPart BodyBottom;
     private final ModelPart BodyTop;
@@ -234,10 +231,12 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        this.Hat.visible = CrabBehaviorRules.showsHat(entity.getName().getString());
-        if (entity.isEntityMoving()) {
+    public void setupAnim(T state) {
+        super.setupAnim(state);
+        float limbSwing = state.walkAnimationPos;
+        float limbSwingAmount = state.walkAnimationSpeed;
+        this.Hat.visible = state.showsHat;
+        if (state.isEntityMoving) {
             float globalSpeed = 2.0F;
             float globalHeight = 1.0F;
             float globalDegree = 1.0F;
@@ -253,10 +252,10 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
             shake(ArmFrontRight, 2.0F * globalSpeed, 0.03F * globalDegree, true, 0.0F, 0.0F, limbSwing, limbSwingAmount);
             shake(ScissorSmallLeft, 1.2F * globalSpeed, 0.2F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
             shake(ScissorSmallRight, 1.2F * globalSpeed, 0.2F * globalDegree, true, 0.0F, 0.0F, limbSwing, limbSwingAmount);
-        } else if (entity.isPartying()) {
-            animateDance(entity);
+        } else if (state.isPartying) {
+            animateDance(state);
         } else {
-            animateIdle(entity);
+            animateIdle(state);
         }
     }
 
@@ -303,11 +302,11 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
         flap(LegRightFourth_2, 1.0F * globalSpeed, 0.1F * globalDegree, true, 1.5F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    private void animateDance(T entity) {
+    private void animateDance(T state) {
         float globalSpeed = 0.6F;
         float globalHeight = 1.0F;
         float globalDegree = 1.0F;
-        float limbSwing = entity.tickCount;
+        float limbSwing = state.tickCount;
         float limbSwingAmount = 1;
         revertToDefaultBoxValues();
         this.Body.y -= 0.7F;
@@ -329,11 +328,11 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
         shake(ScissorSmallRight, 1.2F * globalSpeed, 0.4F * globalDegree, false, 2.0F, -0.1F, limbSwing, limbSwingAmount);
     }
 
-    private void animateIdle(T entity) {
+    private void animateIdle(T state) {
         float globalSpeed = 0.4F;
         float globalHeight = 1.0F;
         float globalDegree = 1.0F;
-        float limbSwing = entity.tickCount;
+        float limbSwing = state.tickCount;
         float limbSwingAmount = 1;
         revertToDefaultBoxValues();
         bounce(Body, 1.0F * globalSpeed, 0.2F * globalHeight, false, limbSwing, limbSwingAmount);
@@ -347,8 +346,4 @@ public class CrabModel<T extends CrabEntity> extends PCEntityModel<T> {
         swing(ArmFrontRight, 1.0F * globalSpeed, 0.05F * globalDegree, false, 1.2F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.Body.render(poseStack, buffer, packedLight, packedOverlay, color);
-    }
 }

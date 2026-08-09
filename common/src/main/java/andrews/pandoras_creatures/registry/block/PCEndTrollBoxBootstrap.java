@@ -68,6 +68,7 @@ public final class PCEndTrollBoxBootstrap {
             @Nullable DyeColor color) {
         String id = blockId(color);
         Block sourceBlock = sourceBlock(color);
-        blocks.put(id, registrar.register(id, () -> new EndTrollBoxBlock(color, BlockBehaviour.Properties.ofFullCopy(sourceBlock))));
+        blocks.put(id, registrar.register(id, () -> new EndTrollBoxBlock(color, BlockBehaviour.Properties.ofFullCopy(sourceBlock)
+                .setId(PCBlockIds.key(id)))));
     }
 }

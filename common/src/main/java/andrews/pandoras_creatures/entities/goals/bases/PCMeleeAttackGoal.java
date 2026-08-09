@@ -147,7 +147,9 @@ public class PCMeleeAttackGoal extends Goal {
         if (distToEnemySqr <= d0 && this.attackTick <= 0) {
             this.resetAttackCooldown();
             this.attacker.swing(InteractionHand.MAIN_HAND);
-            this.attacker.doHurtTarget(enemy);
+            if (this.attacker.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                this.attacker.doHurtTarget(serverLevel, enemy);
+            }
         }
     }
 

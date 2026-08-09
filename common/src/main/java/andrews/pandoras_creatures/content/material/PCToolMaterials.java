@@ -1,44 +1,18 @@
 package andrews.pandoras_creatures.content.material;
 
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ToolMaterial;
 
+/**
+ * 1.21.2+ reemplazo la interfaz Tier (implementable con clase anonima) por el record
+ * ToolMaterial (campos directos, sin Ingredient de reparacion -- ahora TagKey<Item>),
+ * verificado contra la fuente real de 1.21.3.
+ */
 public final class PCToolMaterials {
-    public static final Tier ARACHNON_MATERIAL = new Tier() {
-        @Override
-        public int getUses() {
-            return 2000;
-        }
-
-        @Override
-        public float getSpeed() {
-            return 8.0F;
-        }
-
-        @Override
-        public float getAttackDamageBonus() {
-            return 5.0F;
-        }
-
-        @Override
-        public TagKey<Block> getIncorrectBlocksForDrops() {
-            return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
-        }
-
-        @Override
-        public int getEnchantmentValue() {
-            return 10;
-        }
-
-        @Override
-        public Ingredient getRepairIngredient() {
-            return Ingredient.of(Items.DIAMOND);
-        }
-    };
+    public static final ToolMaterial ARACHNON_MATERIAL = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2000, 8.0F, 5.0F, 10, ItemTags.DIAMOND_TOOL_MATERIALS
+    );
 
     private PCToolMaterials() {
     }

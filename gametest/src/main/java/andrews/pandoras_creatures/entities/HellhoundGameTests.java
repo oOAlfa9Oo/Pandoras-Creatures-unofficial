@@ -42,7 +42,7 @@ public final class HellhoundGameTests {
         hellhound.setHellhoundType(HellhoundVariantCatalog.WITHER_TYPE);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
 
-        boolean hurt = hellhound.doHurtTarget(target);
+        boolean hurt = hellhound.doHurtTarget((net.minecraft.server.level.ServerLevel) hellhound.level(), target);
 
         helper.assertTrue(hurt, "Hellhound attack should damage the target");
         helper.assertTrue(target.hasEffect(MobEffects.WITHER), "Wither hellhound should apply wither");

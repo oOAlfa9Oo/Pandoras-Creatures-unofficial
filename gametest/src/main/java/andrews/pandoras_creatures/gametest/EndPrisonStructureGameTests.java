@@ -40,12 +40,12 @@ public final class EndPrisonStructureGameTests {
     public static void structureAndStructureSetAreLoadedFromDatapack(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
 
-        Registry<Structure> structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
-        Structure endPrison = structures.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Registry<Structure> structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         helper.assertTrue(endPrison != null, "End Prison structure JSON should load into the structure registry");
 
-        Registry<StructureSet> structureSets = level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
-        StructureSet endPrisonSet = structureSets.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Registry<StructureSet> structureSets = level.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
+        StructureSet endPrisonSet = structureSets.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         helper.assertTrue(endPrisonSet != null, "End Prison structure_set JSON should load into the structure_set registry");
         helper.assertTrue(endPrisonSet != null && !endPrisonSet.structures().isEmpty(),
                 "End Prison structure_set should reference at least one structure");
@@ -69,8 +69,8 @@ public final class EndPrisonStructureGameTests {
 
     public static void structureGeneratesValidStartWithPieces(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        Registry<Structure> structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
-        Structure endPrison = structures.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Registry<Structure> structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         helper.assertTrue(endPrison != null, "End Prison structure must exist to test generation");
 
         ChunkGenerator generator = level.getChunkSource().getGenerator();
@@ -98,8 +98,8 @@ public final class EndPrisonStructureGameTests {
             return;
         }
 
-        Registry<Structure> structures = end.registryAccess().registryOrThrow(Registries.STRUCTURE);
-        Structure endPrison = structures.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Registry<Structure> structures = end.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         helper.assertTrue(endPrison != null, "End Prison must exist for ship proximity validation");
         if (endPrison == null) {
             return;
@@ -157,22 +157,22 @@ public final class EndPrisonStructureGameTests {
             return;
         }
 
-        Registry<Structure> structures = end.registryAccess().registryOrThrow(Registries.STRUCTURE);
-        Structure endPrison = structures.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Registry<Structure> structures = end.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         helper.assertTrue(endPrison != null, "End Prison must be present in the runtime structure registry");
         if (endPrison == null) {
             return;
         }
 
-        Registry<StructureSet> structureSets = end.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
-        StructureSet endPrisonSet = structureSets.get(PCStructureIds.id(PCStructureIds.END_PRISON));
+        Registry<StructureSet> structureSets = end.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
+        StructureSet endPrisonSet = structureSets.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
         helper.assertTrue(endPrisonSet != null && endPrisonSet.placement() instanceof RandomSpreadStructurePlacement,
                 "End Prison must use its random-spread placement contract");
         if (endPrisonSet == null || !(endPrisonSet.placement() instanceof RandomSpreadStructurePlacement placement)) {
             return;
         }
 
-        Holder.Reference<Structure> endPrisonHolder = structures.getHolder(
+        Holder.Reference<Structure> endPrisonHolder = structures.get(
                 net.minecraft.resources.ResourceKey.create(Registries.STRUCTURE, PCStructureIds.id(PCStructureIds.END_PRISON)))
                 .orElse(null);
         helper.assertTrue(endPrisonHolder != null
@@ -275,10 +275,10 @@ public final class EndPrisonStructureGameTests {
                     net.minecraft.world.level.levelgen.structure.BoundingBox chunkBox =
                             new net.minecraft.world.level.levelgen.structure.BoundingBox(
                                     chunkPos.getMinBlockX(),
-                                    end.getMinBuildHeight(),
+                                    end.getMinY(),
                                     chunkPos.getMinBlockZ(),
                                     chunkPos.getMaxBlockX(),
-                                    end.getMaxBuildHeight() - 1,
+                                    end.getMaxY(),
                                     chunkPos.getMaxBlockZ());
                     generatedStart.placeInChunk(
                             end,

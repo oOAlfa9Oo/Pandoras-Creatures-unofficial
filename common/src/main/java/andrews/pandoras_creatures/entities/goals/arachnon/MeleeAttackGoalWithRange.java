@@ -22,7 +22,9 @@ public class MeleeAttackGoalWithRange extends PCMeleeAttackGoal {
         double d0 = this.getAttackReachSqr(enemy);
         if (distToEnemySqr <= d0 && this.attackTick <= 0) {
             this.attackTick = 40;
-            this.attacker.doHurtTarget(enemy);
+            if (this.attacker.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                this.attacker.doHurtTarget(serverLevel, enemy);
+            }
         }
     }
 }

@@ -14,14 +14,14 @@ public class PCBlockEntities {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Reference.MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndTrollBoxBlockEntity>> END_TROLL_BOX =
-            BLOCK_ENTITY_TYPES.register(PCBlockEntityIds.END_TROLL_BOX, () -> BlockEntityType.Builder.of(
+            BLOCK_ENTITY_TYPES.register(PCBlockEntityIds.END_TROLL_BOX, () -> new BlockEntityType<>(
                     EndTrollBoxBlockEntity::new,
                     PCBlocks.getEndTrollBoxBlockArray()
-            ).build(null));
+            ));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PandoricShardBlockEntity>> PANDORIC_SHARD =
-            BLOCK_ENTITY_TYPES.register(PCBlockEntityIds.PANDORIC_SHARD, () -> BlockEntityType.Builder.of(
+            BLOCK_ENTITY_TYPES.register(PCBlockEntityIds.PANDORIC_SHARD, () -> new BlockEntityType<>(
                     PandoricShardBlockEntity::new,
                     PCBlocks.PANDORIC_SHARD.get()
-            ).build(null));
+            ));
 }

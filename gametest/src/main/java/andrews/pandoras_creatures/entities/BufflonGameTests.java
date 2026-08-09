@@ -79,7 +79,7 @@ public final class BufflonGameTests {
         bufflon.bufflonStorage.setItem(BufflonInventoryLayout.BACK_ATTACHMENT_SLOT, new ItemStack(PCGameTestRegistry.item(PCItemIds.BUFFLON_LARGE_STORAGE)));
         bufflon.bufflonStorage.setItem(BufflonInventoryLayout.FIRST_STORAGE_SLOT + 2, new ItemStack(Items.DIRT));
         bufflon.containerChanged(bufflon.bufflonStorage);
-        bufflon.dropEquipment();
+        bufflon.dropEquipment((net.minecraft.server.level.ServerLevel) bufflon.level());
 
         helper.assertItemEntityPresent(PCGameTestRegistry.item(PCItemIds.BUFFLON_SADDLE));
         helper.assertItemEntityPresent(PCGameTestRegistry.item(PCItemIds.BUFFLON_LARGE_STORAGE));

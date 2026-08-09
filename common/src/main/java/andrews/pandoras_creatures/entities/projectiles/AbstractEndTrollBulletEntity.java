@@ -235,12 +235,10 @@ public abstract class AbstractEndTrollBulletEntity extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide()) {
-            this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
-            ((ServerLevel) this.level()).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
-            this.discard();
-        }
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
+        level.sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
+        this.discard();
         return true;
     }
 
@@ -332,7 +330,7 @@ public abstract class AbstractEndTrollBulletEntity extends Entity {
         if (result.getType() == HitResult.Type.ENTITY) {
             Entity entity = ((EntityHitResult) result).getEntity();
             DamageSource damageSource = this.damageSources().mobProjectile(this, this.owner);
-            boolean flag = entity.hurt(damageSource, 4.0F);
+            boolean flag = entity.hurtServer((ServerLevel) this.level(), damageSource, 4.0F);
             if (flag && entity instanceof LivingEntity living) {
                 this.onEntityHit(living);
             }

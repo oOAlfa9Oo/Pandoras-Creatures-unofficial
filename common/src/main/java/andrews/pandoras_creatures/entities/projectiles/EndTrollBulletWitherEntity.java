@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.entities.projectiles;
 
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
+import net.minecraft.util.ARGB;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -13,7 +14,7 @@ import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 
 public class EndTrollBulletWitherEntity extends AbstractEndTrollBulletEntity {
-    private static final DustParticleOptions BLACK_PARTICLE = new DustParticleOptions(new Vector3f(0, 0, 0), 1.0F);
+    private static final DustParticleOptions BLACK_PARTICLE = new DustParticleOptions(ARGB.colorFromFloat(1.0F, 0, 0, 0), 1.0F);
 
     public EndTrollBulletWitherEntity(EntityType<? extends EndTrollBulletWitherEntity> type, Level level) {
         super(type, level);

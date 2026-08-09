@@ -16,6 +16,9 @@ La regla principal es trabajar por **versiones ancla**, no por cada release meno
 | 1.20.1 | `release/1.20.1` | Objetivo | Objetivo | No aplica | Pendiente |
 | 1.20.6 | `release/1.20.6` | Objetivo | Objetivo | Objetivo | Pendiente |
 | 1.21.1 | `release/1.21.1` | Objetivo | Objetivo | Objetivo | En progreso |
+| 1.21.3 | `release/1.21.3` | Objetivo | Objetivo | Objetivo | Lista para freeze |
+| 1.21.4 | `release/1.21.4` | Objetivo | Objetivo | Objetivo | Pendiente |
+| 1.21.5 | `release/1.21.5` | Objetivo | Objetivo | Objetivo | Pendiente |
 | 26.1 | `release/26.1` | Objetivo | Objetivo | Experimental | Pendiente |
 
 La matriz tecnica detallada vive en `MULTIVERSION_TECHNICAL_MATRIX.md`.

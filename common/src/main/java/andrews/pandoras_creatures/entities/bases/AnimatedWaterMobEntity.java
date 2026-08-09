@@ -1,5 +1,6 @@
 package andrews.pandoras_creatures.entities.bases;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -39,16 +40,16 @@ public abstract class AnimatedWaterMobEntity extends AnimatedCreatureEntity {
      * Get the experience points the entity currently has.
      */
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 1 + this.level().random.nextInt(3);
     }
 
     protected void updateAir(int air) {
         if (this.isAlive() && !this.isInWaterOrBubble()) {
             this.setAirSupply(air - 1);
-            if (this.getAirSupply() == -20) {
+            if (this.getAirSupply() == -20 && this.level() instanceof ServerLevel serverLevel) {
                 this.setAirSupply(0);
-                this.hurt(this.damageSources().drown(), 2.0F);
+                this.hurtServer(serverLevel, this.damageSources().drown(), 2.0F);
             }
         } else {
             this.setAirSupply(300);

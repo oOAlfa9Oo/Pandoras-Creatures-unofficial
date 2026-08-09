@@ -27,6 +27,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -44,7 +45,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -171,7 +172,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
         int type = rand.nextInt(BUFFLON_VARIANT_COUNT) + 1;
@@ -185,7 +186,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 1 + this.level().random.nextInt(3);
     }
 
@@ -205,15 +206,15 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
         switch (action) {
             case HANDLE_HERB_BUNDLE -> {
                 handleHerbBundleInteraction(player, itemstack);
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return (this.level().isClientSide() ? InteractionResult.CONSUME : InteractionResult.SUCCESS);
             }
             case OPEN_EQUIPMENT_MENU -> {
                 this.openGUI(player);
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return (this.level().isClientSide() ? InteractionResult.CONSUME : InteractionResult.SUCCESS);
             }
             case HANDLE_EMPTY_HAND -> {
                 handleEmptyHandInteraction(player);
-                return InteractionResult.sidedSuccess(this.level().isClientSide());
+                return (this.level().isClientSide() ? InteractionResult.CONSUME : InteractionResult.SUCCESS);
             }
             case PASS_TO_SUPER -> {
                 return super.mobInteract(player, hand);
@@ -224,8 +225,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        boolean flag = target.hurtServer(level, this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
         // The attack sound
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
                 PandorasCreaturesCommon.platform().registry().sound(PCSoundCatalog.BUFFLON_ATTACK),
@@ -257,8 +258,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
      * Called when the entity is attacked.
      */
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(level, source)) {
             return false;
         } else {
             Entity entity = source.getEntity();
@@ -268,7 +269,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
             amount = BufflonCombatRules.getAdjustedIncomingDamage(entity, amount);
 
-            return super.hurt(source, amount);
+            return super.hurtServer(level, source, amount);
         }
     }
 
@@ -457,13 +458,13 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (this.bufflonStorage != null) {
             for (int i = 0; i < this.bufflonStorage.getContainerSize(); ++i) {
                 ItemStack itemstack = this.bufflonStorage.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    this.spawnAtLocation(itemstack);
+                    this.spawnAtLocation(level, itemstack);
                 }
             }
         }
@@ -827,18 +828,20 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    public boolean isAlliedTo(Entity entity) {
+    protected boolean considersEntityAsAlly(Entity entity) {
         if (BufflonOwnership.isAlliedTo(this.isTamed(), this.getOwner(), entity)) {
             return true;
         }
-        return super.isAlliedTo(entity);
+        return super.considersEntityAsAlly(entity);
     }
 
     @Override
     public void die(DamageSource cause) {
+        boolean showDeathMessages = this.level() instanceof ServerLevel serverLevel
+                && serverLevel.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES);
         ServerPlayer deathRecipient = BufflonOwnership.getDeathMessageRecipient(
                 !this.level().isClientSide(),
-                this.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES),
+                showDeathMessages,
                 this.getOwner()
         );
         if (deathRecipient != null) {

@@ -3,6 +3,7 @@ package andrews.pandoras_creatures.registry;
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.registry.block.PCBlockEntityIds;
 import andrews.pandoras_creatures.util.Reference;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public final class PCFabricBlockEntities {
         END_TROLL_BOX = Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE,
                 ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockEntityIds.END_TROLL_BOX),
-                BlockEntityType.Builder.of(EndTrollBoxBlockEntity::new, PCFabricBlocks.getEndTrollBoxBlockArray()).build(null)
+                FabricBlockEntityTypeBuilder.create(EndTrollBoxBlockEntity::new, PCFabricBlocks.getEndTrollBoxBlockArray()).build(null)
         );
     }
 }

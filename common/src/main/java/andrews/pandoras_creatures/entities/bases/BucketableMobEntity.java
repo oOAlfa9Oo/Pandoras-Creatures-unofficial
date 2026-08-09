@@ -114,7 +114,7 @@ public abstract class BucketableMobEntity extends AnimatedWaterMobEntity impleme
             }
 
             this.discard();
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return this.level().isClientSide() ? InteractionResult.CONSUME : InteractionResult.SUCCESS;
         } else {
             return super.mobInteract(player, hand);
         }

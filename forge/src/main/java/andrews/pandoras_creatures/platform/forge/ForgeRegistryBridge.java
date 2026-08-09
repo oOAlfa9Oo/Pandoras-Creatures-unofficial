@@ -79,7 +79,7 @@ final class ForgeRegistryBridge implements RegistryBridge {
 
     private <T> T resolve(net.minecraft.core.Registry<T> registry, String type, String path) {
         ResourceLocation id = id(path);
-        T value = registry.get(id);
+        T value = registry.getValue(id);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge " + type + " id: " + id);
         }

@@ -32,7 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -217,7 +217,7 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         return spawnData;
     }
@@ -247,9 +247,9 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         this.xpReward = 100;
-        return super.getBaseExperienceReward();
+        return super.getBaseExperienceReward(level);
     }
 
     @Override
@@ -263,21 +263,24 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         Entity entity = source.getDirectEntity();
         if (entity instanceof AbstractArrow) {
             return false;
         }
         rememberLiberationPlayer(source);
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     /**
      * Used to handle the EndTroll Attacks
      */
     public boolean performPunchAttack(Entity target, boolean doublePunch) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return false;
+        }
         int randomBonus = this.random.nextInt(doublePunch ? 7 : 4);
-        return target.hurt(this.damageSources().mobAttack(this),
+        return target.hurtServer(serverLevel, this.damageSources().mobAttack(this),
                 (float) EndTrollBehaviorRules.getPunchDamage(doublePunch, randomBonus));
     }
 

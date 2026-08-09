@@ -37,6 +37,7 @@ public final class PCBlockBootstrap {
 
         registeredBlocks.put(PCBlockIds.ARACHNON_CRYSTAL, registrar.register(PCBlockIds.ARACHNON_CRYSTAL,
                 () -> new ArachnonCrystalBlock(BlockBehaviour.Properties.of()
+                        .setId(PCBlockIds.key(PCBlockIds.ARACHNON_CRYSTAL))
                         .strength(1.5F, 6.0F)
                         .lightLevel(state -> 9)
                         .requiresCorrectToolForDrops()
@@ -44,21 +45,25 @@ public final class PCBlockBootstrap {
 
         registeredBlocks.put(PCBlockIds.HORSETAIL, registrar.register(PCBlockIds.HORSETAIL,
                 () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                        .setId(PCBlockIds.key(PCBlockIds.HORSETAIL))
                         .noCollission()
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.DHANIA, registrar.register(PCBlockIds.DHANIA,
                 () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                        .setId(PCBlockIds.key(PCBlockIds.DHANIA))
                         .noCollission()
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.HILL_BLOOM, registrar.register(PCBlockIds.HILL_BLOOM,
                 () -> new PCPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SHORT_GRASS)
+                        .setId(PCBlockIds.key(PCBlockIds.HILL_BLOOM))
                         .noCollission()
                         .noOcclusion())));
 
         registeredBlocks.put(PCBlockIds.PANDORIC_SHARD, registrar.register(PCBlockIds.PANDORIC_SHARD,
                 () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.END_STONE)
+                        .setId(PCBlockIds.key(PCBlockIds.PANDORIC_SHARD))
                         .noOcclusion()
                         .lightLevel(state -> 10))));
 

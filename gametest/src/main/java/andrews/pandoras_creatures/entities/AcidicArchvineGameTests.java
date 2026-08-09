@@ -40,7 +40,7 @@ public final class AcidicArchvineGameTests {
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
         float initialHealth = target.getHealth();
 
-        boolean attackSucceeded = archvine.doHurtTarget(target);
+        boolean attackSucceeded = archvine.doHurtTarget((net.minecraft.server.level.ServerLevel) archvine.level(), target);
 
         helper.assertTrue(attackSucceeded, "Acidic Archvine bite should report a successful hit");
         helper.assertTrue(target.getHealth() < initialHealth, "Acidic Archvine bite should damage the target");

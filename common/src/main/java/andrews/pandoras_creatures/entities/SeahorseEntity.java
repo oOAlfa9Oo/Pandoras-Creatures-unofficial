@@ -9,6 +9,7 @@ import andrews.pandoras_creatures.entities.seahorse.SeahorseVisualRules;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.animation.Animation;
+import net.minecraft.util.ARGB;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -22,7 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -106,13 +107,13 @@ public class SeahorseEntity extends BucketableMobEntity {
                 for (int i = 0; i < 40; i++) {
                     RandomSource rand = this.random;
                     // Rainbow particles
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(148/255f, 0, 211/255f), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(75/255f, 0, 130/255f), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 0, 1), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 1, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 1, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 127/255f, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 0, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 148/255f, 0, 211/255f), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 75/255f, 0, 130/255f), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 0, 0, 1), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 0, 1, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 1, 1, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 1, 127/255f, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 1, 0, 0), 1.0F), this.getX() + ((rand.nextInt(31) - 15) / 5.0), this.getY() + ((rand.nextInt(31) - 15) / 5.0), this.getZ() + ((rand.nextInt(31) - 15) / 5.0), 0, 0, 0);
                 }
             }
         }
@@ -127,13 +128,13 @@ public class SeahorseEntity extends BucketableMobEntity {
                     RandomSource rand = this.random;
                     float unit = SeahorseVisualRules.rainbowParticleUnit(this.getBbHeight(), this.getSeahorseSize());
 
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(148/255f, 0, 211/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 7, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(75/255f, 0, 130/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 6, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 0, 1), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 5, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(0, 1, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 4, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 1, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 3, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 127/255f, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 2, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
-                    this.level().addParticle(new DustParticleOptions(new Vector3f(1, 0, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 148/255f, 0, 211/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 7, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 75/255f, 0, 130/255f), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 6, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 0, 0, 1), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 5, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 0, 1, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 4, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 1, 1, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 3, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 1, 127/255f, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit * 2, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
+                    this.level().addParticle(new DustParticleOptions(ARGB.colorFromFloat(1.0F, 1, 0, 0), 1.0F), this.getX() + (0.1F * (rand.nextInt(5) - 3)), this.getY() + unit, this.getZ() + (0.1F * (rand.nextInt(5) - 3)), 0, 0, 0);
                 }
             }
         }
@@ -181,7 +182,7 @@ public class SeahorseEntity extends BucketableMobEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
         int type = SeahorseVariantCatalog.randomTypeId(rand.nextInt(SeahorseVariantCatalog.MAX_TYPE));

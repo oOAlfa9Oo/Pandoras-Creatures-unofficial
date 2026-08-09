@@ -102,7 +102,7 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        guiGraphics.blit(BUFFLON_GUI_TEXTURES, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(net.minecraft.client.renderer.RenderType::guiTextured, BUFFLON_GUI_TEXTURES, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         BufflonBackAttachmentType attachmentType = this.bufflon.getBufflonBackAttachment();
         if (attachmentType.hasStorage()) {
@@ -149,8 +149,8 @@ public class BufflonScreen extends AbstractContainerScreen<BufflonMenu> {
 
     private void renderBufflonInventorySlots(GuiGraphics guiGraphics, int posX, int posY, int rows) {
         for (int i = 0; i < rows; i++) {
-            guiGraphics.blit(BUFFLON_GUI_TEXTURES, posX + BufflonMenuLayout.STORAGE_BACKGROUND_X,
-                    posY + BufflonMenuLayout.STORAGE_BACKGROUND_Y + (i * BufflonMenuLayout.SLOT_SPACING), 0, 238, 162, 18);
+            guiGraphics.blit(net.minecraft.client.renderer.RenderType::guiTextured, BUFFLON_GUI_TEXTURES, posX + BufflonMenuLayout.STORAGE_BACKGROUND_X,
+                    posY + BufflonMenuLayout.STORAGE_BACKGROUND_Y + (i * BufflonMenuLayout.SLOT_SPACING), 0, 238, 162, 18, 256, 256);
         }
     }
 

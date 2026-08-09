@@ -23,7 +23,7 @@ public final class PCForgeBlockEntities {
     @SuppressWarnings("unchecked")
     public static BlockEntityType<EndTrollBoxBlockEntity> endTrollBox() {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockEntityIds.END_TROLL_BOX);
-        BlockEntityType<?> value = BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id);
+        BlockEntityType<?> value = BuiltInRegistries.BLOCK_ENTITY_TYPE.getValue(id);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge block entity type id: " + id);
         }
@@ -38,7 +38,8 @@ public final class PCForgeBlockEntities {
         registered = true;
         event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper -> helper.register(
                 ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCBlockEntityIds.END_TROLL_BOX),
-                BlockEntityType.Builder.of(EndTrollBoxBlockEntity::new, PCForgeBlocks.getEndTrollBoxBlockArray()).build(null)
+                new BlockEntityType<>(EndTrollBoxBlockEntity::new,
+                        java.util.Set.of(PCForgeBlocks.getEndTrollBoxBlockArray()))
         ));
     }
 }

@@ -59,6 +59,6 @@ public class PCEntities {
             register(PCEntityIds.END_TROLL_BULLET_WITHER, PCEntityBootstrap::endTrollBulletWitherType);
 
     private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> register(String name, Supplier<EntityType.Builder<T>> builderSupplier) {
-        return ENTITY_TYPES.register(name, () -> builderSupplier.get().build(PCEntityTypeFactory.entityId(name)));
+        return ENTITY_TYPES.register(name, () -> builderSupplier.get().build(PCEntityTypeFactory.entityKey(name)));
     }
 }

@@ -27,7 +27,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -95,7 +95,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnData) {
         spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         this.setHellhoundType(HellhoundVariantCatalog.randomTypeId(level.getRandom()));
         return spawnData;
@@ -106,7 +106,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
         super.dropCustomDeathLoot(level, source, recentlyHit);
         int coalDropCount = HellhoundCombatRules.coalDropCount(this.getHellhoundType(), this.random);
         if (coalDropCount > 0) {
-            this.spawnAtLocation(new ItemStack(Items.COAL, coalDropCount));
+            this.spawnAtLocation(level, new ItemStack(Items.COAL, coalDropCount));
         }
     }
 
@@ -144,9 +144,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
         int hellhoundType = this.getHellhoundType();
-        boolean flag = target.hurt(this.damageSources().mobAttack(this), (float) HellhoundCombatRules.attackDamage(hellhoundType, this.random));
+        boolean flag = target.hurtServer(level, this.damageSources().mobAttack(this), (float) HellhoundCombatRules.attackDamage(hellhoundType, this.random));
         if (flag && HellhoundCombatRules.appliesWither(hellhoundType) && target instanceof LivingEntity living) {
             int witherDuration = HellhoundCombatRules.witherDurationTicks(hellhoundType);
             if (witherDuration > 0) {
@@ -157,9 +157,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         this.xpReward = (int) ((float) this.xpReward * 2.0F);
-        return super.getBaseExperienceReward();
+        return super.getBaseExperienceReward(level);
     }
 
     @Override

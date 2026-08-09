@@ -40,6 +40,7 @@ final class NeoForgeEntityBridge implements EntityBridge {
 
     @Override
     public boolean canEntityGrief(Entity entity) {
-        return EventHooks.canEntityGrief(entity.level(), entity);
+        return entity.level() instanceof net.minecraft.server.level.ServerLevel serverLevel
+                && EventHooks.canEntityGrief(serverLevel, entity);
     }
 }

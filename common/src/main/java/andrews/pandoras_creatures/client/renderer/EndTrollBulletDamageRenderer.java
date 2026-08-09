@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.client.renderer;
 
 import andrews.pandoras_creatures.client.model.EndTrollBulletModel;
 import andrews.pandoras_creatures.client.model.base.PCModelLayers;
+import andrews.pandoras_creatures.client.renderer.state.EndTrollBulletRenderState;
 import andrews.pandoras_creatures.entities.projectiles.EndTrollBulletDamageEntity;
 import andrews.pandoras_creatures.util.Reference;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,10 +17,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class EndTrollBulletDamageRenderer extends EntityRenderer<EndTrollBulletDamageEntity> {
+public class EndTrollBulletDamageRenderer extends EntityRenderer<EndTrollBulletDamageEntity, EndTrollBulletRenderState> {
     private static final ResourceLocation END_TROLL_BULLET_TEXTURE = ResourceLocation.fromNamespaceAndPath(Reference.MODID, "textures/entity/end_troll/bullets/end_troll_bullet_3.png");
     private static final RenderType END_TROLL_BULLET_RENDER_TYPE = RenderType.entityTranslucent(END_TROLL_BULLET_TEXTURE);
-    private final EndTrollBulletModel<EndTrollBulletDamageEntity> model;
+    private final EndTrollBulletModel<EndTrollBulletRenderState> model;
 
     public EndTrollBulletDamageRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -32,32 +33,42 @@ public class EndTrollBulletDamageRenderer extends EntityRenderer<EndTrollBulletD
     }
 
     @Override
-    public void render(EndTrollBulletDamageEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public EndTrollBulletRenderState createRenderState() {
+        return new EndTrollBulletRenderState();
+    }
+
+    @Override
+    public void extractRenderState(EndTrollBulletDamageEntity entity, EndTrollBulletRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.rotYaw = rotLerp(entity.yRotO, entity.getYRot(), partialTick);
+        state.rotPitch = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
+        state.tickCountWithPartial = (float) entity.tickCount + partialTick;
+    }
+
+    @Override
+    public void render(EndTrollBulletRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
-        float f = rotLerp(entity.yRotO, entity.getYRot(), partialTicks);
-        float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-        float f2 = (float) entity.tickCount + partialTicks;
+        float f = state.rotYaw;
+        float f1 = state.rotPitch;
+        float f2 = state.tickCountWithPartial;
         poseStack.translate(0.0D, 0.15D, 0.0D);
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.sin(f2 * 0.1F) * 180.0F));
         poseStack.mulPose(Axis.XP.rotationDegrees(Mth.cos(f2 * 0.1F) * 180.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f2 * 0.15F) * 360.0F));
         poseStack.scale(-0.5F, -0.5F, 0.5F);
-        this.model.setupAnim(entity, 0.0F, 0.0F, 0.0F, f, f1);
+        state.rotYaw = f;
+        state.rotPitch = f1;
+        this.model.setupAnim(state);
         VertexConsumer vertexConsumer = buffer.getBuffer(this.model.renderType(END_TROLL_BULLET_TEXTURE));
         this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
         poseStack.scale(1.5F, 1.5F, 1.5F);
         VertexConsumer vertexConsumer1 = buffer.getBuffer(END_TROLL_BULLET_RENDER_TYPE);
         this.model.renderToBuffer(poseStack, vertexConsumer1, packedLight, OverlayTexture.NO_OVERLAY, 0x26FFFFFF);
         poseStack.popPose();
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        super.render(state, poseStack, buffer, packedLight);
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(EndTrollBulletDamageEntity entity) {
-        return END_TROLL_BULLET_TEXTURE;
-    }
-
-    private float rotLerp(float prevRotation, float rotation, float partialTicks) {
+    private static float rotLerp(float prevRotation, float rotation, float partialTicks) {
         float f;
         for (f = rotation - prevRotation; f < -180.0F; f += 360.0F) {
         }

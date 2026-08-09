@@ -3,12 +3,17 @@ package andrews.pandoras_creatures.client.item;
 import andrews.pandoras_creatures.client.model.PlantHatModel;
 import andrews.pandoras_creatures.client.model.base.PCModelLayers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.model.Model;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.EquipmentModel;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
+/**
+ * NeoForge 21.3.97 aun no llama a {@code setupModelAnimations} desde HumanoidArmorLayer
+ * (ver su propio TODO en IClientItemExtensions), asi que la sincronizacion de animacion
+ * por frame de PlantHatModel (rotacion del hat_base con la cabeza, offset en armor stand)
+ * no tiene hook disponible en este loader/version todavia; solo se puede devolver el modelo.
+ */
 public final class PlantHatClientItemExtensions implements IClientItemExtensions {
     public static final PlantHatClientItemExtensions INSTANCE = new PlantHatClientItemExtensions();
     private PlantHatModel model;
@@ -17,13 +22,10 @@ public final class PlantHatClientItemExtensions implements IClientItemExtensions
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack,
-                                                  EquipmentSlot slot, HumanoidModel<?> original) {
+    public Model getHumanoidArmorModel(ItemStack itemStack, EquipmentModel.LayerType layerType, Model original) {
         if (model == null) {
             model = new PlantHatModel(Minecraft.getInstance().getEntityModels().bakeLayer(PCModelLayers.PLANT_HAT));
         }
-        model.prepareForRender(entity, original);
         return model;
     }
 }

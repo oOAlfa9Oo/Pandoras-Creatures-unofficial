@@ -1,5 +1,11 @@
 package andrews.pandoras_creatures.registry.block;
 
+import andrews.pandoras_creatures.util.Reference;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +25,10 @@ public final class PCBlockIds {
 
     public static String endTrollBox(String colorName) {
         return PCEndTrollBoxNaming.blockName(colorName);
+    }
+
+    public static ResourceKey<Block> key(String path) {
+        return ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Reference.MODID, path));
     }
 
     public static List<String> allPaths() {

@@ -15,8 +15,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -67,8 +69,9 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX_COLORING);
+    @SuppressWarnings("unchecked")
+    public RecipeSerializer<ShapelessRecipe> getSerializer() {
+        return (RecipeSerializer<ShapelessRecipe>) (RecipeSerializer<?>) PandorasCreaturesCommon.platform().registry().recipeSerializer(PCRecipeIds.END_TROLL_BOX_COLORING);
     }
 
     public static class Serializer implements RecipeSerializer<EndTrollBoxColoringRecipe> {
@@ -104,7 +107,7 @@ public class EndTrollBoxColoringRecipe extends ShapelessRecipe {
                             CraftingBookCategory category = CraftingBookCategory.STREAM_CODEC.decode(buf);
                             ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
                             int count = buf.readVarInt();
-                            NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
+                            NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.of(Items.AIR));
                             for (int i = 0; i < count; i++) {
                                 ingredients.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
                             }

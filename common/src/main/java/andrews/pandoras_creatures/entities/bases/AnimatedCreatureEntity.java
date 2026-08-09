@@ -8,6 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -52,11 +53,11 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements IA
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide() && this.getHurtAnimation() != null && this.isNoAnimationPlaying()) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.getHurtAnimation() != null && this.isNoAnimationPlaying()) {
             PandorasCreaturesCommon.platform().entities().syncAnimation(this, this.getHurtAnimation());
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     /**
@@ -136,8 +137,9 @@ public abstract class AnimatedCreatureEntity extends PathfinderMob implements IA
     private void onPCDeathUpdate(int deathTime) {
         ++this.animationDeathTime;
         if (this.animationDeathTime == deathTime) {
-            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))) {
-                int i = this.getBaseExperienceReward();
+            if (this.level() instanceof ServerLevel serverLevel
+                    && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT))) {
+                int i = this.getBaseExperienceReward(serverLevel);
 
                 i = PandorasCreaturesCommon.platform().entities().getExperienceDrop(this, this.lastHurtByPlayer, i);
                 while (i > 0) {

@@ -45,16 +45,16 @@ import java.util.function.Predicate;
 public final class PCFabricEntities {
     // Fabric does not need a custom data fixer name for mod entities here; using null avoids noisy
     // "No data fixer registered" messages during bootstrap for ids owned by the mod.
-    public static final EntityType<AcidicArchvineEntity> ACIDIC_ARCHVINE = register(PCEntityIds.ACIDIC_ARCHVINE, PCEntityBootstrap.acidicArchvineType().build(null));
-    public static final EntityType<ArachnonEntity> ARACHNON = register(PCEntityIds.ARACHNON, PCEntityBootstrap.arachnonType().build(null));
-    public static final EntityType<BufflonEntity> BUFFLON = register(PCEntityIds.BUFFLON, PCEntityBootstrap.bufflonType().build(null));
-    public static final EntityType<CrabEntity> CRAB = register(PCEntityIds.CRAB, PCEntityBootstrap.crabType().build(null));
-    public static final EntityType<EndTrollEntity> END_TROLL = register(PCEntityIds.END_TROLL, PCEntityBootstrap.endTrollType().build(null));
-    public static final EntityType<EndTrollBulletDamageEntity> END_TROLL_BULLET_DAMAGE = register(PCEntityIds.END_TROLL_BULLET_DAMAGE, PCEntityBootstrap.endTrollBulletDamageType().build(null));
-    public static final EntityType<EndTrollBulletPoisonEntity> END_TROLL_BULLET_POISON = register(PCEntityIds.END_TROLL_BULLET_POISON, PCEntityBootstrap.endTrollBulletPoisonType().build(null));
-    public static final EntityType<EndTrollBulletWitherEntity> END_TROLL_BULLET_WITHER = register(PCEntityIds.END_TROLL_BULLET_WITHER, PCEntityBootstrap.endTrollBulletWitherType().build(null));
-    public static final EntityType<HellhoundEntity> HELLHOUND = register(PCEntityIds.HELLHOUND, PCEntityBootstrap.hellhoundType().build(null));
-    public static final EntityType<SeahorseEntity> SEAHORSE = register(PCEntityIds.SEAHORSE, PCEntityBootstrap.seahorseType().build(null));
+    public static final EntityType<AcidicArchvineEntity> ACIDIC_ARCHVINE = register(PCEntityIds.ACIDIC_ARCHVINE, PCEntityBootstrap.acidicArchvineType().build(PCEntityTypeFactory.entityKey(PCEntityIds.ACIDIC_ARCHVINE)));
+    public static final EntityType<ArachnonEntity> ARACHNON = register(PCEntityIds.ARACHNON, PCEntityBootstrap.arachnonType().build(PCEntityTypeFactory.entityKey(PCEntityIds.ARACHNON)));
+    public static final EntityType<BufflonEntity> BUFFLON = register(PCEntityIds.BUFFLON, PCEntityBootstrap.bufflonType().build(PCEntityTypeFactory.entityKey(PCEntityIds.BUFFLON)));
+    public static final EntityType<CrabEntity> CRAB = register(PCEntityIds.CRAB, PCEntityBootstrap.crabType().build(PCEntityTypeFactory.entityKey(PCEntityIds.CRAB)));
+    public static final EntityType<EndTrollEntity> END_TROLL = register(PCEntityIds.END_TROLL, PCEntityBootstrap.endTrollType().build(PCEntityTypeFactory.entityKey(PCEntityIds.END_TROLL)));
+    public static final EntityType<EndTrollBulletDamageEntity> END_TROLL_BULLET_DAMAGE = register(PCEntityIds.END_TROLL_BULLET_DAMAGE, PCEntityBootstrap.endTrollBulletDamageType().build(PCEntityTypeFactory.entityKey(PCEntityIds.END_TROLL_BULLET_DAMAGE)));
+    public static final EntityType<EndTrollBulletPoisonEntity> END_TROLL_BULLET_POISON = register(PCEntityIds.END_TROLL_BULLET_POISON, PCEntityBootstrap.endTrollBulletPoisonType().build(PCEntityTypeFactory.entityKey(PCEntityIds.END_TROLL_BULLET_POISON)));
+    public static final EntityType<EndTrollBulletWitherEntity> END_TROLL_BULLET_WITHER = register(PCEntityIds.END_TROLL_BULLET_WITHER, PCEntityBootstrap.endTrollBulletWitherType().build(PCEntityTypeFactory.entityKey(PCEntityIds.END_TROLL_BULLET_WITHER)));
+    public static final EntityType<HellhoundEntity> HELLHOUND = register(PCEntityIds.HELLHOUND, PCEntityBootstrap.hellhoundType().build(PCEntityTypeFactory.entityKey(PCEntityIds.HELLHOUND)));
+    public static final EntityType<SeahorseEntity> SEAHORSE = register(PCEntityIds.SEAHORSE, PCEntityBootstrap.seahorseType().build(PCEntityTypeFactory.entityKey(PCEntityIds.SEAHORSE)));
 
     private static boolean initialized;
 

@@ -2,6 +2,7 @@ package andrews.pandoras_creatures.content.item;
 
 import andrews.pandoras_creatures.content.material.PCToolMaterials;
 import andrews.pandoras_creatures.lang.PCLanguageKeys;
+import andrews.pandoras_creatures.registry.item.PCItemIds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -26,8 +27,7 @@ import java.util.List;
 
 public class ItemArachnonHammer extends PickaxeItem {
     public ItemArachnonHammer() {
-        super(PCToolMaterials.ARACHNON_MATERIAL, new Properties()
-                .attributes(createAttributes(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F)));
+        super(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F, new Properties().setId(PCItemIds.key(PCItemIds.ARACHNON_HAMMER)));
     }
 
     @Override

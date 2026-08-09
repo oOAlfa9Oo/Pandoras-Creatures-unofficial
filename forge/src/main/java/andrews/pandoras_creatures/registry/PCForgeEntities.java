@@ -76,7 +76,7 @@ public final class PCForgeEntities {
     @SuppressWarnings("unchecked")
     private static <T extends net.minecraft.world.entity.Entity> EntityType<T> entityType(String id) {
         ResourceLocation entityId = ResourceLocation.fromNamespaceAndPath(Reference.MODID, id);
-        EntityType<?> value = BuiltInRegistries.ENTITY_TYPE.get(entityId);
+        EntityType<?> value = BuiltInRegistries.ENTITY_TYPE.getValue(entityId);
         if (value == null) {
             throw new IllegalArgumentException("Unknown forge entity type id: " + entityId);
         }
@@ -93,52 +93,52 @@ public final class PCForgeEntities {
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE),
                     PCEntityBootstrap.acidicArchvineType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ACIDIC_ARCHVINE)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ARACHNON),
                     PCEntityBootstrap.arachnonType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ARACHNON).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.ARACHNON)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.CRAB),
                     PCEntityBootstrap.crabType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.CRAB).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.CRAB)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.BUFFLON),
                     PCEntityBootstrap.bufflonType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.BUFFLON).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.BUFFLON)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.SEAHORSE),
                     PCEntityBootstrap.seahorseType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.SEAHORSE).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.SEAHORSE)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.HELLHOUND),
                     PCEntityBootstrap.hellhoundType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.HELLHOUND).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.HELLHOUND)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL),
                     PCEntityBootstrap.endTrollType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE),
                     PCEntityBootstrap.endTrollBulletDamageType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_DAMAGE)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON),
                     PCEntityBootstrap.endTrollBulletPoisonType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_POISON)))
             );
             helper.register(
                     ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER),
                     PCEntityBootstrap.endTrollBulletWitherType()
-                            .build(ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER).toString())
+                            .build(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Reference.MODID, PCEntityIds.END_TROLL_BULLET_WITHER)))
             );
         });
     }

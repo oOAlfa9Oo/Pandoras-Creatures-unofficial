@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.monster.Shulker;
@@ -108,7 +109,7 @@ public class EndPrisonPieces {
                 }
             } else if (box.isInside(pos) && Level.isInSpawnableBounds(pos)) {
                 if (name.startsWith("Sentry")) {
-                    Shulker shulker = EntityType.SHULKER.create(level.getLevel());
+                    Shulker shulker = EntityType.SHULKER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
                     if (shulker != null) {
                         shulker.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                         level.addFreshEntity(shulker);

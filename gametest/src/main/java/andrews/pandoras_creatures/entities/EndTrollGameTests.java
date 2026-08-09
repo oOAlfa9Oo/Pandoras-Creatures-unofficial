@@ -195,7 +195,7 @@ public final class EndTrollGameTests {
 
         endTroll.aiStep();
         endTroll.playPunchAnimation(EndTrollPunchAnimation.RIGHT);
-        firstTarget.kill();
+        firstTarget.kill((net.minecraft.server.level.ServerLevel) firstTarget.level());
 
         endTroll.aiStep();
 
@@ -220,7 +220,7 @@ public final class EndTrollGameTests {
         endTroll.setEntityStanding(true);
         endTroll.setHasScreamed(true);
         endTroll.setTarget(firstTarget);
-        firstTarget.kill();
+        firstTarget.kill((net.minecraft.server.level.ServerLevel) firstTarget.level());
 
         endTroll.aiStep();
         endTroll.setTarget(secondTarget);

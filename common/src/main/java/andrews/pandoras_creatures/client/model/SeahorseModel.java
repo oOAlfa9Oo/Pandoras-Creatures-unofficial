@@ -1,10 +1,8 @@
 package andrews.pandoras_creatures.client.model;
 
 import andrews.pandoras_creatures.client.model.base.PCEntityModel;
-import andrews.pandoras_creatures.entities.SeahorseEntity;
+import andrews.pandoras_creatures.client.renderer.state.SeahorseRenderState;
 import andrews.pandoras_creatures.entities.seahorse.SeahorseVisualRules;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -12,7 +10,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
-public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
+public class SeahorseModel<T extends SeahorseRenderState> extends PCEntityModel<T> {
     private final ModelPart body;
     private final ModelPart back_bottom;
     private final ModelPart neck_front;
@@ -167,16 +165,30 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
     }
 
     @Override
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        this.horn.visible = SeahorseVisualRules.isSpecialNamed(entity.getName().getString());
-        if (!entity.isInWater()) {
-            limbSwing = entity.tickCount;
-            limbSwingAmount = 1;
+    public void setupAnim(T state) {
+        super.setupAnim(state);
+        float netHeadYaw = state.yRot;
+        this.horn.visible = state.isSpecialNamed;
+
+        // ModelPart.x/y/z estan en "pixeles" (se dividen por 16 en translateAndRotate), mientras
+        // que renderYOffset()/el offset de 0.3F original estaban pensados para PoseStack.translate
+        // directo (unidades de bloque) -- se multiplica por 16 para preservar la magnitud real.
+        float size = SeahorseVisualRules.renderScale(state.seahorseSize);
+        this.root().xScale = size;
+        this.root().yScale = size;
+        this.root().zScale = size;
+        this.root().y += (float) SeahorseVisualRules.renderYOffset(state.seahorseSize) * 16.0F;
+        if (!state.isInWater) {
+            this.root().y += 0.3F * 16.0F;
+        }
+
+        if (!state.isInWater) {
+            float limbSwing = state.tickCount;
+            float limbSwingAmount = 1;
             float globalSpeed = 0.5F;
             float globalDegree = 1.0F;
             revertToDefaultBoxValues();
-            if (entity.isAlive()) {
+            if (state.isAlive) {
                 this.body.zRot = (float) Math.toRadians(90);
             }
             flap(body, 0.7F * globalSpeed, 0.3F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
@@ -189,7 +201,9 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
             flap(back_bottom, 0.7F * globalSpeed, 0.1F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
             flap(back_top, 0.7F * globalSpeed, 0.1F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
             animateTailOutOfWater(globalSpeed, globalDegree, limbSwing, limbSwingAmount);
-        } else if (entity.isEntityMovingHorizontally()) {
+        } else if (state.isEntityMovingHorizontally) {
+            float limbSwing = state.walkAnimationPos;
+            float limbSwingAmount = state.walkAnimationSpeed;
             float globalSpeed = 5.0F;
             float globalDegree = 2.0F;
             revertToDefaultBoxValues();
@@ -205,8 +219,8 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
             swing(back_wing, 0.3F * globalSpeed, 0.2F * globalDegree, false, 0.0F, 0.0F, limbSwing, limbSwingAmount);
             animateTailSwimming(globalSpeed, globalDegree, limbSwing, limbSwingAmount);
         } else {
-            limbSwing = entity.tickCount;
-            limbSwingAmount = 1;
+            float limbSwing = state.tickCount;
+            float limbSwingAmount = 1;
             float globalSpeed = 0.8F;
             float globalDegree = 1.0F;
             float globalHeight = 1.0F;
@@ -266,16 +280,4 @@ public class SeahorseModel<T extends SeahorseEntity> extends PCEntityModel<T> {
         swing(tail_8, 0.4F * globalSpeed, 0.05F * globalDegree, true, -0.6F, 0.0F, limbSwing, limbSwingAmount);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        poseStack.pushPose();
-        float size = SeahorseVisualRules.renderScale(entity.getSeahorseSize());
-        poseStack.translate(0, SeahorseVisualRules.renderYOffset(entity.getSeahorseSize()), 0);
-        if (!this.entity.isInWater()) {
-            poseStack.translate(0, 0.3F, 0);
-        }
-        poseStack.scale(size, size, size);
-        this.body.render(poseStack, buffer, packedLight, packedOverlay, color);
-        poseStack.popPose();
-    }
 }

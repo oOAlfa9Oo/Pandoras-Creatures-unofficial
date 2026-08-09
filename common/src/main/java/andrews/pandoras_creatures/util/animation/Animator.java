@@ -1,6 +1,5 @@
 package andrews.pandoras_creatures.util.animation;
 
-import andrews.pandoras_creatures.entities.bases.AnimatedCreatureEntity;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,12 +13,17 @@ import java.util.Map;
  * @author SmellyModder(Luke Tonon)
  *
  * Ported to 1.21.1 NeoForge - Updated to use ModelPart instead of ModelRenderer
+ * 1.21.2+: ya no se guarda una referencia viva a la Entity (no esta disponible durante el
+ * render, ver rework de RenderState) -- updateAnimations ahora recibe directamente la
+ * animacion en curso y el tick de animacion, capturados por el Renderer#extractRenderState
+ * correspondiente.
  */
 public class Animator {
     private int tempTick;
     private int prevTempTick;
     private boolean correctAnimation;
-    public AnimatedCreatureEntity animatedEntity;
+    private Animation playingAnimation;
+    private int animationTick;
     private Map<ModelPart, float[]> boxValues;
     private Map<ModelPart, float[]> prevBoxValues;
 
@@ -38,7 +42,7 @@ public class Animator {
      */
     public boolean setAnimationToPlay(Animation animationToPlay) {
         this.tempTick = this.prevTempTick = 0;
-        this.correctAnimation = this.animatedEntity.getPlayingAnimation() == animationToPlay;
+        this.correctAnimation = this.playingAnimation == animationToPlay;
         this.prevBoxValues.clear();
         this.prevBoxValues.putAll(this.boxValues);
         this.boxValues.clear();
@@ -46,11 +50,13 @@ public class Animator {
     }
 
     /**
-     * Updates the entity for this animator instance
-     * @param animatedEntity - The entity to update
+     * Updates the currently playing animation and its tick for this animator instance
+     * @param playingAnimation - The animation currently playing
+     * @param animationTick - The progress (in ticks) of the current playing animation
      */
-    public void updateAnimations(AnimatedCreatureEntity animatedEntity) {
-        this.animatedEntity = animatedEntity;
+    public void updateAnimations(Animation playingAnimation, int animationTick) {
+        this.playingAnimation = playingAnimation;
+        this.animationTick = animationTick;
     }
 
     /**
@@ -129,7 +135,7 @@ public class Animator {
     private void endKeyframe(boolean stationary) {
         if (!this.correctAnimation) return;
 
-        int animationTick = this.animatedEntity.getAnimationTick();
+        int animationTick = this.animationTick;
 
         if (animationTick >= this.prevTempTick && animationTick < this.tempTick) {
             if (stationary) {
@@ -178,6 +184,6 @@ public class Animator {
      */
     private static float getPartialTicks() {
         Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+        return minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
     }
 }
