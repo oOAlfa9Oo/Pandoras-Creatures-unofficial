@@ -29,12 +29,12 @@
               "function": "minecraft:furnace_smelt"
             },
             {
-              "function": "minecraft:looting_enchant",
               "count": {
                 "type": "minecraft:uniform",
                 "max": 1.0,
                 "min": 0.0
-              }
+              },
+              "function": "minecraft:looting_enchant"
             }
           ],
           "name": "pandoras_creatures:crab_meat"

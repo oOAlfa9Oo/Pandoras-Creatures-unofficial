@@ -1,8 +1,11 @@
 package andrews.pandoras_creatures.content.material;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public final class PCToolMaterials {
     public static final Tier ARACHNON_MATERIAL = new Tier() {
@@ -22,8 +25,8 @@ public final class PCToolMaterials {
         }
 
         @Override
-        public int getLevel() {
-            return 4;
+        public TagKey<Block> getIncorrectBlocksForDrops() {
+            return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
         }
 
         @Override

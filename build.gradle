@@ -118,6 +118,10 @@ tasks.register('verifyFamilyPolicy') {
                 '1.20.4': [
                         official    : ['fabric', 'forge'],
                         experimental: ['neoforge']
+                ],
+                '1.20.6': [
+                        official    : ['fabric', 'forge', 'neoforge'],
+                        experimental: []
                 ]
         ]
 
@@ -236,14 +240,14 @@ tasks.register('validateOfficialLoaders') {
     dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy',
             ':common:compileJava', ':common:test',
             ':fabric:compileJava', ':fabric:test', ':fabric:build', ':fabric:runGameTestServer',
-            ':forge:compileJava', ':forge:test', ':forge:build', ':forge:runGameTestServer'
+            ':forge:compileJava', ':forge:test', ':forge:build', ':forge:runGameTestServer',
+            ':neoforge:compileJava', ':neoforge:test', ':neoforge:build', ':neoforge:runGameTestServer'
 }
 
 tasks.register('validateExperimentalLoaders') {
     group = 'verification'
-    description = 'Runs the non-blocking validation gate for experimental loaders of the current Minecraft family.'
-    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy',
-            ':neoforge:compileJava', ':neoforge:test', ':neoforge:build'
+    description = 'Runs the non-blocking validation gate for experimental loaders of the current Minecraft family (ninguno en esta familia: neoforge es oficial en 1.20.6).'
+    dependsOn 'verifyArchitecture', 'verifyArtifactNaming', 'verifyMultiversionDocs', 'verifyFamilyPolicy'
 }
 
 tasks.register('validateCurrentFamily') {

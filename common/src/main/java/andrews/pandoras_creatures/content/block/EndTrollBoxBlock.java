@@ -90,7 +90,7 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else if (player.isSpectator()) {

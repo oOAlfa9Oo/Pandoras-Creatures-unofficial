@@ -142,27 +142,27 @@ public class EndTrollBoxBlockEntity extends RandomizableContainerBlockEntity imp
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        this.loadFromTag(tag);
+    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.loadFromTag(tag, registries);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        this.saveToTag(tag);
+    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        this.saveToTag(tag, registries);
     }
 
-    public void loadFromTag(CompoundTag tag) {
+    public void loadFromTag(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(tag) && tag.contains("Items")) {
-            ContainerHelper.loadAllItems(tag, this.items);
+            ContainerHelper.loadAllItems(tag, this.items, registries);
         }
     }
 
-    public CompoundTag saveToTag(CompoundTag tag) {
+    public CompoundTag saveToTag(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         if (!this.trySaveLootTable(tag)) {
-            ContainerHelper.saveAllItems(tag, this.items, false);
+            ContainerHelper.saveAllItems(tag, this.items, registries);
         }
         return tag;
     }

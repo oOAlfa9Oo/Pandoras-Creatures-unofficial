@@ -1,7 +1,6 @@
 package andrews.pandoras_creatures.client;
 
 import andrews.pandoras_creatures.client.bootstrap.PCClientItemColorRegistry;
-import andrews.pandoras_creatures.client.bootstrap.PCClientItemExtensionsRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientModelLayerRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientRendererRegistry;
 import andrews.pandoras_creatures.client.bootstrap.PCClientScreenRegistry;
@@ -12,7 +11,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 /**
  * Client-side setup for Pandoras Creatures mod.
@@ -55,12 +53,4 @@ public class PCClientSetup {
         PCClientItemColorRegistry.registerAll(event);
     }
 
-    /**
-     * Register custom BEWLR for EndTrollBox items.
-     * Replaces the deprecated Item.initializeClient() approach.
-     */
-    @SubscribeEvent
-    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        PCClientItemExtensionsRegistry.registerAll(event);
-    }
 }

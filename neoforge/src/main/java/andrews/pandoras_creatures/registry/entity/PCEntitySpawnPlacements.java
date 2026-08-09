@@ -7,19 +7,19 @@ import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 
 public final class PCEntitySpawnPlacements {
     private PCEntitySpawnPlacements() {
     }
 
-    public static void registerAll(RegisterSpawnPlacementsEvent event) {
+    public static void registerAll(SpawnPlacementRegisterEvent event) {
         event.register(PCEntities.SEAHORSE.get(),
                 SpawnPlacementTypes.IN_WATER,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnSeahorse(level.getFluidState(pos).is(FluidTags.WATER)),
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
 
         event.register(PCEntities.CRAB.get(),
                 SpawnPlacementTypes.NO_RESTRICTIONS,
@@ -33,21 +33,21 @@ public final class PCEntitySpawnPlacements {
                                 level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK),
                                 level.getBlockState(pos).isAir() || level.getFluidState(pos).is(FluidTags.WATER)
                         ),
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
 
         event.register(PCEntities.HELLHOUND.get(),
                 SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnHostileGroundMob(level.getDifficulty() != Difficulty.PEACEFUL),
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
 
         event.register(PCEntities.ARACHNON.get(),
                 SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnArachnon(level.getDifficulty() != Difficulty.PEACEFUL, level.getRawBrightness(pos, 0)),
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
 
         event.register(PCEntities.ACIDIC_ARCHVINE.get(),
                 SpawnPlacementTypes.NO_RESTRICTIONS,
@@ -63,7 +63,7 @@ public final class PCEntitySpawnPlacements {
                         PCEntitySpawnRules.hasValidAcidicArchvineCeiling(level, pos),
                         PCEntitySpawnRules.hasConsecutiveAirBelow(level, pos, PCEntitySpawnRules.acidicArchvineRequiredAirDepth())
                 ),
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
 
         event.register(PCEntities.BUFFLON.get(),
                 SpawnPlacementTypes.ON_GROUND,
@@ -71,13 +71,13 @@ public final class PCEntitySpawnPlacements {
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnBufflon(level.getRawBrightness(pos, 0),
                                 level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)),
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
 
         event.register(PCEntities.END_TROLL.get(),
                 SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> true,
-                RegisterSpawnPlacementsEvent.Operation.REPLACE);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 
 }

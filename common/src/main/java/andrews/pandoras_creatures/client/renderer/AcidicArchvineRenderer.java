@@ -133,7 +133,7 @@ public class AcidicArchvineRenderer extends MobRenderer<AcidicArchvineEntity, Ac
                 .uv(u, v)
                 .overlayCoords(OverlayTexture.NO_OVERLAY)
                 .uv2(15728880)
-                .normal(pose.normal(), 0.0F, 1.0F, 0.0F)
+                .normal(pose, 0.0F, 1.0F, 0.0F)
                 .endVertex();
     }
 }

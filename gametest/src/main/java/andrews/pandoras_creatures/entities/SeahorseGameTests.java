@@ -4,9 +4,11 @@ import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 public final class SeahorseGameTests {
     private static final String SEAHORSE_BATCH = "seahorse";
@@ -40,8 +42,8 @@ public final class SeahorseGameTests {
         ItemStack bucket = seahorse.getBucketItemStack();
         seahorse.saveToBucketTag(bucket);
 
-        // 1.20.1: los datos del bucket viven en el NBT del stack (no hay data components)
-        CompoundTag bucketTag = bucket.getTag();
+        CustomData customData = bucket.get(DataComponents.BUCKET_ENTITY_DATA);
+        CompoundTag bucketTag = customData == null ? null : customData.copyTag();
         helper.assertTrue(bucketTag != null, "Seahorse bucket should contain entity data");
 
         SeahorseEntity restored = new SeahorseEntity(PCGameTestRegistry.entityType(PCEntityIds.SEAHORSE), helper.getLevel());

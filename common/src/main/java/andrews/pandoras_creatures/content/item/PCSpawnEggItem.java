@@ -1,12 +1,13 @@
 package andrews.pandoras_creatures.content.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.component.CustomData;
 
 import java.util.function.Supplier;
 
@@ -27,9 +28,10 @@ public class PCSpawnEggItem extends SpawnEggItem {
     }
 
     @Override
-    public EntityType<?> getType(@Nullable CompoundTag compound) {
-        if (compound != null && compound.contains("EntityTag", 10)) {
-            CompoundTag entityTag = compound.getCompound("EntityTag");
+    public EntityType<?> getType(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.ENTITY_DATA);
+        if (customData != null) {
+            CompoundTag entityTag = customData.copyTag();
             if (entityTag.contains("id", 8)) {
                 return EntityType.byString(entityTag.getString("id")).orElse(this.getDefaultType());
             }

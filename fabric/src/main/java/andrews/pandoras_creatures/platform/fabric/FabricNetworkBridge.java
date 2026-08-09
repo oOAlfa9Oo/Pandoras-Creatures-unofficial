@@ -1,11 +1,12 @@
 package andrews.pandoras_creatures.platform.fabric;
 
+import andrews.pandoras_creatures.network.payload.BufflonCombatModePayload;
+import andrews.pandoras_creatures.network.payload.BufflonFollowPayload;
+import andrews.pandoras_creatures.network.payload.BufflonInventoryPayload;
+import andrews.pandoras_creatures.network.payload.BufflonSitPayload;
 import andrews.pandoras_creatures.platform.NetworkBridge;
-import andrews.pandoras_creatures.network.PCPayloadIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.network.FriendlyByteBuf;
 
 final class FabricNetworkBridge implements NetworkBridge {
     static final FabricNetworkBridge INSTANCE = new FabricNetworkBridge();
@@ -20,32 +21,21 @@ final class FabricNetworkBridge implements NetworkBridge {
 
     @Override
     public void requestBufflonInventory(int entityId) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(entityId);
-        ClientPlayNetworking.send(PCPayloadIds.id(PCPayloadIds.BUFFLON_INVENTORY), buf);
+        ClientPlayNetworking.send(new BufflonInventoryPayload(entityId));
     }
 
     @Override
     public void requestBufflonSit(int entityId, boolean shouldSit) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(entityId);
-        buf.writeBoolean(shouldSit);
-        ClientPlayNetworking.send(PCPayloadIds.id(PCPayloadIds.BUFFLON_SIT), buf);
+        ClientPlayNetworking.send(new BufflonSitPayload(entityId, shouldSit));
     }
 
     @Override
     public void requestBufflonFollow(int entityId, boolean shouldFollow) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(entityId);
-        buf.writeBoolean(shouldFollow);
-        ClientPlayNetworking.send(PCPayloadIds.id(PCPayloadIds.BUFFLON_FOLLOW), buf);
+        ClientPlayNetworking.send(new BufflonFollowPayload(entityId, shouldFollow));
     }
 
     @Override
     public void requestBufflonCombatMode(int entityId, boolean combatMode) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(entityId);
-        buf.writeBoolean(combatMode);
-        ClientPlayNetworking.send(PCPayloadIds.id(PCPayloadIds.BUFFLON_COMBAT_MODE), buf);
+        ClientPlayNetworking.send(new BufflonCombatModePayload(entityId, combatMode));
     }
 }

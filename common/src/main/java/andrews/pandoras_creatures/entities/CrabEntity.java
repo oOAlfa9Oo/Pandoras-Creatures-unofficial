@@ -56,9 +56,9 @@ public class CrabEntity extends BucketableMobEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CRAB_TYPE, CrabVariantCatalog.DEFAULT_TYPE);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CRAB_TYPE, CrabVariantCatalog.DEFAULT_TYPE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -73,8 +73,8 @@ public class CrabEntity extends BucketableMobEntity {
     @Override
     protected void setBucketData(ItemStack bucket) {
         super.setBucketData(bucket);
-        CompoundTag bucketTag = bucket.getOrCreateTag();
-        bucketTag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getCrabType());
+        net.minecraft.world.item.component.CustomData.update(net.minecraft.core.component.DataComponents.BUCKET_ENTITY_DATA, bucket,
+                bucketTag -> bucketTag.putInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG, this.getCrabType()));
     }
 
     @Override
@@ -91,8 +91,8 @@ public class CrabEntity extends BucketableMobEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
         int type = CrabVariantCatalog.randomTypeId(rand.nextInt(CrabVariantCatalog.MAX_TYPE));
         this.setCrabType(type);

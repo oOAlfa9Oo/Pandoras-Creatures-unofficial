@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "pandoras_creatures:end_troll_skin"
+      "id": "pandoras_creatures:end_troll_skin"
     },
     "title": {
       "translate": "advancement.pandoras_creatures.free_the_end_troll.title"

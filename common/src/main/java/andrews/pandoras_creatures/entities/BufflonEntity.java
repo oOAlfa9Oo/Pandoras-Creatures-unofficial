@@ -138,16 +138,16 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(BUFFLON_TYPE, 0);
-        this.entityData.define(TAMED, (byte) 0);
-        this.entityData.define(OWNER_UNIQUE_ID, Optional.empty());
-        this.entityData.define(IS_SADDLED, false);
-        this.entityData.define(BACK_ATTACHMENT_TYPE, 0);
-        this.entityData.define(IS_SITTING, false);
-        this.entityData.define(IS_FOLLOWING, false);
-        this.entityData.define(COMBAT_MODE, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BUFFLON_TYPE, 0);
+        builder.define(TAMED, (byte) 0);
+        builder.define(OWNER_UNIQUE_ID, Optional.empty());
+        builder.define(IS_SADDLED, false);
+        builder.define(BACK_ATTACHMENT_TYPE, 0);
+        builder.define(IS_SITTING, false);
+        builder.define(IS_FOLLOWING, false);
+        builder.define(COMBAT_MODE, false);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -171,8 +171,8 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         RandomSource rand = level.getRandom();
         int type = rand.nextInt(BUFFLON_VARIANT_COUNT) + 1;
         this.setBufflonType(type);
@@ -947,7 +947,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             if (!itemStack.isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putByte(BufflonDataKeys.SLOT, (byte) slotIndex);
-                items.add(itemStack.save(itemTag));
+                items.add(itemStack.save(this.registryAccess(), itemTag));
             }
         }
         compound.put(BufflonDataKeys.ITEMS, items);
@@ -974,7 +974,7 @@ public class BufflonEntity extends AnimatedCreatureEntity implements ContainerLi
             CompoundTag compoundtag = listtag.getCompound(i);
             int slot = compoundtag.getByte(BufflonDataKeys.SLOT) & 255;
             if (slot >= 0 && slot < this.bufflonStorage.getContainerSize()) {
-                this.bufflonStorage.setItem(slot, ItemStack.of(compoundtag));
+                ItemStack.parse(this.registryAccess(), compoundtag).ifPresent(stack -> this.bufflonStorage.setItem(slot, stack));
             }
         }
     }

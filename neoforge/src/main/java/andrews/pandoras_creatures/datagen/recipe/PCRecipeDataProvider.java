@@ -39,7 +39,7 @@ public final class PCRecipeDataProvider implements DataProvider {
     private final PackOutput.PathProvider recipePathProvider;
 
     public PCRecipeDataProvider(PackOutput output) {
-        this.recipePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipe");
+        this.recipePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipes");
     }
 
     @Override

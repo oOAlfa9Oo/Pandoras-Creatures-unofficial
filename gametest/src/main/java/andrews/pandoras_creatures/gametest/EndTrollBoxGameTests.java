@@ -22,7 +22,7 @@ public final class EndTrollBoxGameTests {
 
     public static void menuAcceptsNormalAndShiftClickInsertion(GameTestHelper helper) {
         EndTrollBoxBlockEntity box = placeBox(helper);
-        Player player = helper.makeMockPlayer();
+        Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         EndTrollBoxMenu menu = new EndTrollBoxMenu(1, player.getInventory(), box);
 
         menu.setCarried(new ItemStack(Items.DIAMOND, 3));
@@ -43,7 +43,7 @@ public final class EndTrollBoxGameTests {
 
     public static void menuRejectsNestedPortableBoxes(GameTestHelper helper) {
         EndTrollBoxBlockEntity box = placeBox(helper);
-        Player player = helper.makeMockPlayer();
+        Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         EndTrollBoxMenu menu = new EndTrollBoxMenu(2, player.getInventory(), box);
 
         menu.setCarried(new ItemStack(Blocks.SHULKER_BOX));
@@ -64,10 +64,10 @@ public final class EndTrollBoxGameTests {
         box.setItem(0, new ItemStack(Items.EMERALD, 7));
         box.setItem(53, new ItemStack(Items.GOLD_INGOT, 11));
 
-        CompoundTag saved = box.saveWithFullMetadata();
+        CompoundTag saved = box.saveWithFullMetadata(helper.getLevel().registryAccess());
         EndTrollBoxBlockEntity restored = new EndTrollBoxBlockEntity(
                 helper.absolutePos(BOX_POS.offset(1, 0, 0)), box.getBlockState());
-        restored.load(saved);
+        restored.loadWithComponents(saved, helper.getLevel().registryAccess());
 
         helper.assertTrue(restored.getItem(0).is(Items.EMERALD) && restored.getItem(0).getCount() == 7,
                 "Saved End Troll Box should restore its first slot");

@@ -15,7 +15,7 @@ public final class PCFabricStructures {
 
     public static void register() {
         Registry.register(BuiltInRegistries.STRUCTURE_TYPE, PCStructureIds.id(PCStructureIds.END_PRISON),
-                (StructureType<EndPrisonStructure>) () -> EndPrisonStructure.CODEC.codec());
+                (StructureType<EndPrisonStructure>) () -> EndPrisonStructure.CODEC);
         Registry.register(BuiltInRegistries.STRUCTURE_PIECE, PCStructureIds.id(PCStructureIds.END_PRISON_PIECE),
                 (StructurePieceType) (StructurePieceSerializationContext ctx, net.minecraft.nbt.CompoundTag tag) ->
                         new EndPrisonPieces.Piece(ctx.structureTemplateManager(), tag));

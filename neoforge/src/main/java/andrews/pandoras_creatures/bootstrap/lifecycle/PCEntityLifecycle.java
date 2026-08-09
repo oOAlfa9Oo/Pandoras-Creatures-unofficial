@@ -4,7 +4,7 @@ import andrews.pandoras_creatures.registry.entity.PCEntityAttributes;
 import andrews.pandoras_creatures.registry.entity.PCEntitySpawnPlacements;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 
 public final class PCEntityLifecycle {
     private PCEntityLifecycle() {
@@ -19,7 +19,7 @@ public final class PCEntityLifecycle {
         PCEntityAttributes.registerAll(event);
     }
 
-    private static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+    private static void registerSpawnPlacements(SpawnPlacementRegisterEvent event) {
         PCEntitySpawnPlacements.registerAll(event);
     }
 }

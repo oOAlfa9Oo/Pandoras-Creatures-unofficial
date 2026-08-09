@@ -114,8 +114,10 @@ public final class PCGameTestCatalog {
                 100,
                 0,
                 true,
+                false,
                 1,
                 1,
+                true,
                 definition.test()
         );
     }

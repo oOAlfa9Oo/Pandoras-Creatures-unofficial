@@ -24,7 +24,7 @@ public final class PCForgeStructures {
                     Registries.STRUCTURE_TYPE,
                     helper -> helper.register(
                             PCStructureIds.id(PCStructureIds.END_PRISON),
-                            (StructureType<EndPrisonStructure>) () -> EndPrisonStructure.CODEC.codec()
+                            (StructureType<EndPrisonStructure>) () -> EndPrisonStructure.CODEC
                     )
             );
         } else if (event.getRegistryKey().equals(Registries.STRUCTURE_PIECE)) {

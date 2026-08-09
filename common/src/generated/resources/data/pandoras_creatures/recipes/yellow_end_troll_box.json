@@ -6,10 +6,10 @@
       "tag": "pandoras_creatures:end_troll_boxes"
     },
     {
-      "item": "minecraft:yellow_dye"
+      "tag": "c:dyes/yellow"
     }
   ],
   "result": {
-    "item": "pandoras_creatures:yellow_end_troll_box"
+    "id": "pandoras_creatures:yellow_end_troll_box"
   }
 }

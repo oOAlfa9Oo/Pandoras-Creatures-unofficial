@@ -16,7 +16,7 @@ La regla principal es trabajar por **versiones ancla**, no por cada release meno
 | 1.20.1 | `release/1.20.1` | Objetivo | Objetivo | Experimental | En progreso |
 | 1.20.2 | `release/1.20.2` | Objetivo | Objetivo | Experimental | En progreso |
 | 1.20.4 | `release/1.20.4` | Objetivo | Objetivo | Experimental | En progreso |
-| 1.20.6 | `release/1.20.6` | Objetivo | Objetivo | Objetivo | Pendiente |
+| 1.20.6 | `release/1.20.6` | Objetivo | Objetivo | Objetivo | En progreso |
 | 1.21.1 | `release/1.21.1` | Objetivo | Objetivo | Objetivo | En progreso |
 | 26.1 | `release/26.1` | Objetivo | Objetivo | Experimental | Pendiente |
 

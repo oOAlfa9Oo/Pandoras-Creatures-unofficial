@@ -1,6 +1,7 @@
 package andrews.pandoras_creatures.registry;
 
-import andrews.pandoras_creatures.content.item.EndTrollBoxItem;
+import andrews.pandoras_creatures.content.item.NeoForgeEndTrollBoxItem;
+import andrews.pandoras_creatures.content.item.NeoForgePlantHatItem;
 import andrews.pandoras_creatures.content.item.PCSpawnEggItem;
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
@@ -28,13 +29,14 @@ import java.util.function.Supplier;
 public final class PCItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, Reference.MODID);
     private static final Map<String, DeferredHolder<Item, ? extends Item>> SHARED_ITEMS =
-            PCItemBootstrap.registerCoreItems((id, factory) -> ITEMS.register(id, factory::get));
+            PCItemBootstrap.registerCoreItems((id, factory) -> ITEMS.register(id, factory::get), NeoForgePlantHatItem::new);
     private static final Map<String, DeferredHolder<Item, ? extends Item>> SHARED_SIMPLE_BLOCK_ITEMS =
             PCItemBootstrap.registerSimpleBlockItems((id, factory) -> ITEMS.register(id, factory::get),
                     id -> () -> PCBlocks.getSimpleBlock(id));
     private static final Map<String, DeferredHolder<Item, ? extends Item>> SHARED_END_TROLL_BOX_ITEMS =
             PCItemBootstrap.registerEndTrollBoxItems((id, factory) -> ITEMS.register(id, factory::get),
-                    id -> () -> PCBlocks.getEndTrollBox(PCEndTrollBoxPalette.colorForBlockName(id)));
+                    id -> () -> PCBlocks.getEndTrollBox(PCEndTrollBoxPalette.colorForBlockName(id)),
+                    NeoForgeEndTrollBoxItem::new);
     private static final Map<String, DeferredHolder<Item, ? extends Item>> SHARED_BUCKET_ITEMS =
             PCItemBootstrap.registerAquaticBucketItems((id, factory) -> ITEMS.register(id, factory::get));
     private static final Map<String, DeferredHolder<Item, ? extends Item>> SHARED_PORTABLE_SPAWN_EGGS =

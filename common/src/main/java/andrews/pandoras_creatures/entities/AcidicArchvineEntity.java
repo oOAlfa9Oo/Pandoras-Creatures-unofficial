@@ -55,10 +55,10 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TARGET_ENTITY, 0);
-        this.entityData.define(ARCHVINE_TYPE, AcidicArchvinePlacementRules.DEFAULT_ARCHVINE_TYPE);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TARGET_ENTITY, 0);
+        builder.define(ARCHVINE_TYPE, AcidicArchvinePlacementRules.DEFAULT_ARCHVINE_TYPE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -131,8 +131,8 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         this.setArchvineType(resolveArchvineType(level));
 
         BlockPos pos = this.blockPosition();
@@ -174,7 +174,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
             }
 
             AcidicArchvineEntity companion = new AcidicArchvineEntity(level.getLevel(), candidatePos.getX() + 0.5D, candidatePos.getY(), candidatePos.getZ() + 0.5D);
-            companion.finalizeSpawn(level, level.getCurrentDifficultyAt(candidatePos), reason, AcidicArchvineSpawnData.noCompanionSpawn(), null);
+            companion.finalizeSpawn(level, level.getCurrentDifficultyAt(candidatePos), reason, AcidicArchvineSpawnData.noCompanionSpawn());
             if (!level.addFreshEntity(companion)) {
                 continue;
             }

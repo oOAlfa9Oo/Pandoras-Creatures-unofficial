@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 public final class PCEntityLootTableDataProvider implements DataProvider {
     private static final String ENTITY_TABLE_TYPE = "minecraft:entity";
     private static final String ITEM_ENTRY_TYPE = "minecraft:item";
-    private static final String LOOTING_ENCHANTMENT = "minecraft:looting";
     private static final EntityLootDefinition[] DEFINITIONS = new EntityLootDefinition[]{
             new EntityLootDefinition(PCEntityIds.ACIDIC_ARCHVINE, List.of(
                     new LootPoolDefinition("pool_acidic_archvine_1", 1.0D, 1.0D,
@@ -46,7 +45,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
             )),
             new EntityLootDefinition(PCEntityIds.HELLHOUND, List.of(
                     new LootPoolDefinition("pool_hellhound_1", 1.0D, 1.0D,
-                            new ItemDropDefinition(ResourceLocation.withDefaultNamespace("bone"), 1.0D, 3.0D, false, true, 0.0D, 1.0D))
+                            new ItemDropDefinition(new ResourceLocation("bone"), 1.0D, 3.0D, false, true, 0.0D, 1.0D))
             )),
             new EntityLootDefinition(PCEntityIds.SEAHORSE, List.of(
                     new LootPoolDefinition("pool_seahorse_1", 1.0D, 1.0D,
@@ -57,7 +56,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
     private final PackOutput.PathProvider lootPathProvider;
 
     public PCEntityLootTableDataProvider(PackOutput output) {
-        this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_table/entities");
+        this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_tables/entities");
     }
 
     @Override
@@ -120,8 +119,7 @@ public final class PCEntityLootTableDataProvider implements DataProvider {
 
     private static JsonObject createLootingFunction(double min, double max) {
         JsonObject function = new JsonObject();
-        function.addProperty("function", "minecraft:enchanted_count_increase");
-        function.addProperty("enchantment", LOOTING_ENCHANTMENT);
+        function.addProperty("function", "minecraft:looting_enchant");
         function.add("count", createUniformNumberProvider(min, max));
         return function;
     }

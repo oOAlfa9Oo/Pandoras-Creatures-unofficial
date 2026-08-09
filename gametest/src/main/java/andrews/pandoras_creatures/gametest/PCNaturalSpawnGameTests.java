@@ -26,6 +26,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementType;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -90,12 +92,12 @@ public final class PCNaturalSpawnGameTests {
     }
 
     public static void naturalSpawnPlacementMetadataMatchesContracts(GameTestHelper helper) {
-        assertPlacement(helper, PCEntityIds.ACIDIC_ARCHVINE, SpawnPlacements.Type.NO_RESTRICTIONS);
-        assertPlacement(helper, PCEntityIds.ARACHNON, SpawnPlacements.Type.ON_GROUND);
-        assertPlacement(helper, PCEntityIds.BUFFLON, SpawnPlacements.Type.ON_GROUND);
-        assertPlacement(helper, PCEntityIds.CRAB, SpawnPlacements.Type.NO_RESTRICTIONS);
-        assertPlacement(helper, PCEntityIds.HELLHOUND, SpawnPlacements.Type.ON_GROUND);
-        assertPlacement(helper, PCEntityIds.SEAHORSE, SpawnPlacements.Type.IN_WATER);
+        assertPlacement(helper, PCEntityIds.ACIDIC_ARCHVINE, SpawnPlacementTypes.NO_RESTRICTIONS);
+        assertPlacement(helper, PCEntityIds.ARACHNON, SpawnPlacementTypes.ON_GROUND);
+        assertPlacement(helper, PCEntityIds.BUFFLON, SpawnPlacementTypes.ON_GROUND);
+        assertPlacement(helper, PCEntityIds.CRAB, SpawnPlacementTypes.NO_RESTRICTIONS);
+        assertPlacement(helper, PCEntityIds.HELLHOUND, SpawnPlacementTypes.ON_GROUND);
+        assertPlacement(helper, PCEntityIds.SEAHORSE, SpawnPlacementTypes.IN_WATER);
         helper.succeed();
     }
 
@@ -231,7 +233,7 @@ public final class PCNaturalSpawnGameTests {
         assertSpawnRule(helper, PCEntityIds.ACIDIC_ARCHVINE, pos, expected);
     }
 
-    private static void assertPlacement(GameTestHelper helper, String entityId, SpawnPlacements.Type expectedType) {
+    private static void assertPlacement(GameTestHelper helper, String entityId, SpawnPlacementType expectedType) {
         EntityType<?> entityType = PCGameTestRegistry.entityType(entityId);
         helper.assertTrue(SpawnPlacements.getPlacementType(entityType) == expectedType,
                 entityId + " should use placement type " + expectedType);
@@ -315,12 +317,14 @@ public final class PCNaturalSpawnGameTests {
         player.setPos(spawnPos.getX() + 32.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
         Connection connection = new Connection(PacketFlow.SERVERBOUND);
         EmbeddedChannel channel = new EmbeddedChannel(connection);
-        // 1.20.2: la fase de "configuration" espera el atributo de protocolo del canal ya
-        // inicializado (ConnectionProtocol$CodecData); sin esto placeNewPlayer revienta con NPE
-        // al leerlo. Metodo real confirmado en Connection.class (setInitialProtocolAttributes).
-        Connection.setInitialProtocolAttributes(channel);
+        // 1.20.6: Connection.setInitialProtocolAttributes ya no existe (el manejo de protocolo
+        // paso a ProtocolInfo/setupInboundProtocol-setupOutboundProtocol). Simular el handshake
+        // completo sin reimplementarlo entero sigue siendo desproporcionado para este harness de
+        // test (mismo gap ya documentado en 1.20.2: placeNewPlayer requiere la conexion en fase
+        // "play" real). Se deja sin la inicializacion manual del protocolo; el test consumidor de
+        // este helper sigue fallando en runtime por la misma razon, documentado como gap conocido.
         helper.getLevel().getServer().getPlayerList().placeNewPlayer(connection, player,
-                CommonListenerCookie.createInitial(player.getGameProfile()));
+                CommonListenerCookie.createInitial(player.getGameProfile(), false));
         return player;
     }
 

@@ -1,7 +1,7 @@
 package andrews.pandoras_creatures.client.network;
 
 import andrews.pandoras_creatures.network.AnimationSync;
-import andrews.pandoras_creatures.network.PCPayloadIds;
+import andrews.pandoras_creatures.network.payload.AnimationPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 
@@ -17,10 +17,7 @@ public final class FabricAnimationPayloadClientHandler {
         }
         initialized = true;
 
-        ClientPlayNetworking.registerGlobalReceiver(PCPayloadIds.id(PCPayloadIds.ANIMATION), (client, handler, buf, responseSender) -> {
-            int entityId = buf.readInt();
-            int animationIndex = buf.readInt();
-            client.execute(() -> AnimationSync.apply(Minecraft.getInstance().level, entityId, animationIndex));
-        });
+        ClientPlayNetworking.registerGlobalReceiver(AnimationPayload.TYPE, (payload, context) ->
+                Minecraft.getInstance().execute(() -> AnimationSync.apply(Minecraft.getInstance().level, payload.entityId(), payload.animationIndex())));
     }
 }

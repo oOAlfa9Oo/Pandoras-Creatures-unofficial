@@ -32,6 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
@@ -74,7 +75,7 @@ public final class PCFabricEntities {
 
         SpawnPlacements.register(
                 ACIDIC_ARCHVINE,
-                SpawnPlacements.Type.NO_RESTRICTIONS,
+                SpawnPlacementTypes.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnAcidicArchvine(
                         level.getDifficulty() != Difficulty.PEACEFUL,
@@ -90,28 +91,28 @@ public final class PCFabricEntities {
 
         SpawnPlacements.register(
                 ARACHNON,
-                SpawnPlacements.Type.ON_GROUND,
+                SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnArachnon(level.getDifficulty() != Difficulty.PEACEFUL, level.getRawBrightness(pos, 0))
         );
 
         SpawnPlacements.register(
                 HELLHOUND,
-                SpawnPlacements.Type.ON_GROUND,
+                SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnHostileGroundMob(level.getDifficulty() != Difficulty.PEACEFUL)
         );
 
         SpawnPlacements.register(
                 SEAHORSE,
-                SpawnPlacements.Type.IN_WATER,
+                SpawnPlacementTypes.IN_WATER,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnSeahorse(level.getFluidState(pos).is(FluidTags.WATER))
         );
 
         SpawnPlacements.register(
                 CRAB,
-                SpawnPlacements.Type.NO_RESTRICTIONS,
+                SpawnPlacementTypes.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnCrab(
                         isBiome(level, pos, Biomes.BEACH),
@@ -125,7 +126,7 @@ public final class PCFabricEntities {
 
         SpawnPlacements.register(
                 BUFFLON,
-                SpawnPlacements.Type.ON_GROUND,
+                SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) -> PCEntitySpawnRules.canSpawnBufflon(
                         level.getRawBrightness(pos, 0),

@@ -5,5 +5,7 @@
   "ingredient": {
     "item": "pandoras_creatures:seahorse"
   },
-  "result": "pandoras_creatures:seahorse_cooked"
+  "result": {
+    "id": "pandoras_creatures:seahorse_cooked"
+  }
 }

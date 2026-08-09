@@ -104,10 +104,10 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(IS_STANDING, false);
-        this.entityData.define(HAS_SCREAMED, false);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_STANDING, false);
+        builder.define(HAS_SCREAMED, false);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -137,8 +137,8 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pose) {
-        return this.isEntityStanding() ? STANDING_SIZE : super.getDimensions(pose);
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return this.isEntityStanding() ? STANDING_SIZE : super.getDefaultDimensions(pose);
     }
 
     @Override
@@ -217,8 +217,8 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         return spawnData;
     }
 

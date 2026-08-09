@@ -31,6 +31,12 @@ public final class PCItemBootstrap {
     }
 
     public static <H extends Supplier<? extends Item>> Map<String, H> registerCoreItems(SharedRegistryRegistrar<Item, H> registrar) {
+        return registerCoreItems(registrar, ItemPlantHat::new);
+    }
+
+    public static <H extends Supplier<? extends Item>> Map<String, H> registerCoreItems(
+            SharedRegistryRegistrar<Item, H> registrar,
+            Supplier<? extends ItemPlantHat> plantHatFactory) {
         LinkedHashMap<String, H> registeredItems = new LinkedHashMap<>();
 
         registerFoodItem(registeredItems, registrar, PCItemIds.CRAB_MEAT, PCFoods.CRAB_MEAT_RAW);
@@ -48,7 +54,7 @@ public final class PCItemBootstrap {
         registerSingleStackItem(registeredItems, registrar, PCItemIds.BUFFLON_LARGE_STORAGE);
         registerBasicItem(registeredItems, registrar, PCItemIds.END_TROLL_SKIN);
         registerCustomItem(registeredItems, registrar, PCItemIds.ARACHNON_HAMMER, ItemArachnonHammer::new);
-        registerCustomItem(registeredItems, registrar, PCItemIds.PLANT_HAT, ItemPlantHat::new);
+        registerCustomItem(registeredItems, registrar, PCItemIds.PLANT_HAT, plantHatFactory);
 
         return Collections.unmodifiableMap(registeredItems);
     }
@@ -73,10 +79,17 @@ public final class PCItemBootstrap {
     public static <H extends Supplier<? extends Item>> Map<String, H> registerEndTrollBoxItems(
             SharedRegistryRegistrar<Item, H> registrar,
             Function<String, Supplier<? extends Block>> blockLookup) {
+        return registerEndTrollBoxItems(registrar, blockLookup, EndTrollBoxItem::new);
+    }
+
+    public static <H extends Supplier<? extends Item>> Map<String, H> registerEndTrollBoxItems(
+            SharedRegistryRegistrar<Item, H> registrar,
+            Function<String, Supplier<? extends Block>> blockLookup,
+            java.util.function.BiFunction<Block, Item.Properties, ? extends EndTrollBoxItem> itemFactory) {
         LinkedHashMap<String, H> registeredItems = new LinkedHashMap<>();
 
         for (String id : PCEndTrollBoxBootstrap.blockIds()) {
-            registerEndTrollBoxItem(registeredItems, registrar, blockLookup, id);
+            registerEndTrollBoxItem(registeredItems, registrar, blockLookup, itemFactory, id);
         }
 
         return Collections.unmodifiableMap(registeredItems);
@@ -157,12 +170,13 @@ public final class PCItemBootstrap {
     private static <H extends Supplier<? extends Item>> void registerEndTrollBoxItem(Map<String, H> items,
             SharedRegistryRegistrar<Item, H> registrar,
             Function<String, Supplier<? extends Block>> blockLookup,
+            java.util.function.BiFunction<Block, Item.Properties, ? extends EndTrollBoxItem> itemFactory,
             String id) {
         Supplier<? extends Block> blockSupplier = blockLookup.apply(id);
         if (blockSupplier == null) {
             throw new IllegalArgumentException("No block supplier available for end troll box item id: " + id);
         }
 
-        items.put(id, registrar.register(id, () -> new EndTrollBoxItem(blockSupplier.get(), new Item.Properties().stacksTo(1).fireResistant())));
+        items.put(id, registrar.register(id, () -> itemFactory.apply(blockSupplier.get(), new Item.Properties().stacksTo(1).fireResistant())));
     }
 }

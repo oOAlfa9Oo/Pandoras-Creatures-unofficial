@@ -9,7 +9,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
@@ -26,13 +28,13 @@ import java.util.List;
 
 public class ItemArachnonHammer extends PickaxeItem {
     public ItemArachnonHammer() {
-        super(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F, new Properties());
+        super(PCToolMaterials.ARACHNON_MATERIAL, new Properties().attributes(DiggerItem.createAttributes(PCToolMaterials.ARACHNON_MATERIAL, 0.0F, -3.0F)));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
-        super.appendHoverText(stack, level, tooltip, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class ItemArachnonHammer extends PickaxeItem {
                             if (!(x == 0 && z == 0)) {
                                 BlockPos blockPos = new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z);
                                 BlockState stateIn = level.getBlockState(blockPos);
-                                if (canHarvestBlock(level, blockPos, stateIn)) {
+                                if (canHarvestBlock(level, blockPos, stateIn, stack)) {
                                     processHarvest(level, blockPos, stateIn, stack, player);
                                 }
                             }
@@ -60,7 +62,7 @@ public class ItemArachnonHammer extends PickaxeItem {
                             if (!(x == 0 && y == 0)) {
                                 BlockPos blockPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ());
                                 BlockState stateIn = level.getBlockState(blockPos);
-                                if (canHarvestBlock(level, blockPos, stateIn)) {
+                                if (canHarvestBlock(level, blockPos, stateIn, stack)) {
                                     processHarvest(level, blockPos, stateIn, stack, player);
                                 }
                             }
@@ -74,7 +76,7 @@ public class ItemArachnonHammer extends PickaxeItem {
                             if (!(z == 0 && y == 0)) {
                                 BlockPos blockPos = new BlockPos(pos.getX(), pos.getY() + y, pos.getZ() + z);
                                 BlockState stateIn = level.getBlockState(blockPos);
-                                if (canHarvestBlock(level, blockPos, stateIn)) {
+                                if (canHarvestBlock(level, blockPos, stateIn, stack)) {
                                     processHarvest(level, blockPos, stateIn, stack, player);
                                 }
                             }
@@ -88,7 +90,7 @@ public class ItemArachnonHammer extends PickaxeItem {
         return super.mineBlock(stack, level, state, pos, entity);
     }
 
-    public boolean canHarvestBlock(Level level, BlockPos position, BlockState blockIn) {
+    public boolean canHarvestBlock(Level level, BlockPos position, BlockState blockIn, ItemStack stack) {
         BlockEntity blockEntity = level.getBlockEntity(position);
         if (blockEntity != null) {
             return false;
@@ -96,7 +98,7 @@ public class ItemArachnonHammer extends PickaxeItem {
         if (blockIn.getDestroySpeed(level, position) == -1) {
             return false;
         }
-        return this.isCorrectToolForDrops(blockIn);
+        return stack.isCorrectToolForDrops(blockIn);
     }
 
     private void processHarvest(Level level, BlockPos pos, BlockState state, ItemStack stack, Player player) {

@@ -30,9 +30,9 @@ public final class PCTagDataProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(endTrollBoxValues()), itemTagPathProvider.json(id("end_troll_boxes"))));
         futures.add(DataProvider.saveStable(cachedOutput, createTagJson(vanillaShulkerBoxValues()), itemTagPathProvider.json(id("vanilla_shulker_boxes"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.ARACHNON))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("arthropod"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.HELLHOUND))), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("undead"))));
-        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(waterBreathingEntityValues()), entityTypeTagPathProvider.json(ResourceLocation.withDefaultNamespace("can_breathe_under_water"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.ARACHNON))), entityTypeTagPathProvider.json(new ResourceLocation("arthropod"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(List.of(modId(PCEntityIds.HELLHOUND))), entityTypeTagPathProvider.json(new ResourceLocation("undead"))));
+        futures.add(DataProvider.saveStable(cachedOutput, createTagJson(waterBreathingEntityValues()), entityTypeTagPathProvider.json(new ResourceLocation("can_breathe_under_water"))));
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 

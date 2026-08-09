@@ -3,7 +3,9 @@ package andrews.pandoras_creatures.gametest;
 import andrews.pandoras_creatures.registry.PCTags;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -58,11 +60,11 @@ public final class PCDataLoadGameTests {
         MinecraftServer server = helper.getLevel().getServer();
 
         for (String lootId : EXPECTED_BLOCK_LOOT) {
-            helper.assertTrue(server.getLootData().getLootTable(Reference.id(lootId)) != LootTable.EMPTY,
+            helper.assertTrue(server.reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, Reference.id(lootId))) != LootTable.EMPTY,
                     "Block loot table should load from datapack: " + lootId);
         }
         for (String lootId : EXPECTED_ENTITY_LOOT) {
-            helper.assertTrue(server.getLootData().getLootTable(Reference.id(lootId)) != LootTable.EMPTY,
+            helper.assertTrue(server.reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, Reference.id(lootId))) != LootTable.EMPTY,
                     "Entity loot table should load from datapack: " + lootId);
         }
         helper.succeed();

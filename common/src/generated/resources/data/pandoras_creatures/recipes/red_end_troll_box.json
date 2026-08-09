@@ -6,10 +6,10 @@
       "tag": "pandoras_creatures:end_troll_boxes"
     },
     {
-      "item": "minecraft:red_dye"
+      "tag": "c:dyes/red"
     }
   ],
   "result": {
-    "item": "pandoras_creatures:red_end_troll_box"
+    "id": "pandoras_creatures:red_end_troll_box"
   }
 }

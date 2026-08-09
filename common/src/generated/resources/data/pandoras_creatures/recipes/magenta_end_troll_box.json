@@ -6,10 +6,10 @@
       "tag": "pandoras_creatures:end_troll_boxes"
     },
     {
-      "item": "minecraft:magenta_dye"
+      "tag": "c:dyes/magenta"
     }
   ],
   "result": {
-    "item": "pandoras_creatures:magenta_end_troll_box"
+    "id": "pandoras_creatures:magenta_end_troll_box"
   }
 }

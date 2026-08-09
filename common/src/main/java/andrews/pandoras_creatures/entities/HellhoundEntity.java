@@ -66,9 +66,9 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HELLHOUND_TYPE, HellhoundVariantCatalog.DEFAULT_TYPE);
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HELLHOUND_TYPE, HellhoundVariantCatalog.DEFAULT_TYPE);
     }
 
     public ItemStack getPickedResult(HitResult target) {
@@ -94,8 +94,8 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
-        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+        spawnData = super.finalizeSpawn(level, difficulty, reason, spawnData);
         this.setHellhoundType(HellhoundVariantCatalog.randomTypeId(level.getRandom()));
         return spawnData;
     }

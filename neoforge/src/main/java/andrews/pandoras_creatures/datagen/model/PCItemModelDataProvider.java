@@ -13,9 +13,24 @@ import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+/**
+ * NeoForge 20.6.139's ItemModelProvider no trae los helpers spawnEggItem(Item)/simpleBlockItem(Block)
+ * que si existen en versiones mas nuevas; se inlinea aca su misma logica (verificado via javap
+ * contra neoforge-20.6.139-minecraft.jar: solo existe basicItem(Item)/basicItem(ResourceLocation)).
+ */
 public final class PCItemModelDataProvider extends ItemModelProvider {
     public PCItemModelDataProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, Reference.MODID, existingFileHelper);
+    }
+
+    private ItemModelBuilder spawnEggItem(Item item) {
+        return getBuilder(path(item))
+                .parent(new ModelFile.UncheckedModelFile("item/template_spawn_egg"));
+    }
+
+    private ItemModelBuilder simpleBlockItem(net.minecraft.world.level.block.Block block) {
+        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
+        return withExistingParent(blockId.toString(), new ResourceLocation(blockId.getNamespace(), "block/" + blockId.getPath()));
     }
 
     @Override

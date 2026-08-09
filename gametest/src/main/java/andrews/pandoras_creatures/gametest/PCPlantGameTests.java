@@ -67,7 +67,7 @@ public final class PCPlantGameTests {
         for (PlantDefinition plant : PLANTS) {
             Block block = PandorasCreaturesCommon.platform().registry().block(plant.blockId());
             helper.assertTrue(block instanceof PCPlantBlock, plant.blockId() + " should use the shared plant block");
-            helper.assertTrue(!block.isRandomlyTicking(block.defaultBlockState()),
+            helper.assertTrue(!block.defaultBlockState().isRandomlyTicking(),
                     plant.blockId() + " should not grow from random ticks");
             helper.assertTrue(block.defaultBlockState().getProperties().isEmpty(),
                     plant.blockId() + " should remain a single-stage decorative plant");

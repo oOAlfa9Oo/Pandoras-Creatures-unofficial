@@ -5,6 +5,7 @@ import andrews.pandoras_creatures.registry.entity.PCEntitySpawnRules;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -21,7 +22,7 @@ public final class PCForgeEntitySpawnPlacements {
     public static void registerAll(SpawnPlacementRegisterEvent event) {
         event.register(
                 PCForgeEntities.seahorse(),
-                SpawnPlacements.Type.IN_WATER,
+                SpawnPlacementTypes.IN_WATER,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnSeahorse(level.getFluidState(pos).is(FluidTags.WATER)),
@@ -30,7 +31,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.crab(),
-                SpawnPlacements.Type.NO_RESTRICTIONS,
+                SpawnPlacementTypes.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnCrab(
@@ -46,7 +47,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.hellhound(),
-                SpawnPlacements.Type.ON_GROUND,
+                SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnHostileGroundMob(level.getDifficulty() != Difficulty.PEACEFUL),
@@ -55,7 +56,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.arachnon(),
-                SpawnPlacements.Type.ON_GROUND,
+                SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnArachnon(level.getDifficulty() != Difficulty.PEACEFUL, level.getRawBrightness(pos, 0)),
@@ -64,7 +65,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.acidicArchvine(),
-                SpawnPlacements.Type.NO_RESTRICTIONS,
+                SpawnPlacementTypes.NO_RESTRICTIONS,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnAcidicArchvine(
@@ -82,7 +83,7 @@ public final class PCForgeEntitySpawnPlacements {
 
         event.register(
                 PCForgeEntities.bufflon(),
-                SpawnPlacements.Type.ON_GROUND,
+                SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, level, spawnType, pos, random) ->
                         PCEntitySpawnRules.canSpawnBufflon(level.getRawBrightness(pos, 0),

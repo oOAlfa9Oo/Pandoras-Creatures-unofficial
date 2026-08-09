@@ -142,7 +142,7 @@ public final class PCForgeItems {
     private static FoodProperties food(int nutrition, float saturationModifier) {
         return new FoodProperties.Builder()
                 .nutrition(nutrition)
-                .saturationMod(saturationModifier)
+                .saturationModifier(saturationModifier)
                 .build();
     }
 }

@@ -6,10 +6,10 @@
       "tag": "pandoras_creatures:end_troll_boxes"
     },
     {
-      "item": "minecraft:light_blue_dye"
+      "tag": "c:dyes/light_blue"
     }
   ],
   "result": {
-    "item": "pandoras_creatures:light_blue_end_troll_box"
+    "id": "pandoras_creatures:light_blue_end_troll_box"
   }
 }

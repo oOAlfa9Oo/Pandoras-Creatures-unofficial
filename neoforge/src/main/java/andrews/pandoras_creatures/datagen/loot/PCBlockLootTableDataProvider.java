@@ -19,7 +19,7 @@ public final class PCBlockLootTableDataProvider implements DataProvider {
     private final PackOutput.PathProvider lootPathProvider;
 
     public PCBlockLootTableDataProvider(PackOutput output) {
-        this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_table/blocks");
+        this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_tables/blocks");
     }
 
     @Override

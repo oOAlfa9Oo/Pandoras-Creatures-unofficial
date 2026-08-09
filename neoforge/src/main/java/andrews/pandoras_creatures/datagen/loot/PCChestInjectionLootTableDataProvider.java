@@ -33,7 +33,7 @@ public final class PCChestInjectionLootTableDataProvider implements DataProvider
     private final PackOutput.PathProvider lootPathProvider;
 
     public PCChestInjectionLootTableDataProvider(PackOutput output) {
-        this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_table/injections");
+        this.lootPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_tables/injections");
     }
 
     @Override

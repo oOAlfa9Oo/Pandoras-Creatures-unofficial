@@ -2,13 +2,11 @@ package andrews.pandoras_creatures.platform.fabric;
 
 import andrews.pandoras_creatures.entities.bases.IAnimatedEntity;
 import andrews.pandoras_creatures.network.AnimationSync;
-import andrews.pandoras_creatures.network.PCPayloadIds;
+import andrews.pandoras_creatures.network.payload.AnimationPayload;
 import andrews.pandoras_creatures.platform.EntityBridge;
 import andrews.pandoras_creatures.util.animation.Animation;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -35,10 +33,7 @@ final class FabricEntityBridge implements EntityBridge {
         animatedEntity.setAnimationTick(0);
 
         for (var player : PlayerLookup.tracking(entity)) {
-            FriendlyByteBuf payload = PacketByteBufs.create();
-            payload.writeInt(entity.getId());
-            payload.writeInt(animationIndex);
-            ServerPlayNetworking.send(player, PCPayloadIds.id(PCPayloadIds.ANIMATION), payload);
+            ServerPlayNetworking.send(player, new AnimationPayload(entity.getId(), animationIndex));
         }
     }
 
