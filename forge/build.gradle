@@ -75,6 +75,8 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', mod_id
             workingDirectory = file('build/run/gameTestServer')
             jvmArgs '-Xms256m', '-Xmx1g'
+            property 'pandoras_creatures.gameTestReportPath',
+                    layout.buildDirectory.file('test-results/gametests/pandoras-creatures-gametests.xml').get().asFile
         }
 
         data {
@@ -108,8 +110,15 @@ def prepareGameTestServer = tasks.register('prepareGameTestServer') {
     }
 }
 
+def cleanGameTestServerWorld = tasks.register('cleanGameTestServerWorld') {
+    doLast {
+        delete layout.buildDirectory.dir('run/gameTestServer/world')
+    }
+}
+
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
     dependsOn prepareGameTestServer
+    finalizedBy cleanGameTestServerWorld
 }
 
 repositories {

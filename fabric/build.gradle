@@ -58,6 +58,7 @@ loom {
             vmArg '-Dfabric-api.gametest'
             vmArg '-Xms256m'
             vmArg '-Xmx1g'
+            vmArg "-Dpandoras_creatures.gameTestReportPath=${layout.buildDirectory.file('test-results/gametests/pandoras-creatures-gametests.xml').get().asFile.absolutePath}"
         }
     }
 }
@@ -69,8 +70,15 @@ def prepareGameTestServer = tasks.register('prepareGameTestServer') {
     }
 }
 
+def cleanGameTestServerWorld = tasks.register('cleanGameTestServerWorld') {
+    doLast {
+        delete gameTestRunDir.map { it.dir('world') }
+    }
+}
+
 tasks.named('runGameTestServer').configure {
     dependsOn prepareGameTestServer
+    finalizedBy cleanGameTestServerWorld
 }
 
 repositories {

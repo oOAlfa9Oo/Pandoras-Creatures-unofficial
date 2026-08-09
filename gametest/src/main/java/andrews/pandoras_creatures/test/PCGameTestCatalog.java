@@ -96,6 +96,7 @@ public final class PCGameTestCatalog {
 
     @GameTestGenerator
     public static Collection<TestFunction> generateTests() {
+        PCGameTestReporting.installIfRequested();
         return DEFINITIONS.stream()
                 .map(PCGameTestCatalog::function)
                 .toList();

@@ -56,6 +56,8 @@ neoForge {
             // 2026-07-17 (ver ADR-0008).
             gameDirectory = project.layout.buildDirectory.dir('run/gameTestServer')
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+            systemProperty 'pandoras_creatures.gameTestReportPath',
+                    project.layout.buildDirectory.file('test-results/gametests/pandoras-creatures-gametests.xml').get().asFile.absolutePath
             jvmArgument '-Xms256m'
             jvmArgument '-Xmx1g'
         }
@@ -94,8 +96,15 @@ def prepareGameTestServer = tasks.register('prepareGameTestServer') {
     }
 }
 
+def cleanGameTestServerWorld = tasks.register('cleanGameTestServerWorld') {
+    doLast {
+        delete layout.buildDirectory.dir('run/gameTestServer/world')
+    }
+}
+
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
     dependsOn prepareGameTestServer
+    finalizedBy cleanGameTestServerWorld
 }
 
 configurations {
