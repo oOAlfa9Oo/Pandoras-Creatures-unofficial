@@ -18,28 +18,22 @@ jobs:
         include:
           - name: root
             command: ./gradlew validateCurrentFamily --console=plain
-            experimental: false
           - name: fabric
             command: ./gradlew :fabric:build --console=plain
-            experimental: false
           - name: forge
             command: ./gradlew :forge:build --console=plain
-            experimental: false
           - name: neoforge
-            command: ./gradlew validateExperimentalLoaders --console=plain
-            experimental: true
-
-    continue-on-error: ${{ matrix.experimental }}
+            command: ./gradlew :neoforge:build --console=plain
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
