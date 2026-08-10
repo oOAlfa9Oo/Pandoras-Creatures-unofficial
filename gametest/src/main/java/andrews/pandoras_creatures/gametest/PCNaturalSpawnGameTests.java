@@ -14,6 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.Connection;
+import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
@@ -319,6 +320,15 @@ public final class PCNaturalSpawnGameTests {
         // inicializado (ConnectionProtocol$CodecData); sin esto placeNewPlayer revienta con NPE
         // al leerlo. Metodo real confirmado en Connection.class (setInitialProtocolAttributes).
         Connection.setInitialProtocolAttributes(channel);
+        // En una conexion real, el pipeline avanza el protocolo HANDSHAKING -> ... -> PLAY a
+        // medida que se procesan los paquetes de handshake/login/configuration; como esta
+        // conexion de prueba nunca pasa por esos paquetes, hay que fijar el protocolo a PLAY a
+        // mano antes de placeNewPlayer, que termina llamando ServerGamePacketListenerImpl's
+        // connection.setListener(this) y este exige que el protocolo actual del canal ya sea
+        // PLAY (Connection.setListener, ver "Trying to set listener for protocol play, but
+        // current SERVERBOUND protocol is handshake").
+        channel.attr(Connection.ATTRIBUTE_SERVERBOUND_PROTOCOL).set(ConnectionProtocol.PLAY.codec(PacketFlow.SERVERBOUND));
+        channel.attr(Connection.ATTRIBUTE_CLIENTBOUND_PROTOCOL).set(ConnectionProtocol.PLAY.codec(PacketFlow.CLIENTBOUND));
         helper.getLevel().getServer().getPlayerList().placeNewPlayer(connection, player,
                 CommonListenerCookie.createInitial(player.getGameProfile()));
         return player;
