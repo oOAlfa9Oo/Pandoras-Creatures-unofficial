@@ -104,7 +104,7 @@ public final class PCGameTestCatalog {
     }
 
     private static TestFunction function(TestDefinition definition) {
-        String batch = definition.path().substring(0, definition.path().indexOf('/'));
+        String batch = "pandoras_creatures." + definition.path().substring(0, definition.path().indexOf('/'));
         String testName = "pandoras_creatures." + definition.path().replace('/', '.');
         return new TestFunction(
                 batch,
