@@ -9,6 +9,7 @@ import andrews.pandoras_creatures.registry.PCFabricCreativeTabs;
 import andrews.pandoras_creatures.registry.PCFabricEntities;
 import andrews.pandoras_creatures.registry.PCFabricItems;
 import andrews.pandoras_creatures.registry.PCFabricMenuTypes;
+import andrews.pandoras_creatures.registry.PCFabricRecipeSerializers;
 import andrews.pandoras_creatures.registry.PCFabricSounds;
 import andrews.pandoras_creatures.registry.PCFabricStructures;
 import andrews.pandoras_creatures.util.Reference;
@@ -30,6 +31,7 @@ public final class PandorasCreaturesFabric implements ModInitializer {
         PCFabricEntities.register();
         PCFabricItems.register();
         PCFabricBlockEntities.register();
+        PCFabricRecipeSerializers.register();
         PCFabricMenuTypes.register();
         PCFabricCreativeTabs.register();
         PCFabricStructures.register();
