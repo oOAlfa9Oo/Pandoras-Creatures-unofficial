@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.gametest;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.entities.EndTrollEntity;
 import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import andrews.pandoras_creatures.util.Reference;
@@ -42,12 +44,12 @@ public final class EndPrisonStructureGameTests {
 
         Registry<Structure> structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
         Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
-        helper.assertTrue(endPrison != null, "End Prison structure JSON should load into the structure registry");
+        PCGameTestAssertions.assertTrue(helper, endPrison != null, "End Prison structure JSON should load into the structure registry");
 
         Registry<StructureSet> structureSets = level.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
         StructureSet endPrisonSet = structureSets.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
-        helper.assertTrue(endPrisonSet != null, "End Prison structure_set JSON should load into the structure_set registry");
-        helper.assertTrue(endPrisonSet != null && !endPrisonSet.structures().isEmpty(),
+        PCGameTestAssertions.assertTrue(helper, endPrisonSet != null, "End Prison structure_set JSON should load into the structure_set registry");
+        PCGameTestAssertions.assertTrue(helper, endPrisonSet != null && !endPrisonSet.structures().isEmpty(),
                 "End Prison structure_set should reference at least one structure");
         helper.succeed();
     }
@@ -58,11 +60,11 @@ public final class EndPrisonStructureGameTests {
         Optional<StructureTemplate> body = level.getStructureManager().get(PCStructureIds.id(PCStructureIds.END_PRISON_BODY_TEMPLATE));
         Optional<StructureTemplate> ship = level.getStructureManager().get(net.minecraft.resources.ResourceLocation.parse(andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.VANILLA_SHIP_TEMPLATE));
 
-        helper.assertTrue(body.isPresent(), "End Prison body template NBT should load");
-        helper.assertTrue(ship.isPresent(), "Vanilla End City ship template NBT should load");
-        helper.assertTrue(body.isPresent() && body.get().getSize().getX() > 0 && body.get().getSize().getY() > 0,
+        PCGameTestAssertions.assertTrue(helper, body.isPresent(), "End Prison body template NBT should load");
+        PCGameTestAssertions.assertTrue(helper, ship.isPresent(), "Vanilla End City ship template NBT should load");
+        PCGameTestAssertions.assertTrue(helper, body.isPresent() && body.get().getSize().getX() > 0 && body.get().getSize().getY() > 0,
                 "End Prison body template should have a real size");
-        helper.assertTrue(ship.isPresent() && ship.get().getSize().getX() > 0 && ship.get().getSize().getY() > 0,
+        PCGameTestAssertions.assertTrue(helper, ship.isPresent() && ship.get().getSize().getX() > 0 && ship.get().getSize().getY() > 0,
                 "End Prison ship template should have a real size");
         helper.succeed();
     }
@@ -71,7 +73,7 @@ public final class EndPrisonStructureGameTests {
         ServerLevel level = helper.getLevel();
         Registry<Structure> structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
         Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
-        helper.assertTrue(endPrison != null, "End Prison structure must exist to test generation");
+        PCGameTestAssertions.assertTrue(helper, endPrison != null, "End Prison structure must exist to test generation");
 
         ChunkGenerator generator = level.getChunkSource().getGenerator();
         StructureStart start = endPrison.generate(
@@ -88,21 +90,21 @@ public final class EndPrisonStructureGameTests {
                 level,
                 biome -> true);
 
-        helper.assertTrue(start.isValid(), "End Prison should produce a valid structure start (jigsaw + pieces)");
-        helper.assertTrue(!start.getPieces().isEmpty(), "End Prison structure start should contain generated pieces");
+        PCGameTestAssertions.assertTrue(helper, start.isValid(), "End Prison should produce a valid structure start (jigsaw + pieces)");
+        PCGameTestAssertions.assertTrue(helper, !start.getPieces().isEmpty(), "End Prison structure start should contain generated pieces");
         helper.succeed();
     }
 
     public static void generatedShipUsesOfficialProximity(GameTestHelper helper) {
         ServerLevel end = helper.getLevel().getServer().getLevel(Level.END);
-        helper.assertTrue(end != null, "The End dimension must be loaded for ship proximity validation");
+        PCGameTestAssertions.assertTrue(helper, end != null, "The End dimension must be loaded for ship proximity validation");
         if (end == null) {
             return;
         }
 
         Registry<Structure> structures = end.registryAccess().lookupOrThrow(Registries.STRUCTURE);
         Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
-        helper.assertTrue(endPrison != null, "End Prison must exist for ship proximity validation");
+        PCGameTestAssertions.assertTrue(helper, endPrison != null, "End Prison must exist for ship proximity validation");
         if (endPrison == null) {
             return;
         }
@@ -136,7 +138,7 @@ public final class EndPrisonStructureGameTests {
             }
         }
 
-        helper.assertTrue(startWithShip != null && generatedShip != null && bodyPiece != null,
+        PCGameTestAssertions.assertTrue(helper, startWithShip != null && generatedShip != null && bodyPiece != null,
                 "A generated End Prison should include its official one-in-three ship within 128 deterministic candidates");
         if (generatedShip == null || bodyPiece == null) {
             return;
@@ -147,7 +149,7 @@ public final class EndPrisonStructureGameTests {
         BoundingBox expectedBox = new EndPrisonPieces.Piece(end.getStructureManager(), expectedPosition, expectedRotation)
                 .getBoundingBox();
         BoundingBox actualBox = generatedShip.getBoundingBox();
-        helper.assertTrue(sameBox(actualBox, expectedBox),
+        PCGameTestAssertions.assertTrue(helper, sameBox(actualBox, expectedBox),
                 "Generated ship must retain the official position beside End Prison; expected=" + expectedBox
                         + ", actual=" + actualBox + ", body=" + bodyPiece.getBoundingBox());
         helper.succeed();
@@ -155,21 +157,21 @@ public final class EndPrisonStructureGameTests {
 
     public static void naturallyPlacedEndPrisonContainsEndTroll(GameTestHelper helper) {
         ServerLevel end = helper.getLevel().getServer().getLevel(Level.END);
-        helper.assertTrue(end != null, "The End dimension must be loaded for natural structure validation");
+        PCGameTestAssertions.assertTrue(helper, end != null, "The End dimension must be loaded for natural structure validation");
         if (end == null) {
             return;
         }
 
         Registry<Structure> structures = end.registryAccess().lookupOrThrow(Registries.STRUCTURE);
         Structure endPrison = structures.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
-        helper.assertTrue(endPrison != null, "End Prison must be present in the runtime structure registry");
+        PCGameTestAssertions.assertTrue(helper, endPrison != null, "End Prison must be present in the runtime structure registry");
         if (endPrison == null) {
             return;
         }
 
         Registry<StructureSet> structureSets = end.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
         StructureSet endPrisonSet = structureSets.getValue(PCStructureIds.id(PCStructureIds.END_PRISON));
-        helper.assertTrue(endPrisonSet != null && endPrisonSet.placement() instanceof RandomSpreadStructurePlacement,
+        PCGameTestAssertions.assertTrue(helper, endPrisonSet != null && endPrisonSet.placement() instanceof RandomSpreadStructurePlacement,
                 "End Prison must use its random-spread placement contract");
         if (endPrisonSet == null || !(endPrisonSet.placement() instanceof RandomSpreadStructurePlacement placement)) {
             return;
@@ -178,7 +180,7 @@ public final class EndPrisonStructureGameTests {
         Holder.Reference<Structure> endPrisonHolder = structures.get(
                 net.minecraft.resources.ResourceKey.create(Registries.STRUCTURE, PCStructureIds.id(PCStructureIds.END_PRISON)))
                 .orElse(null);
-        helper.assertTrue(endPrisonHolder != null
+        PCGameTestAssertions.assertTrue(helper, endPrisonHolder != null
                         && !end.getChunkSource().getGeneratorState().getPlacementsForStructure(endPrisonHolder).isEmpty(),
                 "End Prison placement must be connected to The End chunk generator state");
         if (endPrisonHolder == null) {
@@ -231,17 +233,17 @@ public final class EndPrisonStructureGameTests {
             }
         }
 
-        helper.assertTrue(naturalStart != null,
+        PCGameTestAssertions.assertTrue(helper, naturalStart != null,
                 "End Prison should generate from a natural outer-End candidate; eligible=" + eligibleCandidates
                         + ", allowed-biome=" + allowedBiomeCandidates);
         if (naturalStart == null) {
             return;
         }
-        helper.assertTrue(naturalStartChunk != null && Math.abs(naturalStartChunk.x) > 64,
+        PCGameTestAssertions.assertTrue(helper, naturalStartChunk != null && Math.abs(naturalStartChunk.x) > 64,
                 "Natural End Prison candidate should be outside the central End island");
 
         StructureStart generatedStart = naturalStart;
-        helper.assertTrue(generatedStart.getPieces().get(0) instanceof PoolElementStructurePiece,
+        PCGameTestAssertions.assertTrue(helper, generatedStart.getPieces().get(0) instanceof PoolElementStructurePiece,
                 "Natural End Prison start must begin with its jigsaw body piece");
         if (!(generatedStart.getPieces().get(0) instanceof PoolElementStructurePiece)) {
             return;
@@ -299,18 +301,18 @@ public final class EndPrisonStructureGameTests {
                 java.util.List<? extends EndTrollEntity> structuralEndTrolls = end.getEntities(
                         EntityTypeTest.forClass(EndTrollEntity.class),
                         entity -> box.isInside(entity.blockPosition()));
-                helper.assertTrue(structuralEndTrolls.size() == 1,
+                PCGameTestAssertions.assertTrue(helper, structuralEndTrolls.size() == 1,
                         "End Prison should create exactly one structural End Troll; in-structure="
                                 + structuralEndTrolls.size());
                 if (structuralEndTrolls.size() == 1) {
                     EndTrollEntity endTroll = structuralEndTrolls.get(0);
-                    helper.assertTrue(endTroll.position().distanceToSqr(expectedTrollPosition) < 0.01D,
+                    PCGameTestAssertions.assertTrue(helper, endTroll.position().distanceToSqr(expectedTrollPosition) < 0.01D,
                             "Structural End Troll must retain the official template position");
-                    helper.assertTrue(endTroll.getHealth() == andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.END_TROLL_HEALTH,
+                    PCGameTestAssertions.assertTrue(helper, endTroll.getHealth() == andrews.pandoras_creatures.world.structures.end_prison.EndPrisonBehaviorRules.END_TROLL_HEALTH,
                             "Structural End Troll must retain the official 200 health");
-                    helper.assertTrue(endTroll.isPersistenceRequired(),
+                    PCGameTestAssertions.assertTrue(helper, endTroll.isPersistenceRequired(),
                             "Structural End Troll must remain persistent");
-                    helper.assertTrue(!endTroll.isEntityStanding() && !endTroll.hasScreamed(),
+                    PCGameTestAssertions.assertTrue(helper, !endTroll.isEntityStanding() && !endTroll.hasScreamed(),
                             "Structural End Troll must begin seated and without having screamed");
                 }
                 for (int chunkX = box.minX() >> 4; chunkX <= box.maxX() >> 4; chunkX++) {

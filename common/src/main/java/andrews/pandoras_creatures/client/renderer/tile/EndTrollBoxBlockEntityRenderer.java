@@ -17,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class EndTrollBoxBlockEntityRenderer implements BlockEntityRenderer<EndTr
 
     @Override
     public void render(EndTrollBoxBlockEntity blockEntity, float partialTick, PoseStack poseStack,
-                       MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+                       MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 cameraPosition) {
         Direction direction = Direction.UP;
         float pixelSize = 0.0625F;
 

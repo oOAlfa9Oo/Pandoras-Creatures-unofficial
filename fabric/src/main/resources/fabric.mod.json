@@ -19,7 +19,7 @@
       "andrews.pandoras_creatures.client.PandorasCreaturesFabricClient"
     ],
     "fabric-gametest": [
-      "andrews.pandoras_creatures.test.PCGameTestCatalog"
+      "andrews.pandoras_creatures.fabric.test.PCFabricGameTestEntrypoint"
     ]
   },
   "depends": {

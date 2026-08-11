@@ -53,7 +53,7 @@ public class SeahorseEntity extends BucketableMobEntity {
 
     public SeahorseEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.SEAHORSE), level);
-        this.moveTo(posX, posY, posZ);
+        this.snapTo(posX, posY, posZ);
     }
 
     @Override
@@ -176,8 +176,8 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setSeahorseType(compound.getInt(SeahorseDataKeys.SEAHORSE_TYPE));
-        this.setSeahorseSize(compound.getInt(SeahorseDataKeys.SEAHORSE_SIZE));
+        this.setSeahorseType(compound.getIntOr(SeahorseDataKeys.SEAHORSE_TYPE, 0));
+        this.setSeahorseSize(compound.getIntOr(SeahorseDataKeys.SEAHORSE_SIZE, 0));
     }
 
     @Nullable
@@ -195,11 +195,11 @@ public class SeahorseEntity extends BucketableMobEntity {
     @Override
     public void loadFromBucketTag(CompoundTag tag) {
         super.loadFromBucketTag(tag);
-        if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG, Tag.TAG_INT)) {
-            this.setSeahorseType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG)) {
+            this.setSeahorseType(tag.getIntOr(BucketEntityDataKeys.BUCKET_VARIANT_TAG, 0));
         }
-        if (tag.contains(BucketEntityDataKeys.BUCKET_SIZE_TAG, Tag.TAG_INT)) {
-            this.setSeahorseSize(tag.getInt(BucketEntityDataKeys.BUCKET_SIZE_TAG));
+        if (tag.contains(BucketEntityDataKeys.BUCKET_SIZE_TAG)) {
+            this.setSeahorseSize(tag.getIntOr(BucketEntityDataKeys.BUCKET_SIZE_TAG, 0));
         }
     }
 

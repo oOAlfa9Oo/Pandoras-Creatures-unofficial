@@ -1,11 +1,12 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.entities.hellhound.HellhoundVariantCatalog;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffects;
@@ -21,7 +22,6 @@ public final class HellhoundGameTests {
     private HellhoundGameTests() {
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = HELLHOUND_BATCH)
     public static void saveDataRestoresVariant(GameTestHelper helper) {
         HellhoundEntity hellhound = new HellhoundEntity(PCGameTestRegistry.entityType(PCEntityIds.HELLHOUND), helper.getLevel());
         hellhound.setHellhoundType(HellhoundVariantCatalog.WITHER_TYPE);
@@ -32,11 +32,10 @@ public final class HellhoundGameTests {
         HellhoundEntity restored = new HellhoundEntity(PCGameTestRegistry.entityType(PCEntityIds.HELLHOUND), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
-        helper.assertValueEqual(restored.getHellhoundType(), HellhoundVariantCatalog.WITHER_TYPE, "restored hellhound type");
+        PCGameTestAssertions.assertValueEqual(helper, restored.getHellhoundType(), HellhoundVariantCatalog.WITHER_TYPE, "restored hellhound type");
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = HELLHOUND_BATCH)
     public static void witherVariantAttackAppliesWither(GameTestHelper helper) {
         HellhoundEntity hellhound = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.HELLHOUND), HELLHOUND_POS);
         hellhound.setHellhoundType(HellhoundVariantCatalog.WITHER_TYPE);
@@ -44,8 +43,8 @@ public final class HellhoundGameTests {
 
         boolean hurt = hellhound.doHurtTarget((net.minecraft.server.level.ServerLevel) hellhound.level(), target);
 
-        helper.assertTrue(hurt, "Hellhound attack should damage the target");
-        helper.assertTrue(target.hasEffect(MobEffects.WITHER), "Wither hellhound should apply wither");
+        PCGameTestAssertions.assertTrue(helper, hurt, "Hellhound attack should damage the target");
+        PCGameTestAssertions.assertTrue(helper, target.hasEffect(MobEffects.WITHER), "Wither hellhound should apply wither");
         helper.succeed();
     }
 }

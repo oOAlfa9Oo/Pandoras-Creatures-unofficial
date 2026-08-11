@@ -8,6 +8,7 @@ import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.registry.sound.PCSoundCatalog;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
@@ -178,6 +179,6 @@ public class TargetUnderneathGoal<T extends LivingEntity> extends TargetGoal {
 
     private boolean isProtectedByPlantHat(@Nullable LivingEntity target) {
         return target instanceof Player player
-                && AcidicArchvineTargetingRules.isProtectedByPlantHat(player.getInventory().armor.get(3).is(PandorasCreaturesCommon.platform().registry().item(PCItemIds.PLANT_HAT)));
+                && AcidicArchvineTargetingRules.isProtectedByPlantHat(player.getItemBySlot(EquipmentSlot.HEAD).is(PandorasCreaturesCommon.platform().registry().item(PCItemIds.PLANT_HAT)));
     }
 }

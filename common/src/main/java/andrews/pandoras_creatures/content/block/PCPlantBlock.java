@@ -19,9 +19,13 @@ public class PCPlantBlock extends BushBlock {
         super(properties);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public MapCodec<PCPlantBlock> codec() {
-        return CODEC;
+    public MapCodec<BushBlock> codec() {
+        // BushBlock#codec() en 1.21.5 devuelve MapCodec<BushBlock> (no covariante como en las
+        // clases que extienden VegetationBlock directamente), asi que no se puede sobreescribir
+        // con MapCodec<PCPlantBlock> sin un cast: el CODEC real sigue construyendo PCPlantBlock.
+        return (MapCodec<BushBlock>) (MapCodec<?>) CODEC;
     }
 
     @Override

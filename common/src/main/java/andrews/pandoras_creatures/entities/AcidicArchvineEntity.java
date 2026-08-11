@@ -47,7 +47,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
 
     public AcidicArchvineEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.ACIDIC_ARCHVINE), level);
-        this.moveTo(posX, posY, posZ);
+        this.snapTo(posX, posY, posZ);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class AcidicArchvineEntity extends AnimatedMonsterEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setArchvineType(compound.getInt(AcidicArchvineDataKeys.ARCHVINE_TYPE));
+        this.setArchvineType(compound.getIntOr(AcidicArchvineDataKeys.ARCHVINE_TYPE, 0));
     }
 
     public void setTargetedEntity(int entityId) {

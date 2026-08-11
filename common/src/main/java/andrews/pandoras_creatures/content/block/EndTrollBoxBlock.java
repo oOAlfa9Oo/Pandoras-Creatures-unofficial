@@ -148,17 +148,11 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof EndTrollBoxBlockEntity endTrollBoxBlockEntity) {
-                if (!level.isClientSide) {
-                    Containers.dropContents(level, pos, endTrollBoxBlockEntity);
-                }
-                level.updateNeighbourForOutputSignal(pos, state.getBlock());
-            }
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState state, net.minecraft.server.level.ServerLevel level, BlockPos pos, boolean isMoving) {
+        // Antes se dropeaba el inventario a mano en onRemove(); en 1.21.5 eso ya lo hace
+        // BlockEntity#preRemoveSideEffects() automaticamente para cualquier block entity Container
+        // (ver RandomizableContainerBlockEntity), asi que solo queda actualizar el redstone.
+        Containers.updateNeighboursAfterDestroy(state, level, pos);
     }
 
     @Override

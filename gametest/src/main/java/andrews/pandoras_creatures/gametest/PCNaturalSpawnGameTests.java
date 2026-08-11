@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.gametest;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.registry.entity.PCEntitySpawnRules;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
@@ -47,17 +49,17 @@ public final class PCNaturalSpawnGameTests {
                     .filter(biome -> definition.biomes().stream().anyMatch(selector -> matches(biome, selector)))
                     .toList();
 
-            helper.assertTrue(!selectedBiomes.isEmpty(), "Spawn definition should select at least one runtime biome: " + definition.name());
+            PCGameTestAssertions.assertTrue(helper, !selectedBiomes.isEmpty(), "Spawn definition should select at least one runtime biome: " + definition.name());
             for (Holder.Reference<Biome> biome : selectedBiomes) {
                 boolean exactSpawnerPresent = biome.value().getMobSettings()
                         .getMobs(entityType.getCategory())
                         .unwrap()
                         .stream()
-                        .anyMatch(spawner -> spawner.type == entityType
-                                && spawner.getWeight().asInt() == definition.weight()
-                                && spawner.minCount == definition.minCount()
-                                && spawner.maxCount == definition.maxCount());
-                helper.assertTrue(exactSpawnerPresent,
+                        .anyMatch(spawner -> spawner.value().type() == entityType
+                                && spawner.weight() == definition.weight()
+                                && spawner.value().minCount() == definition.minCount()
+                                && spawner.value().maxCount() == definition.maxCount());
+                PCGameTestAssertions.assertTrue(helper, exactSpawnerPresent,
                         "Runtime biome " + biome.key().location() + " should contain " + definition.name());
             }
         }
@@ -70,15 +72,15 @@ public final class PCNaturalSpawnGameTests {
 
         boolean declaredNaturally = PCBiomeSpawnCatalog.definitions().stream()
                 .anyMatch(definition -> definition.entityTypeId().equals("pandoras_creatures:" + PCEntityIds.END_TROLL));
-        helper.assertTrue(!declaredNaturally, "End Troll must not be declared in the shared natural spawn catalog");
+        PCGameTestAssertions.assertTrue(helper, !declaredNaturally, "End Troll must not be declared in the shared natural spawn catalog");
 
         for (Holder.Reference<Biome> biome : biomes.listElements().toList()) {
             boolean present = biome.value().getMobSettings()
                     .getMobs(endTroll.getCategory())
                     .unwrap()
                     .stream()
-                    .anyMatch(spawner -> spawner.type == endTroll);
-            helper.assertTrue(!present, "End Troll must not appear naturally in biome " + biome.key().location());
+                    .anyMatch(spawner -> spawner.value().type() == endTroll);
+            PCGameTestAssertions.assertTrue(helper, !present, "End Troll must not appear naturally in biome " + biome.key().location());
         }
         helper.succeed();
     }
@@ -112,26 +114,26 @@ public final class PCNaturalSpawnGameTests {
         }
 
         helper.runAfterDelay(5L, () -> {
-            helper.assertTrue(helper.getLevel().getDifficulty() != Difficulty.PEACEFUL,
+            PCGameTestAssertions.assertTrue(helper, helper.getLevel().getDifficulty() != Difficulty.PEACEFUL,
                     "Natural hostile spawning requires a non-peaceful GameTest server");
-            helper.assertTrue(!helper.getLevel().getSharedSpawnPos().closerToCenterThan(spawnPos.getCenter(), 24.0),
+            PCGameTestAssertions.assertTrue(helper, !helper.getLevel().getSharedSpawnPos().closerToCenterThan(spawnPos.getCenter(), 24.0),
                     "Natural spawn fixture must be more than 24 blocks from the world spawn point");
 
             ServerPlayer player = helper.makeMockServerPlayerInLevel();
             List<Mob> naturallySpawned = new ArrayList<>();
             int[] eligibleCandidates = {0};
             try {
-                player.moveTo(spawnPos.getX() + 32.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
-                helper.assertTrue(helper.getLevel().getNearestPlayer(
+                player.snapTo(spawnPos.getX() + 32.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
+                PCGameTestAssertions.assertTrue(helper, helper.getLevel().getNearestPlayer(
                                 spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5, -1.0, false) == player,
                         "Natural spawn fixture should find its mock player");
-                helper.assertTrue(SpawnPlacements.isSpawnPositionOk(arachnon, helper.getLevel(), spawnPos),
+                PCGameTestAssertions.assertTrue(helper, SpawnPlacements.isSpawnPositionOk(arachnon, helper.getLevel(), spawnPos),
                         "Arachnon ground placement should accept the fixture position");
-                helper.assertTrue(SpawnPlacements.checkSpawnRules(
+                PCGameTestAssertions.assertTrue(helper, SpawnPlacements.checkSpawnRules(
                                 arachnon, helper.getLevel(), EntitySpawnReason.NATURAL, spawnPos, helper.getLevel().getRandom()),
                         "Arachnon natural spawn rule should accept the dark fixture position; raw brightness="
                                 + helper.getLevel().getRawBrightness(spawnPos, 0));
-                helper.assertTrue(helper.getLevel().noCollision(arachnon.getSpawnAABB(
+                PCGameTestAssertions.assertTrue(helper, helper.getLevel().noCollision(arachnon.getSpawnAABB(
                                 spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5)),
                         "Arachnon spawn box should fit inside the fixture");
                 for (int attempt = 0; attempt < NATURAL_SPAWN_ATTEMPTS && naturallySpawned.isEmpty(); attempt++) {
@@ -147,12 +149,12 @@ public final class PCNaturalSpawnGameTests {
                             (mob, chunk) -> naturallySpawned.add(mob));
                 }
 
-                helper.assertTrue(!naturallySpawned.isEmpty(),
+                PCGameTestAssertions.assertTrue(helper, !naturallySpawned.isEmpty(),
                         "Vanilla natural spawning should create Arachnon in a dark permitted biome; eligible candidates="
                                 + eligibleCandidates[0]);
                 Mob spawned = naturallySpawned.get(0);
-                helper.assertTrue(spawned.getType() == arachnon, "Natural spawn callback should receive Arachnon");
-                helper.assertTrue(helper.getLevel().getEntity(spawned.getUUID()) == spawned,
+                PCGameTestAssertions.assertTrue(helper, spawned.getType() == arachnon, "Natural spawn callback should receive Arachnon");
+                PCGameTestAssertions.assertTrue(helper, helper.getLevel().getEntity(spawned.getUUID()) == spawned,
                         "Naturally spawned Arachnon should be added to the server level");
             } finally {
                 naturallySpawned.forEach(Mob::discard);
@@ -224,9 +226,9 @@ public final class PCNaturalSpawnGameTests {
 
     private static void assertPlacement(GameTestHelper helper, String entityId, SpawnPlacementType expectedType) {
         EntityType<?> entityType = PCGameTestRegistry.entityType(entityId);
-        helper.assertTrue(SpawnPlacements.getPlacementType(entityType) == expectedType,
+        PCGameTestAssertions.assertTrue(helper, SpawnPlacements.getPlacementType(entityType) == expectedType,
                 entityId + " should use placement type " + expectedType);
-        helper.assertTrue(SpawnPlacements.getHeightmapType(entityType) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        PCGameTestAssertions.assertTrue(helper, SpawnPlacements.getHeightmapType(entityType) == Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 entityId + " should use the shared heightmap contract");
     }
 
@@ -237,12 +239,12 @@ public final class PCNaturalSpawnGameTests {
                 EntitySpawnReason.NATURAL,
                 pos,
                 helper.getLevel().getRandom());
-        helper.assertTrue(actual == expected, entityId + " runtime placement should match its shared rule");
+        PCGameTestAssertions.assertTrue(helper, actual == expected, entityId + " runtime placement should match its shared rule");
         helper.succeed();
     }
 
     private static void assertRuntimeSpawnEntry(GameTestHelper helper, BlockPos pos, EntityType<?> entityType) {
-        helper.assertTrue(hasRuntimeSpawnEntry(helper.getLevel().getBiome(pos), entityType),
+        PCGameTestAssertions.assertTrue(helper, hasRuntimeSpawnEntry(helper.getLevel().getBiome(pos), entityType),
                 "Arachnon should be present in the fixture biome natural spawn table");
     }
 
@@ -251,7 +253,7 @@ public final class PCNaturalSpawnGameTests {
                 .getMobs(entityType.getCategory())
                 .unwrap()
                 .stream()
-                .anyMatch(spawner -> spawner.type == entityType);
+                .anyMatch(spawner -> spawner.value().type() == entityType);
     }
 
     private static BlockPos findArachnonSpawnPosition(GameTestHelper helper, EntityType<?> arachnon) {
@@ -261,7 +263,7 @@ public final class PCNaturalSpawnGameTests {
                 6400,
                 32,
                 64);
-        helper.assertTrue(located != null, "GameTest world should contain a biome that permits Arachnon");
+        PCGameTestAssertions.assertTrue(helper, located != null, "GameTest world should contain a biome that permits Arachnon");
         return located.getFirst();
     }
 

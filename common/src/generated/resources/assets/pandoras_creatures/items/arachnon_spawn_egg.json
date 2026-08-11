@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -11382682
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -4520193
-      }
-    ]
+    "model": "pandoras_creatures:item/arachnon_spawn_egg"
   }
 }

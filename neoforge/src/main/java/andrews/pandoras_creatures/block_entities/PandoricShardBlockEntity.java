@@ -62,9 +62,9 @@ public class PandoricShardBlockEntity extends BlockEntity {
     }
 
     private void loadFromNBT(CompoundTag compound) {
-        CompoundTag shardNBT = compound.getCompound("PandoricShardValues");
-        shardSize = shardNBT.getInt("ShardSize");
-        shardVariant = shardNBT.getInt("ShardVariant");
+        CompoundTag shardNBT = compound.getCompoundOrEmpty("PandoricShardValues");
+        shardSize = shardNBT.getIntOr("ShardSize", 0);
+        shardVariant = shardNBT.getIntOr("ShardVariant", 0);
     }
 
     public int getShardSize() {

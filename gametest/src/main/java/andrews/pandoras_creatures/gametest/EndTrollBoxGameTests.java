@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.gametest;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.block_entities.EndTrollBoxBlockEntity;
 import andrews.pandoras_creatures.menu.EndTrollBoxMenu;
@@ -29,14 +31,14 @@ public final class EndTrollBoxGameTests {
 
         menu.setCarried(new ItemStack(Items.DIAMOND, 3));
         menu.clicked(0, 0, ClickType.PICKUP, player);
-        helper.assertTrue(box.getItem(0).is(Items.DIAMOND) && box.getItem(0).getCount() == 3,
+        PCGameTestAssertions.assertTrue(helper, box.getItem(0).is(Items.DIAMOND) && box.getItem(0).getCount() == 3,
                 "Normal click should insert carried items into the End Troll Box");
-        helper.assertTrue(menu.getCarried().isEmpty(), "Normal insertion should clear the carried stack");
+        PCGameTestAssertions.assertTrue(helper, menu.getCarried().isEmpty(), "Normal insertion should clear the carried stack");
 
         player.getInventory().setItem(9, new ItemStack(Items.COBBLESTONE, 5));
         ItemStack moved = menu.quickMoveStack(player, 54);
-        helper.assertTrue(!moved.isEmpty(), "Shift-click should report a moved stack");
-        helper.assertTrue(contains(box, Items.COBBLESTONE, 5),
+        PCGameTestAssertions.assertTrue(helper, !moved.isEmpty(), "Shift-click should report a moved stack");
+        PCGameTestAssertions.assertTrue(helper, contains(box, Items.COBBLESTONE, 5),
                 "Shift-click should insert player inventory items into the End Troll Box");
 
         menu.removed(player);
@@ -50,12 +52,12 @@ public final class EndTrollBoxGameTests {
 
         menu.setCarried(new ItemStack(Blocks.SHULKER_BOX));
         menu.clicked(0, 0, ClickType.PICKUP, player);
-        helper.assertTrue(box.getItem(0).isEmpty(), "End Troll Box should reject nested Shulker Boxes");
+        PCGameTestAssertions.assertTrue(helper, box.getItem(0).isEmpty(), "End Troll Box should reject nested Shulker Boxes");
 
         Block trollBoxBlock = PandorasCreaturesCommon.platform().registry().block(PCBlockIds.END_TROLL_BOX);
         menu.setCarried(new ItemStack(trollBoxBlock));
         menu.clicked(1, 0, ClickType.PICKUP, player);
-        helper.assertTrue(box.getItem(1).isEmpty(), "End Troll Box should reject nested End Troll Boxes");
+        PCGameTestAssertions.assertTrue(helper, box.getItem(1).isEmpty(), "End Troll Box should reject nested End Troll Boxes");
 
         menu.removed(player);
         helper.succeed();
@@ -71,9 +73,9 @@ public final class EndTrollBoxGameTests {
                 helper.absolutePos(BOX_POS.offset(1, 0, 0)), box.getBlockState());
         restored.loadFromTag(saved, helper.getLevel().registryAccess());
 
-        helper.assertTrue(restored.getItem(0).is(Items.EMERALD) && restored.getItem(0).getCount() == 7,
+        PCGameTestAssertions.assertTrue(helper, restored.getItem(0).is(Items.EMERALD) && restored.getItem(0).getCount() == 7,
                 "Saved End Troll Box should restore its first slot");
-        helper.assertTrue(restored.getItem(53).is(Items.GOLD_INGOT) && restored.getItem(53).getCount() == 11,
+        PCGameTestAssertions.assertTrue(helper, restored.getItem(53).is(Items.GOLD_INGOT) && restored.getItem(53).getCount() == 11,
                 "Saved End Troll Box should restore its last slot");
         helper.succeed();
     }
@@ -81,9 +83,9 @@ public final class EndTrollBoxGameTests {
     private static EndTrollBoxBlockEntity placeBox(GameTestHelper helper) {
         Block block = PandorasCreaturesCommon.platform().registry().block(PCBlockIds.END_TROLL_BOX);
         helper.setBlock(BOX_POS, block);
-        helper.assertTrue(helper.getBlockEntity(BOX_POS) instanceof EndTrollBoxBlockEntity,
+        PCGameTestAssertions.assertTrue(helper, helper.getBlockEntity(BOX_POS, EndTrollBoxBlockEntity.class) != null,
                 "Placed End Troll Box should create its block entity");
-        return (EndTrollBoxBlockEntity) helper.getBlockEntity(BOX_POS);
+        return helper.getBlockEntity(BOX_POS, EndTrollBoxBlockEntity.class);
     }
 
     private static boolean contains(EndTrollBoxBlockEntity box, Item item, int count) {

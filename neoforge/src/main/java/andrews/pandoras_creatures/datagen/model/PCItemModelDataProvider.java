@@ -61,9 +61,15 @@ public final class PCItemModelDataProvider extends ModelProvider {
     }
 
     private void registerSpawnEggs(ItemModelGenerators itemModels) {
+        // 1.21.5 elimino el modelo compartido item/template_spawn_egg + el tinting por
+        // ItemModelGenerators#generateSpawnEgg (removido de la API): vanilla ahora usa una
+        // textura plana propia por huevo (item/<id>_spawn_egg.png), sin tints en el modelo.
+        // Sin arte propio por criatura, se registra como item plano igual que cualquier otro
+        // (mismo patron que Items.PIG_SPAWN_EGG en 1.21.5); PCSpawnEggPalette sigue existiendo
+        // por si el color se necesita en otro lado, pero el datagen de items ya no lo consume.
         for (PCSpawnEggPalette palette : PCSpawnEggPalette.values()) {
             Item item = itemByPath(palette.itemName());
-            itemModels.generateSpawnEgg(item, palette.primaryColor(), palette.secondaryColor());
+            itemModels.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
         }
     }
 

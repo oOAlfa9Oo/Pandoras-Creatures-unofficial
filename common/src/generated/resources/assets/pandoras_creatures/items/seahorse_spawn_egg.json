@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -13053487
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -2519257
-      }
-    ]
+    "model": "pandoras_creatures:item/seahorse_spawn_egg"
   }
 }

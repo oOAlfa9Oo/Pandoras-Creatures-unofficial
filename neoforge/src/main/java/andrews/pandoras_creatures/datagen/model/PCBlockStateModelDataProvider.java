@@ -55,7 +55,7 @@ public final class PCBlockStateModelDataProvider extends ModelProvider {
         // El modelo del bloque (models/block/arachnon_crystal.json) esta hecho a mano en los
         // recursos principales, no se genera aca; solo hace falta el blockstate.
         Block block = PCBlocks.ARACHNON_CRYSTAL.get();
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, modLoc("block/" + path(block))));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(modLoc("block/" + path(block)))));
     }
 
     private void registerCrossPlant(BlockModelGenerators blockModels, Block block) {
@@ -71,7 +71,7 @@ public final class PCBlockStateModelDataProvider extends ModelProvider {
             json.add("textures", textures);
             return json;
         });
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, modelLoc));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(modelLoc)));
     }
 
     private void registerEndTrollBoxes(BlockModelGenerators blockModels) {
@@ -96,7 +96,7 @@ public final class PCBlockStateModelDataProvider extends ModelProvider {
             json.add("textures", textures);
             return json;
         });
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, modelLoc));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(modelLoc)));
     }
 
     private static ResourceLocation modLoc(String path) {

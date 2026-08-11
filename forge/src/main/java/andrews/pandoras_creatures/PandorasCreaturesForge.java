@@ -31,7 +31,7 @@ public final class PandorasCreaturesForge {
 
     public PandorasCreaturesForge() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(PCForgeGameTests::register);
+        PCForgeGameTests.register(modEventBus);
         modEventBus.addListener(PCForgeDataGenerators::gatherData);
 
         PandorasCreaturesCommon.initialize(ForgePlatformServices.INSTANCE);

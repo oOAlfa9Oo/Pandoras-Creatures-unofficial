@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -550895
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -8645
-      }
-    ]
+    "model": "pandoras_creatures:item/crab_spawn_egg"
   }
 }

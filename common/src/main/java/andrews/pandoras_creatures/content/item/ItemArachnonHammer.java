@@ -11,9 +11,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,17 +24,19 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class ItemArachnonHammer extends PickaxeItem {
+public class ItemArachnonHammer extends Item {
     public ItemArachnonHammer() {
-        super(PCToolMaterials.ARACHNON_MATERIAL, 0, -3.0F, new Properties().setId(PCItemIds.key(PCItemIds.ARACHNON_HAMMER)));
+        // 1.21.5: PickaxeItem fue eliminado, el "pickaxe" pasa a ser un Item comun con el
+        // componente Tool aplicado via Properties#pickaxe(ToolMaterial, attackDamage, attackSpeed).
+        super(new Properties().pickaxe(PCToolMaterials.ARACHNON_MATERIAL, 0.0F, -3.0F).setId(PCItemIds.key(PCItemIds.ARACHNON_HAMMER)));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
-        super.appendHoverText(stack, context, tooltip, flag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        tooltipAdder.accept(Component.translatable(PCLanguageKeys.ARACHNON_HAMMER_TOOLTIP));
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

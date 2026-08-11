@@ -52,14 +52,19 @@ loom {
             runDir = 'run/fabric-server'
         }
 
-        gameTestServer {
-            server()
-            runDir = 'build/run/fabric-gametest'
-            vmArg '-Dfabric-api.gametest'
-            vmArg '-Xms256m'
-            vmArg '-Xmx1g'
-            vmArg "-Dpandoras_creatures.gameTestReportPath=${layout.buildDirectory.file('test-results/gametests/pandoras-creatures-gametests.xml').get().asFile.absolutePath}"
-        }
+    }
+}
+
+// 1.21.5 elimino el sistema de GameTest por anotaciones que usaba el run "gameTestServer"
+// manual de antes (server() + -Dfabric-api.gametest); fabric-gametest-api-v1 SI publico modulo
+// para 1.21.5 (a diferencia de 26.1, que era snapshot), asi que esta extension resuelve la
+// dependencia real y genera su propio task de run (mismo patron ya usado en 26.1 para el caso
+// sin modulo publicado, ver ADR-0007).
+fabricApi {
+    configureTests {
+        modId = mod_id
+        eula = true
+        enableGameTests = true
     }
 }
 
@@ -76,9 +81,11 @@ def cleanGameTestServerWorld = tasks.register('cleanGameTestServerWorld') {
     }
 }
 
-tasks.named('runGameTestServer').configure {
+tasks.matching { it.name == 'runGameTest' }.configureEach {
     dependsOn prepareGameTestServer
     finalizedBy cleanGameTestServerWorld
+    systemProperty 'pandoras_creatures.gameTestReportPath',
+            layout.buildDirectory.file('test-results/gametests/pandoras-creatures-gametests.xml').get().asFile.absolutePath
 }
 
 repositories {

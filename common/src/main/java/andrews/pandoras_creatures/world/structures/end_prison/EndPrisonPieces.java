@@ -81,7 +81,7 @@ public class EndPrisonPieces {
                     PandorasCreaturesCommon.platform().registry().structurePieceType(PCStructureIds.END_PRISON_PIECE),
                     tag,
                     templateManager,
-                    rl -> makeSettings(Rotation.valueOf(tag.getString("Rot")))
+                    rl -> makeSettings(Rotation.valueOf(tag.getStringOr("Rot", Rotation.NONE.name())))
             );
         }
 

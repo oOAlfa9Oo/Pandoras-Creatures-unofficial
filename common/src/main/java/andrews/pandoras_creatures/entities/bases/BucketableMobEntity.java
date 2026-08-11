@@ -57,7 +57,7 @@ public abstract class BucketableMobEntity extends AnimatedWaterMobEntity impleme
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setFromBucket(compound.getBoolean("FromBucket"));
+        this.setFromBucket(compound.getBooleanOr("FromBucket", false));
     }
 
     /**

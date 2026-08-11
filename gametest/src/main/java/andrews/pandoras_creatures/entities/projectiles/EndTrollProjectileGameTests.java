@@ -1,12 +1,13 @@
 package andrews.pandoras_creatures.entities.projectiles;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.entities.EndTrollEntity;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffects;
@@ -23,7 +24,6 @@ public final class EndTrollProjectileGameTests {
     private EndTrollProjectileGameTests() {
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_PROJECTILE_BATCH)
     public static void projectileSaveDataRestoresOwnerTargetAndMotion(GameTestHelper helper) {
         EndTrollEntity owner = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), OWNER_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
@@ -40,16 +40,15 @@ public final class EndTrollProjectileGameTests {
         EndTrollBulletPoisonEntity restored = new EndTrollBulletPoisonEntity(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL_BULLET_POISON), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
-        helper.assertTrue(owner.getUUID().equals(restored.ownerUniqueId), "Restored projectile should preserve owner UUID");
-        helper.assertTrue(target.getUUID().equals(restored.targetUniqueId), "Restored projectile should preserve target UUID");
-        helper.assertValueEqual(restored.steps, 7, "restored projectile step count");
-        helper.assertTrue(restored.direction != null, "Restored projectile should preserve direction");
-        helper.assertTrue(restored.ownerBlockPos != null, "Restored projectile should preserve owner block position");
-        helper.assertTrue(restored.targetBlockPos != null, "Restored projectile should preserve target block position");
+        PCGameTestAssertions.assertTrue(helper, owner.getUUID().equals(restored.ownerUniqueId), "Restored projectile should preserve owner UUID");
+        PCGameTestAssertions.assertTrue(helper, target.getUUID().equals(restored.targetUniqueId), "Restored projectile should preserve target UUID");
+        PCGameTestAssertions.assertValueEqual(helper, restored.steps, 7, "restored projectile step count");
+        PCGameTestAssertions.assertTrue(helper, restored.direction != null, "Restored projectile should preserve direction");
+        PCGameTestAssertions.assertTrue(helper, restored.ownerBlockPos != null, "Restored projectile should preserve owner block position");
+        PCGameTestAssertions.assertTrue(helper, restored.targetBlockPos != null, "Restored projectile should preserve target block position");
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = END_TROLL_PROJECTILE_BATCH)
     public static void poisonBulletHitAppliesEffectAndDiscards(GameTestHelper helper) {
         EndTrollEntity owner = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.END_TROLL), OWNER_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
@@ -57,8 +56,8 @@ public final class EndTrollProjectileGameTests {
 
         bullet.bulletHit(new EntityHitResult(target));
 
-        helper.assertTrue(target.hasEffect(MobEffects.POISON), "Poison bullet should apply poison to the target");
-        helper.assertTrue(bullet.isRemoved(), "Poison bullet should be discarded after hitting an entity");
+        PCGameTestAssertions.assertTrue(helper, target.hasEffect(MobEffects.POISON), "Poison bullet should apply poison to the target");
+        PCGameTestAssertions.assertTrue(helper, bullet.isRemoved(), "Poison bullet should be discarded after hitting an entity");
         helper.succeed();
     }
 }

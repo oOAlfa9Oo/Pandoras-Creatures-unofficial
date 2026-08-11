@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.gametest;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.PandorasCreaturesCommon;
 import andrews.pandoras_creatures.content.block.PCPlantBlock;
 import andrews.pandoras_creatures.registry.block.PCBlockIds;
@@ -41,13 +43,13 @@ public final class PCPlantGameTests {
                     .filter(biome -> definition.biomes().stream().anyMatch(selector -> matches(biome, selector)))
                     .toList();
 
-            helper.assertTrue(!selectedBiomes.isEmpty(),
+            PCGameTestAssertions.assertTrue(helper, !selectedBiomes.isEmpty(),
                     "Plant feature should select a runtime biome: " + definition.name());
             for (Holder.Reference<Biome> biome : selectedBiomes) {
                 boolean present = biome.value().getGenerationSettings().features().stream()
                         .flatMap(holders -> holders.stream())
                         .anyMatch(feature -> feature.is(featureKey));
-                helper.assertTrue(present,
+                PCGameTestAssertions.assertTrue(helper, present,
                         "Runtime biome " + biome.key().location() + " should contain " + definition.featureId());
             }
         }
@@ -64,10 +66,10 @@ public final class PCPlantGameTests {
     public static void officialPlantsRemainSingleStageDecorations(GameTestHelper helper) {
         for (PlantDefinition plant : PLANTS) {
             Block block = PandorasCreaturesCommon.platform().registry().block(plant.blockId());
-            helper.assertTrue(block instanceof PCPlantBlock, plant.blockId() + " should use the shared plant block");
-            helper.assertTrue(!block.defaultBlockState().isRandomlyTicking(),
+            PCGameTestAssertions.assertTrue(helper, block instanceof PCPlantBlock, plant.blockId() + " should use the shared plant block");
+            PCGameTestAssertions.assertTrue(helper, !block.defaultBlockState().isRandomlyTicking(),
                     plant.blockId() + " should not grow from random ticks");
-            helper.assertTrue(block.defaultBlockState().getProperties().isEmpty(),
+            PCGameTestAssertions.assertTrue(helper, block.defaultBlockState().getProperties().isEmpty(),
                     plant.blockId() + " should remain a single-stage decorative plant");
         }
         helper.succeed();
@@ -80,7 +82,7 @@ public final class PCPlantGameTests {
                 .lookupOrThrow(Registries.CONFIGURED_FEATURE);
         ConfiguredFeature<?, ?> configuredFeature = features.getValue(ResourceLocation.fromNamespaceAndPath(
                 "pandoras_creatures", plant.featureId()));
-        helper.assertTrue(configuredFeature != null, "Configured plant feature should load: " + plant.featureId());
+        PCGameTestAssertions.assertTrue(helper, configuredFeature != null, "Configured plant feature should load: " + plant.featureId());
 
         for (int x = -8; x <= 8; x++) {
             for (int z = -8; z <= 8; z++) {
@@ -93,7 +95,7 @@ public final class PCPlantGameTests {
 
         boolean placed = configuredFeature.place(
                 helper.getLevel(), helper.getLevel().getChunkSource().getGenerator(), RandomSource.create(42L), origin);
-        helper.assertTrue(placed, "Configured feature should place " + plant.blockId());
+        PCGameTestAssertions.assertTrue(helper, placed, "Configured feature should place " + plant.blockId());
 
         int placedBlocks = 0;
         for (int x = -8; x <= 8; x++) {
@@ -105,7 +107,7 @@ public final class PCPlantGameTests {
                 }
             }
         }
-        helper.assertTrue(placedBlocks > 0, "Configured feature should generate blocks for " + plant.blockId());
+        PCGameTestAssertions.assertTrue(helper, placedBlocks > 0, "Configured feature should generate blocks for " + plant.blockId());
     }
 
     private static boolean matches(Holder<Biome> biome, String selector) {

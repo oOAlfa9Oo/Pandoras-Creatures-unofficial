@@ -5,6 +5,7 @@ import andrews.pandoras_creatures.entities.end_troll.EndTrollProjectileRules;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +57,7 @@ public abstract class AbstractEndTrollBulletEntity extends Entity {
         double posX = (double) blockpos.getX() + 0.5D;
         double posY = owner.blockPosition().getY() + owner.getEyeHeight() + 0.7D;
         double posZ = (double) blockpos.getZ() + 0.5D;
-        this.moveTo(posX, posY, posZ, this.getYRot(), this.getXRot());
+        this.snapTo(posX, posY, posZ, this.getYRot(), this.getXRot());
         this.target = target;
         this.direction = Direction.UP;
         this.selectNextMoveDirection(directionAxis);
@@ -67,7 +68,7 @@ public abstract class AbstractEndTrollBulletEntity extends Entity {
         if (this.owner != null) {
             BlockPos blockpos = owner.blockPosition();
             CompoundTag compoundtag = new CompoundTag();
-            compoundtag.putUUID(EndTrollProjectileDataKeys.OWNER_ID, this.owner.getUUID());
+            compoundtag.store(EndTrollProjectileDataKeys.OWNER_ID, UUIDUtil.CODEC, this.owner.getUUID());
             compoundtag.putInt(EndTrollProjectileDataKeys.X, blockpos.getX());
             compoundtag.putInt(EndTrollProjectileDataKeys.Y, blockpos.getY());
             compoundtag.putInt(EndTrollProjectileDataKeys.Z, blockpos.getZ());
@@ -77,7 +78,7 @@ public abstract class AbstractEndTrollBulletEntity extends Entity {
         if (this.target != null) {
             BlockPos blockpos1 = target.blockPosition();
             CompoundTag compoundtag1 = new CompoundTag();
-            compoundtag1.putUUID(EndTrollProjectileDataKeys.TARGET_ID, this.target.getUUID());
+            compoundtag1.store(EndTrollProjectileDataKeys.TARGET_ID, UUIDUtil.CODEC, this.target.getUUID());
             compoundtag1.putInt(EndTrollProjectileDataKeys.X, blockpos1.getX());
             compoundtag1.putInt(EndTrollProjectileDataKeys.Y, blockpos1.getY());
             compoundtag1.putInt(EndTrollProjectileDataKeys.Z, blockpos1.getZ());
@@ -96,25 +97,25 @@ public abstract class AbstractEndTrollBulletEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.steps = compound.getInt(EndTrollProjectileDataKeys.STEPS);
-        this.targetDeltaX = compound.getDouble(EndTrollProjectileDataKeys.TARGET_DELTA_X);
-        this.targetDeltaY = compound.getDouble(EndTrollProjectileDataKeys.TARGET_DELTA_Y);
-        this.targetDeltaZ = compound.getDouble(EndTrollProjectileDataKeys.TARGET_DELTA_Z);
+        this.steps = compound.getIntOr(EndTrollProjectileDataKeys.STEPS, 0);
+        this.targetDeltaX = compound.getDoubleOr(EndTrollProjectileDataKeys.TARGET_DELTA_X, 0.0);
+        this.targetDeltaY = compound.getDoubleOr(EndTrollProjectileDataKeys.TARGET_DELTA_Y, 0.0);
+        this.targetDeltaZ = compound.getDoubleOr(EndTrollProjectileDataKeys.TARGET_DELTA_Z, 0.0);
 
-        if (compound.contains(EndTrollProjectileDataKeys.DIRECTION, Tag.TAG_ANY_NUMERIC)) {
-            this.direction = Direction.from3DDataValue(compound.getInt(EndTrollProjectileDataKeys.DIRECTION));
+        if (compound.contains(EndTrollProjectileDataKeys.DIRECTION)) {
+            this.direction = Direction.from3DDataValue(compound.getIntOr(EndTrollProjectileDataKeys.DIRECTION, 0));
         }
 
-        if (compound.contains(EndTrollProjectileDataKeys.OWNER, Tag.TAG_COMPOUND)) {
-            CompoundTag compoundtag = compound.getCompound(EndTrollProjectileDataKeys.OWNER);
-            this.ownerUniqueId = compoundtag.getUUID(EndTrollProjectileDataKeys.OWNER_ID);
-            this.ownerBlockPos = new BlockPos(compoundtag.getInt(EndTrollProjectileDataKeys.X), compoundtag.getInt(EndTrollProjectileDataKeys.Y), compoundtag.getInt(EndTrollProjectileDataKeys.Z));
+        if (compound.contains(EndTrollProjectileDataKeys.OWNER)) {
+            CompoundTag compoundtag = compound.getCompoundOrEmpty(EndTrollProjectileDataKeys.OWNER);
+            this.ownerUniqueId = compoundtag.read(EndTrollProjectileDataKeys.OWNER_ID, UUIDUtil.CODEC).orElse(null);
+            this.ownerBlockPos = new BlockPos(compoundtag.getIntOr(EndTrollProjectileDataKeys.X, 0), compoundtag.getIntOr(EndTrollProjectileDataKeys.Y, 0), compoundtag.getIntOr(EndTrollProjectileDataKeys.Z, 0));
         }
 
-        if (compound.contains(EndTrollProjectileDataKeys.TARGET, Tag.TAG_COMPOUND)) {
-            CompoundTag compoundtag1 = compound.getCompound(EndTrollProjectileDataKeys.TARGET);
-            this.targetUniqueId = compoundtag1.getUUID(EndTrollProjectileDataKeys.TARGET_ID);
-            this.targetBlockPos = new BlockPos(compoundtag1.getInt(EndTrollProjectileDataKeys.X), compoundtag1.getInt(EndTrollProjectileDataKeys.Y), compoundtag1.getInt(EndTrollProjectileDataKeys.Z));
+        if (compound.contains(EndTrollProjectileDataKeys.TARGET)) {
+            CompoundTag compoundtag1 = compound.getCompoundOrEmpty(EndTrollProjectileDataKeys.TARGET);
+            this.targetUniqueId = compoundtag1.read(EndTrollProjectileDataKeys.TARGET_ID, UUIDUtil.CODEC).orElse(null);
+            this.targetBlockPos = new BlockPos(compoundtag1.getIntOr(EndTrollProjectileDataKeys.X, 0), compoundtag1.getIntOr(EndTrollProjectileDataKeys.Y, 0), compoundtag1.getIntOr(EndTrollProjectileDataKeys.Z, 0));
         }
     }
 

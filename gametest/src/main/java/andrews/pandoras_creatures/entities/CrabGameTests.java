@@ -1,11 +1,12 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,6 @@ public final class CrabGameTests {
     private CrabGameTests() {
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = CRAB_BATCH)
     public static void saveDataRestoresVariant(GameTestHelper helper) {
         CrabEntity crab = new CrabEntity(PCGameTestRegistry.entityType(PCEntityIds.CRAB), helper.getLevel());
         crab.setCrabType(2);
@@ -30,11 +30,10 @@ public final class CrabGameTests {
         CrabEntity restored = new CrabEntity(PCGameTestRegistry.entityType(PCEntityIds.CRAB), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
-        helper.assertValueEqual(restored.getCrabType(), 2, "restored crab type");
+        PCGameTestAssertions.assertValueEqual(helper, restored.getCrabType(), 2, "restored crab type");
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = CRAB_BATCH)
     public static void bucketTagRestoresVariant(GameTestHelper helper) {
         CrabEntity crab = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.CRAB), CRAB_POS);
         crab.setCrabType(2);
@@ -43,12 +42,12 @@ public final class CrabGameTests {
         crab.saveToBucketTag(bucket);
 
         CustomData customData = bucket.get(DataComponents.BUCKET_ENTITY_DATA);
-        helper.assertTrue(customData != null, "Crab bucket should contain entity data");
+        PCGameTestAssertions.assertTrue(helper, customData != null, "Crab bucket should contain entity data");
 
         CrabEntity restored = new CrabEntity(PCGameTestRegistry.entityType(PCEntityIds.CRAB), helper.getLevel());
         restored.loadFromBucketTag(customData.copyTag());
 
-        helper.assertValueEqual(restored.getCrabType(), 2, "bucket crab type");
+        PCGameTestAssertions.assertValueEqual(helper, restored.getCrabType(), 2, "bucket crab type");
         helper.succeed();
     }
 }

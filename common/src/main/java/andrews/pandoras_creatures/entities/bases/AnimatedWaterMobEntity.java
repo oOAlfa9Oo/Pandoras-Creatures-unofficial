@@ -45,7 +45,7 @@ public abstract class AnimatedWaterMobEntity extends AnimatedCreatureEntity {
     }
 
     protected void updateAir(int air) {
-        if (this.isAlive() && !this.isInWaterOrBubble()) {
+        if (this.isAlive() && !this.isInWater()) {
             this.setAirSupply(air - 1);
             if (this.getAirSupply() == -20 && this.level() instanceof ServerLevel serverLevel) {
                 this.setAirSupply(0);

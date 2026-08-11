@@ -45,7 +45,7 @@ public class CrabEntity extends BucketableMobEntity {
 
     public CrabEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.CRAB), level);
-        this.moveTo(posX, posY, posZ);
+        this.snapTo(posX, posY, posZ);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class CrabEntity extends BucketableMobEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setCrabType(compound.getInt(CrabDataKeys.CRAB_TYPE));
+        this.setCrabType(compound.getIntOr(CrabDataKeys.CRAB_TYPE, 0));
     }
 
     @Nullable
@@ -104,7 +104,7 @@ public class CrabEntity extends BucketableMobEntity {
     public void loadFromBucketTag(CompoundTag tag) {
         super.loadFromBucketTag(tag);
         if (tag.contains(BucketEntityDataKeys.BUCKET_VARIANT_TAG)) {
-            this.setCrabType(tag.getInt(BucketEntityDataKeys.BUCKET_VARIANT_TAG));
+            this.setCrabType(tag.getIntOr(BucketEntityDataKeys.BUCKET_VARIANT_TAG, 0));
         }
     }
 

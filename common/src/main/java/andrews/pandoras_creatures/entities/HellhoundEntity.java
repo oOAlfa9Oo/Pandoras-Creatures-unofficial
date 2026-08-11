@@ -53,7 +53,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
 
     public HellhoundEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.HELLHOUND), level);
-        this.moveTo(posX, posY, posZ);
+        this.snapTo(posX, posY, posZ);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class HellhoundEntity extends AnimatedMonsterEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setHellhoundType(compound.getInt(HellhoundDataKeys.TYPE_TAG));
+        this.setHellhoundType(compound.getIntOr(HellhoundDataKeys.TYPE_TAG, 0));
     }
 
     @Nullable

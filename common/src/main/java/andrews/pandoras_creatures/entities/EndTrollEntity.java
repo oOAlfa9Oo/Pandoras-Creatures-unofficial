@@ -84,7 +84,7 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     public EndTrollEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.END_TROLL), level);
         // Step height is now handled via Attributes.STEP_HEIGHT
-        this.moveTo(posX, posY, posZ);
+        this.snapTo(posX, posY, posZ);
     }
 
     @Override
@@ -124,8 +124,8 @@ public class EndTrollEntity extends AnimatedMonsterEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setEntityStanding(compound.getBoolean(EndTrollDataKeys.IS_STANDING));
-        this.setHasScreamed(compound.getBoolean(EndTrollDataKeys.HAS_SCREAMED));
+        this.setEntityStanding(compound.getBooleanOr(EndTrollDataKeys.IS_STANDING, false));
+        this.setHasScreamed(compound.getBooleanOr(EndTrollDataKeys.HAS_SCREAMED, false));
     }
 
     @Override

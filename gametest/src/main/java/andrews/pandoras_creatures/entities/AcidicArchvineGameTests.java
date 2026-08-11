@@ -1,10 +1,11 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
 import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +20,6 @@ public final class AcidicArchvineGameTests {
     private AcidicArchvineGameTests() {
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = ACIDIC_ARCHVINE_BATCH)
     public static void saveDataRestoresArchvineType(GameTestHelper helper) {
         AcidicArchvineEntity archvine = new AcidicArchvineEntity(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), helper.getLevel());
         archvine.setArchvineType(3);
@@ -30,11 +30,10 @@ public final class AcidicArchvineGameTests {
         AcidicArchvineEntity restored = new AcidicArchvineEntity(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
-        helper.assertValueEqual(restored.getArchvineType(), 3, "restored archvine type");
+        PCGameTestAssertions.assertValueEqual(helper, restored.getArchvineType(), 3, "restored archvine type");
         helper.succeed();
     }
 
-    @GameTest(template = SHARED_TEMPLATE, batch = ACIDIC_ARCHVINE_BATCH)
     public static void biteAttackDamagesLivingTarget(GameTestHelper helper) {
         AcidicArchvineEntity archvine = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.ACIDIC_ARCHVINE), ARCHVINE_POS);
         Cow target = helper.spawn(EntityType.COW, TARGET_POS);
@@ -42,8 +41,8 @@ public final class AcidicArchvineGameTests {
 
         boolean attackSucceeded = archvine.doHurtTarget((net.minecraft.server.level.ServerLevel) archvine.level(), target);
 
-        helper.assertTrue(attackSucceeded, "Acidic Archvine bite should report a successful hit");
-        helper.assertTrue(target.getHealth() < initialHealth, "Acidic Archvine bite should damage the target");
+        PCGameTestAssertions.assertTrue(helper, attackSucceeded, "Acidic Archvine bite should report a successful hit");
+        PCGameTestAssertions.assertTrue(helper, target.getHealth() < initialHealth, "Acidic Archvine bite should damage the target");
         helper.succeed();
     }
 }

@@ -99,7 +99,7 @@ public class EndPrisonStructure extends Structure {
         }
 
         float yaw = EndPrisonBehaviorRules.rotatedEndTrollYaw(bodyPiece.getRotation().name());
-        endTroll.moveTo(spawnPosition.x, spawnPosition.y, spawnPosition.z, yaw, 0.0F);
+        endTroll.snapTo(spawnPosition.x, spawnPosition.y, spawnPosition.z, yaw, 0.0F);
         endTroll.setHealth(EndPrisonBehaviorRules.END_TROLL_HEALTH);
         endTroll.setEntityStanding(false);
         endTroll.setHasScreamed(false);

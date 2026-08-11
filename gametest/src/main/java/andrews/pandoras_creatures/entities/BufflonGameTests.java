@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.entities;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.entities.bufflon.BufflonBackAttachmentType;
 import andrews.pandoras_creatures.entities.bufflon.BufflonInventoryLayout;
 import andrews.pandoras_creatures.registry.entity.PCEntityIds;
@@ -7,7 +9,6 @@ import andrews.pandoras_creatures.test.PCGameTestRegistry;
 import andrews.pandoras_creatures.registry.item.PCItemIds;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +24,6 @@ public final class BufflonGameTests {
     private BufflonGameTests() {
     }
 
-    @GameTest(template = BUFFLON_TEMPLATE, batch = BUFFLON_BATCH)
     public static void equipmentStateTracksInventory(GameTestHelper helper) {
         BufflonEntity bufflon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.BUFFLON), BUFFLON_POS);
 
@@ -32,13 +32,12 @@ public final class BufflonGameTests {
         bufflon.bufflonStorage.setItem(BufflonInventoryLayout.FIRST_STORAGE_SLOT, new ItemStack(Items.DIRT));
         bufflon.containerChanged(bufflon.bufflonStorage);
 
-        helper.assertTrue(bufflon.isSaddled(), "Bufflon should become saddled after adding a saddle");
-        helper.assertValueEqual(bufflon.getBackAttachment(), BufflonBackAttachmentType.SMALL_STORAGE, "back attachment");
-        helper.assertValueEqual(bufflon.getOccupiedStorageSlotCount(), 1, "occupied storage slots");
+        PCGameTestAssertions.assertTrue(helper, bufflon.isSaddled(), "Bufflon should become saddled after adding a saddle");
+        PCGameTestAssertions.assertValueEqual(helper, bufflon.getBackAttachment(), BufflonBackAttachmentType.SMALL_STORAGE, "back attachment");
+        PCGameTestAssertions.assertValueEqual(helper, bufflon.getOccupiedStorageSlotCount(), 1, "occupied storage slots");
         helper.succeed();
     }
 
-    @GameTest(template = BUFFLON_TEMPLATE, batch = BUFFLON_BATCH)
     public static void saveDataRestoresStateAndInventory(GameTestHelper helper) {
         BufflonEntity bufflon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.BUFFLON), BUFFLON_POS);
         UUID ownerId = UUID.fromString("11111111-1111-1111-1111-111111111111");
@@ -60,18 +59,17 @@ public final class BufflonGameTests {
         BufflonEntity restored = new BufflonEntity(PCGameTestRegistry.entityType(PCEntityIds.BUFFLON), helper.getLevel());
         restored.readAdditionalSaveData(savedData);
 
-        helper.assertTrue(restored.isTamed(), "Restored Bufflon should stay tamed");
-        helper.assertTrue(ownerId.equals(restored.getOwnerId()), "Restored Bufflon should preserve owner UUID");
-        helper.assertValueEqual(restored.getBufflonType(), 4, "bufflon type");
-        helper.assertTrue(restored.isFollowingOwner(), "Restored Bufflon should preserve follow state");
-        helper.assertTrue(restored.isInCombatMode(), "Restored Bufflon should preserve combat mode");
-        helper.assertTrue(restored.isSitting(), "Restored Bufflon should preserve sitting state");
-        helper.assertValueEqual(restored.getBackAttachment(), BufflonBackAttachmentType.LARGE_STORAGE, "restored back attachment");
-        helper.assertTrue(restored.bufflonStorage.getItem(BufflonInventoryLayout.FIRST_STORAGE_SLOT + 1).is(Items.DIRT), "Restored Bufflon should preserve storage contents");
+        PCGameTestAssertions.assertTrue(helper, restored.isTamed(), "Restored Bufflon should stay tamed");
+        PCGameTestAssertions.assertTrue(helper, ownerId.equals(restored.getOwnerId()), "Restored Bufflon should preserve owner UUID");
+        PCGameTestAssertions.assertValueEqual(helper, restored.getBufflonType(), 4, "bufflon type");
+        PCGameTestAssertions.assertTrue(helper, restored.isFollowingOwner(), "Restored Bufflon should preserve follow state");
+        PCGameTestAssertions.assertTrue(helper, restored.isInCombatMode(), "Restored Bufflon should preserve combat mode");
+        PCGameTestAssertions.assertTrue(helper, restored.isSitting(), "Restored Bufflon should preserve sitting state");
+        PCGameTestAssertions.assertValueEqual(helper, restored.getBackAttachment(), BufflonBackAttachmentType.LARGE_STORAGE, "restored back attachment");
+        PCGameTestAssertions.assertTrue(helper, restored.bufflonStorage.getItem(BufflonInventoryLayout.FIRST_STORAGE_SLOT + 1).is(Items.DIRT), "Restored Bufflon should preserve storage contents");
         helper.succeed();
     }
 
-    @GameTest(template = BUFFLON_TEMPLATE, batch = BUFFLON_BATCH)
     public static void dropEquipmentSpawnsStoredItems(GameTestHelper helper) {
         BufflonEntity bufflon = helper.spawn(PCGameTestRegistry.entityType(PCEntityIds.BUFFLON), BUFFLON_POS);
 

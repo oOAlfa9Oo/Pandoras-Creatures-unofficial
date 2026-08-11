@@ -1,5 +1,7 @@
 package andrews.pandoras_creatures.gametest;
 
+import andrews.pandoras_creatures.test.PCGameTestAssertions;
+
 import andrews.pandoras_creatures.registry.structure.PCStructureIds;
 import andrews.pandoras_creatures.world.structures.end_prison.EndPrisonPieces;
 import net.minecraft.core.BlockPos;
@@ -32,7 +34,7 @@ public final class EndPrisonShipGameTests {
 
     public static void vanillaShipMarkersCreateOfficialContentsInEveryRotation(GameTestHelper helper) {
         ServerLevel level = helper.getLevel().getServer().getLevel(net.minecraft.world.level.Level.END);
-        helper.assertTrue(level != null, "The End dimension must be loaded for official ship validation");
+        PCGameTestAssertions.assertTrue(helper, level != null, "The End dimension must be loaded for official ship validation");
         if (level == null) {
             return;
         }
@@ -154,19 +156,19 @@ public final class EndPrisonShipGameTests {
             }
         }
 
-        helper.assertTrue(shulkers == 3,
+        PCGameTestAssertions.assertTrue(helper, shulkers == 3,
                 "Official ship must create 3 Shulkers for rotation " + ship.rotation() + "; found=" + shulkers
                         + ", chests=" + chests + ", frames=" + frames.size() + ", box=" + box);
-        helper.assertTrue(chests == 2,
+        PCGameTestAssertions.assertTrue(helper, chests == 2,
                 "Official ship must contain 2 treasure chests for rotation " + ship.rotation() + "; found=" + chests);
-        helper.assertTrue(frames.size() == 1,
+        PCGameTestAssertions.assertTrue(helper, frames.size() == 1,
                 "Official ship must create 1 Item Frame for rotation " + ship.rotation() + "; found=" + frames.size());
         if (frames.size() == 1) {
             ItemFrame frame = frames.get(0);
             Direction expectedDirection = ship.rotation().rotate(Direction.SOUTH);
-            helper.assertTrue(frame.getItem().is(Items.ELYTRA),
+            PCGameTestAssertions.assertTrue(helper, frame.getItem().is(Items.ELYTRA),
                     "Official ship Item Frame must contain an Elytra for rotation " + ship.rotation());
-            helper.assertTrue(frame.getDirection() == expectedDirection,
+            PCGameTestAssertions.assertTrue(helper, frame.getDirection() == expectedDirection,
                     "Official ship Item Frame direction must rotate with the ship; expected="
                             + expectedDirection + ", actual=" + frame.getDirection());
         }

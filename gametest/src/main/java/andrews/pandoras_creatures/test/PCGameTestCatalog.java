@@ -15,17 +15,12 @@ import andrews.pandoras_creatures.gametest.PCDataLoadGameTests;
 import andrews.pandoras_creatures.gametest.PCEntitySpawnGameTests;
 import andrews.pandoras_creatures.gametest.PCNaturalSpawnGameTests;
 import andrews.pandoras_creatures.gametest.PCPlantGameTests;
-import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.TestFunction;
-import net.minecraft.world.level.block.Rotation;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
 public final class PCGameTestCatalog {
-    private static final String TEMPLATE = "pandoras_creatures:gametest/bufflon_arena";
     private static final List<TestDefinition> DEFINITIONS = List.of(
             definition("acidic_archvine/save_data_restores_archvine_type", AcidicArchvineGameTests::saveDataRestoresArchvineType),
             definition("acidic_archvine/bite_attack_damages_living_target", AcidicArchvineGameTests::biteAttackDamagesLivingTarget),
@@ -87,34 +82,12 @@ public final class PCGameTestCatalog {
             definition("end_troll_box/inventory_survives_block_entity_save_and_load", EndTrollBoxGameTests::inventorySurvivesBlockEntitySaveAndLoad)
     );
 
-    public PCGameTestCatalog() {
+    private PCGameTestCatalog() {
     }
 
     public static List<TestDefinition> definitions() {
-        return DEFINITIONS;
-    }
-
-    @GameTestGenerator
-    public static Collection<TestFunction> generateTests() {
         PCGameTestReporting.installIfRequested();
-        return DEFINITIONS.stream()
-                .map(PCGameTestCatalog::function)
-                .toList();
-    }
-
-    private static TestFunction function(TestDefinition definition) {
-        String batch = "pandoras_creatures." + definition.path().substring(0, definition.path().indexOf('/'));
-        String testName = "pandoras_creatures." + definition.path().replace('/', '.');
-        return new TestFunction(
-                batch,
-                testName,
-                TEMPLATE,
-                Rotation.NONE,
-                100,
-                0,
-                true,
-                definition.test()
-        );
+        return DEFINITIONS;
     }
 
     private static TestDefinition definition(String path, Consumer<GameTestHelper> test) {

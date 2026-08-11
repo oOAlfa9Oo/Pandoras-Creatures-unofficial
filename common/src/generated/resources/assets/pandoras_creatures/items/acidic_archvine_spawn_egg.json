@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -15440353
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -8702803
-      }
-    ]
+    "model": "pandoras_creatures:item/acidic_archvine_spawn_egg"
   }
 }

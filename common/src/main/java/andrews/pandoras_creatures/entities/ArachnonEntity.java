@@ -37,7 +37,7 @@ public class ArachnonEntity extends AnimatedMonsterEntity {
 
     public ArachnonEntity(Level level, double posX, double posY, double posZ) {
         this(PandorasCreaturesCommon.platform().registry().entityType(PCEntityIds.ARACHNON), level);
-        this.moveTo(posX, posY, posZ);
+        this.snapTo(posX, posY, posZ);
     }
 
     @Override
