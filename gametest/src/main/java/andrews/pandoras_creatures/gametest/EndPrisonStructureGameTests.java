@@ -75,6 +75,8 @@ public final class EndPrisonStructureGameTests {
 
         ChunkGenerator generator = level.getChunkSource().getGenerator();
         StructureStart start = endPrison.generate(
+                structures.wrapAsHolder(endPrison),
+                level.dimension(),
                 level.registryAccess(),
                 generator,
                 generator.getBiomeSource(),
@@ -116,6 +118,7 @@ public final class EndPrisonStructureGameTests {
         for (int attempt = 0; attempt < 128 && generatedShip == null; attempt++) {
             ChunkPos candidate = new ChunkPos(baseChunkX + attempt * 4, baseChunkZ);
             StructureStart candidateStart = endPrison.generate(
+                    structures.wrapAsHolder(endPrison), end.dimension(),
                     end.registryAccess(), generator, generator.getBiomeSource(),
                     end.getChunkSource().randomState(), end.getStructureManager(), end.getSeed(),
                     candidate, 0, end, biome -> true);
@@ -208,6 +211,8 @@ public final class EndPrisonStructureGameTests {
                 allowedBiomeCandidates++;
 
                 StructureStart candidateStart = endPrison.generate(
+                        endPrisonHolder,
+                        end.dimension(),
                         end.registryAccess(),
                         generator,
                         generator.getBiomeSource(),

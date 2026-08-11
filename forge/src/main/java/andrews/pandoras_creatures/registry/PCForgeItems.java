@@ -1,10 +1,10 @@
 package andrews.pandoras_creatures.forge.registry;
 
+import andrews.pandoras_creatures.content.item.EndTrollBoxItem;
 import andrews.pandoras_creatures.content.item.ItemArachnonHammer;
 import andrews.pandoras_creatures.content.item.ItemCrabBucket;
 import andrews.pandoras_creatures.content.item.ItemSeahorseBucket;
 import andrews.pandoras_creatures.content.item.PCSpawnEggItem;
-import andrews.pandoras_creatures.forge.content.item.ForgeEndTrollBoxItem;
 import andrews.pandoras_creatures.forge.content.item.ForgePlantHatItem;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxBootstrap;
 import andrews.pandoras_creatures.registry.block.PCEndTrollBoxPalette;
@@ -123,7 +123,7 @@ public final class PCForgeItems {
     }
 
     private static Item createForgeEndTrollBoxItem(String id) {
-        return new ForgeEndTrollBoxItem(
+        return new EndTrollBoxItem(
                 PCForgeBlocks.getEndTrollBox(PCEndTrollBoxPalette.colorForBlockName(id)),
                 new Item.Properties().stacksTo(1).fireResistant().setId(PCItemIds.key(id))
         );
@@ -135,7 +135,7 @@ public final class PCForgeItems {
             java.util.function.Supplier<? extends net.minecraft.world.entity.EntityType<?>> entityTypeSupplier) {
         helper.register(
                 ResourceLocation.fromNamespaceAndPath(Reference.MODID, palette.itemName()),
-                new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(),
+                new PCSpawnEggItem(entityTypeSupplier,
                         new Item.Properties().setId(PCItemIds.key(palette.itemName())))
         );
     }

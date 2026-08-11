@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "pandoras_creatures:item/pink_end_troll_box",
+    "model": {
+      "type": "pandoras_creatures:end_troll_box",
+      "color": "pink"
+    }
+  }
+}

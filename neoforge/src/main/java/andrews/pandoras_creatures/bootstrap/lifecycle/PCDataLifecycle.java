@@ -8,6 +8,7 @@ public final class PCDataLifecycle {
     }
 
     public static void register(IEventBus modEventBus) {
-        modEventBus.addListener(PCDataGenerators::gatherData);
+        modEventBus.addListener(PCDataGenerators::gatherServerData);
+        modEventBus.addListener(PCDataGenerators::gatherClientData);
     }
 }

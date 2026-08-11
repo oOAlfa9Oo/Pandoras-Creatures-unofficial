@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "pandoras_creatures:item/light_blue_end_troll_box",
+    "model": {
+      "type": "pandoras_creatures:end_troll_box",
+      "color": "light_blue"
+    }
+  }
+}

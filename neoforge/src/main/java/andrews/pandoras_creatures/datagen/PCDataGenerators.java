@@ -31,27 +31,35 @@ public final class PCDataGenerators {
     private PCDataGenerators() {
     }
 
-    public static void gatherData(GatherDataEvent event) {
+    // ADR-0006 / 1.21.4: GatherDataEvent ya no es un unico evento con banderas includeServer()/
+    // includeClient(); ahora se dispara dos veces, una vez como GatherDataEvent.Server y otra
+    // como GatherDataEvent.Client, cada una con su propio listener. addProvider(T) tampoco recibe
+    // booleano: al escuchar el subtipo correcto ya se sabe que hay que registrar el provider.
+    public static void gatherServerData(GatherDataEvent.Server event) {
         PackOutput output = event.getGenerator().getPackOutput();
-        PackOutput sharedClientOutput = sharedClientOutput(output);
         PackOutput sharedWorldgenOutput = sharedWorldgenOutput(output);
         PackOutput sharedDataOutput = sharedDataOutput(output);
-        event.getGenerator().addProvider(event.includeServer(), new PCTagDataProvider(sharedDataOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCRecipeDataProvider(sharedDataOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCBlockLootTableDataProvider(sharedDataOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCEntityLootTableDataProvider(sharedDataOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCChestInjectionLootTableDataProvider(sharedDataOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCLootModifierDataProvider(output));
-        event.getGenerator().addProvider(event.includeServer(), new PCWorldgenTagDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCConfiguredFeatureDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCPlacedFeatureDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCTemplatePoolDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCStructureDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeServer(), new PCStructureSetDataProvider(sharedWorldgenOutput));
-        event.getGenerator().addProvider(event.includeClient(), new PCLanguageDataProvider(sharedClientOutput));
-        event.getGenerator().addProvider(event.includeClient(), new PCBlockStateModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
-        event.getGenerator().addProvider(event.includeClient(), new PCItemModelDataProvider(sharedClientOutput, event.getExistingFileHelper()));
+        event.addProvider(new PCTagDataProvider(sharedDataOutput));
+        event.addProvider(new PCRecipeDataProvider(sharedDataOutput));
+        event.addProvider(new PCBlockLootTableDataProvider(sharedDataOutput));
+        event.addProvider(new PCEntityLootTableDataProvider(sharedDataOutput));
+        event.addProvider(new PCChestInjectionLootTableDataProvider(sharedDataOutput));
+        event.addProvider(new PCLootModifierDataProvider(output));
+        event.addProvider(new PCWorldgenTagDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCBiomeModifierDataProvider(output, sharedWorldgenOutput));
+        event.addProvider(new PCConfiguredFeatureDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCPlacedFeatureDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCTemplatePoolDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCStructureDataProvider(sharedWorldgenOutput));
+        event.addProvider(new PCStructureSetDataProvider(sharedWorldgenOutput));
+    }
+
+    public static void gatherClientData(GatherDataEvent.Client event) {
+        PackOutput output = event.getGenerator().getPackOutput();
+        PackOutput sharedClientOutput = sharedClientOutput(output);
+        event.addProvider(new PCLanguageDataProvider(sharedClientOutput));
+        event.addProvider(new PCBlockStateModelDataProvider(sharedClientOutput));
+        event.addProvider(new PCItemModelDataProvider(sharedClientOutput));
     }
 
     private static PackOutput sharedClientOutput(PackOutput fallbackOutput) {

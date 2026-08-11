@@ -90,7 +90,12 @@ public class EndTrollBoxBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        // 1.21.4: RenderShape.ENTITYBLOCK_ANIMATED se elimino (solo quedan INVISIBLE/MODEL,
+        // ver RenderShape.java); el block entity renderer siempre se invoca aparte del render
+        // shape del bloque, asi que el equivalente real para "sin modelo visible propio, todo
+        // lo dibuja el block entity renderer" es INVISIBLE (el modelo de block/end_troll_box.json
+        // no tiene "elements", solo la textura de particula).
+        return RenderShape.INVISIBLE;
     }
 
     @Override

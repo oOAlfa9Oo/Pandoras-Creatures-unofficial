@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.42-beta'
+    id 'net.neoforged.moddev' version '2.0.141'
 }
 
 version = rootProject.version
@@ -62,11 +62,25 @@ neoForge {
             jvmArgument '-Xmx1g'
         }
 
-        data {
-            data()
+        // NeoForge 21.4.157 partio el run "data" en "clientData"/"serverData" (GatherDataEvent
+        // ahora se dispara dos veces, ver GatherDataEvent.Server/.Client). El launch target
+        // sigue aceptando los mismos --mod/--all/--output/--existing de siempre (confirmado por
+        // el --help del propio Main), lo que cambio es solo el nombre del run type.
+        clientData {
+            clientData()
             gameDirectory = rootProject.layout.projectDirectory.dir('run/data')
             systemProperty 'pandoras_creatures.sharedGeneratedClientOutput',
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+            programArguments.addAll '--mod', mod_id, '--all',
+                    '--output', project.file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', project.file('src/main/resources/').getAbsolutePath(),
+                    '--existing', rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile.absolutePath,
+                    '--existing', rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
+        }
+
+        serverData {
+            serverData()
+            gameDirectory = rootProject.layout.projectDirectory.dir('run/data')
             systemProperty 'pandoras_creatures.sharedGeneratedWorldgenOutput',
                     rootProject.layout.projectDirectory.dir('common/src/generated/resources').asFile.absolutePath
             // ADR-0006 Etapa 1: providers movidos a common (ej. PCTagDataProvider) escriben aca.

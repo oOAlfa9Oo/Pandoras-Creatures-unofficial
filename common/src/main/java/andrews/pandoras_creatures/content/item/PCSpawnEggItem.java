@@ -1,14 +1,14 @@
 package andrews.pandoras_creatures.content.item;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.component.CustomData;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -19,8 +19,8 @@ import java.util.function.Supplier;
 public class PCSpawnEggItem extends SpawnEggItem {
     private final Supplier<? extends EntityType<?>> entityTypeSupplier;
 
-    public PCSpawnEggItem(Supplier<? extends EntityType<?>> entityType, int primaryColor, int secondaryColor, Item.Properties properties) {
-        super(null, primaryColor, secondaryColor, properties);
+    public PCSpawnEggItem(Supplier<? extends EntityType<?>> entityType, Item.Properties properties) {
+        super(null, properties);
         this.entityTypeSupplier = entityType;
     }
 
@@ -29,14 +29,12 @@ public class PCSpawnEggItem extends SpawnEggItem {
     }
 
     @Override
-    public EntityType<?> getType(@Nullable ItemStack stack) {
-        if (stack != null) {
-            CustomData customData = stack.get(DataComponents.ENTITY_DATA);
-            if (customData != null && !customData.isEmpty()) {
-                CompoundTag entityTag = customData.copyTag();
-                if (entityTag.contains("id", 8)) { // 8 = TAG_STRING
-                    return EntityType.byString(entityTag.getString("id")).orElse(this.getDefaultType());
-                }
+    public EntityType<?> getType(HolderLookup.Provider provider, ItemStack stack) {
+        CustomData customData = stack.getOrDefault(DataComponents.ENTITY_DATA, CustomData.EMPTY);
+        if (!customData.isEmpty()) {
+            EntityType<?> entityType = customData.parseEntityType(provider, Registries.ENTITY_TYPE);
+            if (entityType != null) {
+                return entityType;
             }
         }
         return this.getDefaultType();

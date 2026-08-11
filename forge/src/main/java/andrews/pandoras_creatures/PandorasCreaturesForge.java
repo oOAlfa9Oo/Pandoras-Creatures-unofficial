@@ -53,7 +53,6 @@ public final class PandorasCreaturesForge {
     private static void registerClient(IEventBus modEventBus) {
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientBlockRegistry.register(modEventBus);
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientEntityRegistry.register(modEventBus);
-        andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientItemColorRegistry.register(modEventBus);
         andrews.pandoras_creatures.forge.client.bootstrap.PCForgeClientScreenRegistry.register(modEventBus);
     }
 }

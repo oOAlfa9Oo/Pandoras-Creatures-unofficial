@@ -3,12 +3,14 @@ package andrews.pandoras_creatures.content.material;
 import andrews.pandoras_creatures.util.Reference;
 import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.EnumMap;
 
@@ -43,7 +45,7 @@ public final class PCArmorMaterials {
             0.0F, // toughness
             0.0F, // knockback resistance
             REPAIRS_PLANT_HAT,
-            ResourceLocation.fromNamespaceAndPath(Reference.MODID, "plant_hat")
+            ResourceKey.create(EquipmentAssets.ROOT_ID, ResourceLocation.fromNamespaceAndPath(Reference.MODID, "plant_hat"))
     );
 
     private PCArmorMaterials() {

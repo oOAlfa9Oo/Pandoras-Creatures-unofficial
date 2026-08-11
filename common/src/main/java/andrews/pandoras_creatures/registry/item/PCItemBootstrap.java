@@ -110,7 +110,7 @@ public final class PCItemBootstrap {
 
             registeredItems.put(palette.itemName(), registrar.register(
                     palette.itemName(),
-                    () -> new PCSpawnEggItem(entityTypeSupplier, palette.primaryColor(), palette.secondaryColor(),
+                    () -> new PCSpawnEggItem(entityTypeSupplier,
                             new Item.Properties().setId(PCItemIds.key(palette.itemName())))
             ));
         }
